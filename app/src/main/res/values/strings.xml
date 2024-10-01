@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">Bartems</string>
+    <string name="login_to_bartems">Login to Bartem\'s</string>
+    <string name="welcome_back_login">Welcome back! Sign in using your account to continue us</string>
+    <string name="email">Email</string>
 </resources>
