@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageButton
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 
 class DetailProductActivity:AppCompatActivity() {
@@ -22,6 +23,13 @@ class DetailProductActivity:AppCompatActivity() {
         val goToChat = findViewById<ImageButton>(R.id.gotochat_detail)
         goToChat.setOnClickListener {
             val intent = Intent(this@DetailProductActivity, StartChatActivity::class.java)
+            startActivity(intent)
+        }
+
+        // Handle click event untuk imageview back_detail_product
+        val backDetailProduct = findViewById<ImageView>(R.id.back_detail_product)
+        backDetailProduct.setOnClickListener {
+            val intent = Intent(this@DetailProductActivity, HomeActivity::class.java)
             startActivity(intent)
         }
     }

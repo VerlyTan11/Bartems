@@ -23,16 +23,52 @@
             </intent-filter>
         </activity>
 
-        <!-- HomeActivity -->
         <activity
             android:name=".HomeActivity"
-            android:screenOrientation="portrait"
             android:exported="true" />
 
-        <!-- ProfileActivity -->
         <activity
             android:name=".ProfileActivity"
-            android:screenOrientation="portrait"
+            android:exported="true" />
+
+        <activity
+            android:name=".BarterActivity"
+            android:exported="true" />
+
+        <activity
+            android:name=".ChatActivity"
+            android:exported="true" />
+
+        <activity
+            android:name=".DetailProductActivity"
+            android:exported="true" />
+
+        <activity
+            android:name=".EditDetailProductActivity"
+            android:exported="true" />
+
+        <activity
+            android:name=".EditProductActivity"
+            android:exported="true" />
+
+        <activity
+            android:name=".EditProfileActivity"
+            android:exported="true" />
+
+        <activity
+            android:name=".LoginActivity"
+            android:exported="true" />
+
+        <activity
+            android:name=".PostItemActivity"
+            android:exported="true" />
+
+        <activity
+            android:name=".RegisterActivity"
+            android:exported="true" />
+
+        <activity
+            android:name=".StartChatActivity"
             android:exported="true" />
     </application>
 

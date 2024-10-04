@@ -21,7 +21,7 @@ class StartChatActivity:AppCompatActivity() {
         // Handle click event untuk imageview back_from_chat
         val backFromChat = findViewById<ImageView>(R.id.back_from_chat)
         backFromChat.setOnClickListener {
-            val intent = Intent(this@StartChatActivity, StartChatActivity::class.java)
+            val intent = Intent(this@StartChatActivity, DetailProductActivity::class.java)
             startActivity(intent)
         }
     }
