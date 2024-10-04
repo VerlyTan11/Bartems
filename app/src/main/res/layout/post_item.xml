@@ -7,7 +7,7 @@
     android:background="#FFFFFF">
 
     <ImageView
-        android:id="@+id/imageView9"
+        android:id="@+id/back_barter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -32,7 +32,7 @@
         app:layout_constraintVertical_bias="0.05" />
 
     <ImageView
-        android:id="@+id/imageView10"
+        android:id="@+id/gambar_product"
         android:layout_width="131dp"
         android:layout_height="127dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -44,6 +44,7 @@
         tools:srcCompat="@tools:sample/avatars" />
 
     <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/nama_produk"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
@@ -51,7 +52,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/imageView10"
+        app:layout_constraintStart_toEndOf="@+id/gambar_product"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.173">
 
@@ -62,7 +63,7 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <Spinner
-        android:id="@+id/spinner"
+        android:id="@+id/jenis"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
@@ -76,7 +77,7 @@
         app:layout_constraintVertical_bias="0.325" />
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/textInputLayout7"
+        android:id="@+id/catatan"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
@@ -85,7 +86,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spinner"
+        app:layout_constraintTop_toBottomOf="@+id/jenis"
         app:layout_constraintVertical_bias="0.207">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -95,7 +96,7 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <Spinner
-        android:id="@+id/spinner2"
+        android:id="@+id/hashtag"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
@@ -105,11 +106,11 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayout7"
+        app:layout_constraintTop_toBottomOf="@+id/catatan"
         app:layout_constraintVertical_bias="0.03" />
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/textInputLayout5"
+        android:id="@+id/berat"
         android:layout_width="187dp"
         android:layout_height="66dp"
         android:layout_marginStart="11dp"
@@ -128,15 +129,15 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/textInputLayout6"
+        android:id="@+id/jumlah"
         android:layout_width="175dp"
         android:layout_height="62dp"
         android:layout_marginStart="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/textInputLayout5"
+        app:layout_constraintEnd_toStartOf="@+id/berat"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spinner"
+        app:layout_constraintTop_toBottomOf="@+id/jenis"
         app:layout_constraintVertical_bias="0.022">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -156,11 +157,11 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.056"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spinner2"
+        app:layout_constraintTop_toBottomOf="@+id/hashtag"
         app:layout_constraintVertical_bias="0.103" />
 
     <TextView
-        android:id="@+id/textView13"
+        android:id="@+id/gotomap"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/inter"
@@ -170,7 +171,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.856"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spinner2"
+        app:layout_constraintTop_toBottomOf="@+id/hashtag"
         app:layout_constraintVertical_bias="0.116" />
 
     <ImageView
@@ -180,13 +181,13 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/textView13"
-        app:layout_constraintTop_toBottomOf="@+id/spinner2"
+        app:layout_constraintStart_toEndOf="@+id/gotomap"
+        app:layout_constraintTop_toBottomOf="@+id/hashtag"
         app:layout_constraintVertical_bias="0.101"
         app:srcCompat="@drawable/location" />
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/textInputLayout8"
+        android:id="@+id/alamat"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
@@ -195,7 +196,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spinner2"
+        app:layout_constraintTop_toBottomOf="@+id/hashtag"
         app:layout_constraintVertical_bias="0.285">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -205,13 +206,14 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/no_rumah"
         android:layout_width="174dp"
         android:layout_height="58dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.081"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayout8"
+        app:layout_constraintTop_toBottomOf="@+id/alamat"
         app:layout_constraintVertical_bias="0.112">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -221,14 +223,14 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/textInputLayout9"
+        android:id="@+id/kode_pos"
         android:layout_width="192dp"
         android:layout_height="58dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.91"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayout8"
+        app:layout_constraintTop_toBottomOf="@+id/alamat"
         app:layout_constraintVertical_bias="0.113">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -238,7 +240,7 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/btn_simpan_edit_product"
         android:layout_width="0dp"
         android:layout_height="53dp"
         android:layout_marginStart="20dp"
@@ -249,7 +251,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayout8"
+        app:layout_constraintTop_toBottomOf="@+id/alamat"
         app:layout_constraintVertical_bias="0.831" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

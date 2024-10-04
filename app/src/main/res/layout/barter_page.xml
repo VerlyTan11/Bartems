@@ -7,7 +7,7 @@
     android:background="#FFFFFF">
 
     <ImageView
-        android:id="@+id/imageView9"
+        android:id="@+id/back_barter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -32,7 +32,7 @@
         app:layout_constraintVertical_bias="0.05" />
 
     <Button
-        android:id="@+id/button3"
+        android:id="@+id/btn_confirm_barter"
         android:layout_width="0dp"
         android:layout_height="62dp"
         android:layout_marginStart="20dp"
@@ -245,7 +245,7 @@
         app:layout_constraintVertical_bias="0.586" />
 
     <ImageView
-        android:id="@+id/imageView25"
+        android:id="@+id/gotomap_barter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"

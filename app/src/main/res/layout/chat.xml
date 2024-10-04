@@ -33,7 +33,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/imageView12"
+        android:id="@+id/back_chat"
         android:layout_width="20dp"
         android:layout_height="16dp"
         android:layout_marginStart="20dp"
