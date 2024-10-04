@@ -278,7 +278,7 @@
         tools:ignore="MissingConstraints" />
 
     <ImageButton
-        android:id="@+id/imageButton7"
+        android:id="@+id/cth_produk"
         android:layout_width="115dp"
         android:layout_height="115dp"
         android:layout_marginBottom="136dp"
@@ -298,7 +298,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.604"
-        app:layout_constraintStart_toEndOf="@+id/imageButton7"
+        app:layout_constraintStart_toEndOf="@+id/cth_produk"
         app:srcCompat="@drawable/box"
         tools:ignore="SpeakableTextPresentCheck" />
 
@@ -310,7 +310,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.212"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageButton7"
+        app:layout_constraintTop_toBottomOf="@+id/cth_produk"
         app:srcCompat="@drawable/box"
         tools:ignore="SpeakableTextPresentCheck" />
 

@@ -17,5 +17,12 @@ class HomeActivity : AppCompatActivity() {
             val intent = Intent(this@HomeActivity, ProfileActivity::class.java)
             startActivity(intent)
         }
+
+        // Handle click event untuk ImageButton cth_produk
+        val cthProduct = findViewById<ImageButton>(R.id.cth_produk)
+        cthProduct.setOnClickListener {
+            val intent = Intent(this@HomeActivity, DetailProductActivity::class.java)
+            startActivity(intent)
+        }
     }
 }

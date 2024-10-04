@@ -16,7 +16,7 @@ class SplashActivity : AppCompatActivity() {
 
         // Timer 3 detik untuk pindah ke HomeActivity
         Handler(Looper.getMainLooper()).postDelayed({
-            val intent = Intent(this@SplashActivity, HomeActivity::class.java)
+            val intent = Intent(this@SplashActivity, LoginActivity::class.java)
             startActivity(intent)
             finish()
         }, 3000) // 3 detik
