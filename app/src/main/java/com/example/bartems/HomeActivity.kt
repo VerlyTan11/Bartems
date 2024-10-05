@@ -3,6 +3,7 @@ package com.example.bartems
 import android.content.Intent
 import android.os.Bundle
 import android.widget.ImageButton
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 
 class HomeActivity : AppCompatActivity() {
@@ -15,6 +16,13 @@ class HomeActivity : AppCompatActivity() {
         val goToProfileButton = findViewById<ImageButton>(R.id.gotoprofile)
         goToProfileButton.setOnClickListener {
             val intent = Intent(this@HomeActivity, ProfileActivity::class.java)
+            startActivity(intent)
+        }
+
+        // Handle click event for add_item ImageView
+        val addItem = findViewById<ImageView>(R.id.add_item)
+        addItem.setOnClickListener {
+            val intent = Intent(this@HomeActivity, PostItemActivity::class.java)
             startActivity(intent)
         }
 

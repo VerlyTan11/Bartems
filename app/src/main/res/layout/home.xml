@@ -17,7 +17,7 @@
         app:layout_constraintHorizontal_bias="0.915"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.465" />
+        app:layout_constraintVertical_bias="0.438" />
 
     <TextView
         android:id="@+id/textView5"
@@ -32,7 +32,7 @@
         app:layout_constraintHorizontal_bias="0.088"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.446" />
+        app:layout_constraintVertical_bias="0.427" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="258dp"
@@ -134,10 +134,10 @@
         android:id="@+id/imageButton6"
         android:layout_width="45dp"
         android:layout_height="45dp"
-        android:layout_marginBottom="316dp"
+        android:layout_marginBottom="404dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.492"
+        app:layout_constraintHorizontal_bias="0.428"
         app:layout_constraintStart_toEndOf="@+id/imageButton5"
         app:srcCompat="@drawable/bag"
         tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
@@ -191,7 +191,7 @@
         android:id="@+id/imageButton3"
         android:layout_width="45dp"
         android:layout_height="45dp"
-        android:layout_marginBottom="316dp"
+        android:layout_marginBottom="404dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.103"
@@ -203,7 +203,7 @@
         android:id="@+id/imageButton5"
         android:layout_width="45dp"
         android:layout_height="45dp"
-        android:layout_marginBottom="316dp"
+        android:layout_marginBottom="404dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.244"
@@ -215,7 +215,7 @@
         android:id="@+id/imageButton2"
         android:layout_width="45dp"
         android:layout_height="45dp"
-        android:layout_marginBottom="316dp"
+        android:layout_marginBottom="404dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.081"
@@ -227,7 +227,7 @@
         android:id="@+id/imageButton4"
         android:layout_width="45dp"
         android:layout_height="45dp"
-        android:layout_marginBottom="316dp"
+        android:layout_marginBottom="404dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.129"
@@ -269,7 +269,7 @@
         android:id="@+id/textView37"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="268dp"
+        android:layout_marginBottom="316dp"
         android:text="Recomendation"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -281,7 +281,7 @@
         android:id="@+id/cth_produk"
         android:layout_width="115dp"
         android:layout_height="115dp"
-        android:layout_marginBottom="136dp"
+        android:layout_marginBottom="184dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.212"
@@ -294,7 +294,7 @@
         android:layout_width="115dp"
         android:layout_height="115dp"
         android:layout_marginEnd="32dp"
-        android:layout_marginBottom="136dp"
+        android:layout_marginBottom="184dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.604"
@@ -306,7 +306,7 @@
         android:id="@+id/imageButton9"
         android:layout_width="115dp"
         android:layout_height="115dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="32dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.212"
         app:layout_constraintStart_toStartOf="parent"
@@ -318,12 +318,24 @@
         android:id="@+id/imageButton10"
         android:layout_width="115dp"
         android:layout_height="115dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="32dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.44"
         app:layout_constraintStart_toEndOf="@+id/imageButton9"
         app:layout_constraintTop_toBottomOf="@+id/imageButton8"
         app:srcCompat="@drawable/box"
         tools:ignore="SpeakableTextPresentCheck" />
+
+    <ImageView
+        android:id="@+id/add_item"
+        android:layout_width="66dp"
+        android:layout_height="68dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.968"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.998"
+        app:srcCompat="@drawable/add_item" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

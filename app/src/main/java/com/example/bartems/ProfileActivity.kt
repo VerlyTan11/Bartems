@@ -34,6 +34,7 @@ class ProfileActivity : AppCompatActivity() {
         val addItem = findViewById<ImageView>(R.id.add_item)
         addItem.setOnClickListener {
             val intent = Intent(this@ProfileActivity, PostItemActivity::class.java)
+            intent.putExtra("isFromProfile", true) // Pass extra indicating it came from Profile
             startActivity(intent)
         }
 

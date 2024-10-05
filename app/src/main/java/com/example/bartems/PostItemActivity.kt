@@ -10,7 +10,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 
-
 class PostItemActivity : AppCompatActivity() {
 
     private val cameraPermissionRequestLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
@@ -29,8 +28,17 @@ class PostItemActivity : AppCompatActivity() {
         // Handle click event for back button
         val backPostItem = findViewById<ImageView>(R.id.back_post_item)
         backPostItem.setOnClickListener {
-            val intent = Intent(this@PostItemActivity, ProfileActivity::class.java)
-            startActivity(intent)
+            // Get the Intent that started this activity
+            val intent = intent
+            // Check if the previous activity is ProfileActivity
+            if (intent.hasExtra("isFromProfile") && intent.getBooleanExtra("isFromProfile", false)) {
+                // If coming from ProfileActivity, navigate back to ProfileActivity
+                startActivity(Intent(this@PostItemActivity, ProfileActivity::class.java))
+            } else {
+                // If coming from HomeActivity or any other activity, navigate back to HomeActivity
+                startActivity(Intent(this@PostItemActivity, HomeActivity::class.java))
+            }
+            finish() // Close PostItemActivity
         }
 
         // Handle click event for the image view to open the camera
@@ -38,8 +46,6 @@ class PostItemActivity : AppCompatActivity() {
         imageView.setOnClickListener {
             checkCameraPermission()
         }
-
-        // Additional code for the fragment can go here
     }
 
     private fun checkCameraPermission() {
@@ -63,4 +69,3 @@ class PostItemActivity : AppCompatActivity() {
         private const val CAMERA_REQUEST_CODE = 100
     }
 }
-
