@@ -86,7 +86,7 @@
             android:layout_marginStart="88dp"
             android:layout_marginBottom="136dp"
             android:fontFamily="@font/poppins_bold"
-            android:text="Aldo Wijaya"
+            android:text=""
             android:textAlignment="center"
             android:textColor="#FFFFFF"
             android:textStyle="bold"

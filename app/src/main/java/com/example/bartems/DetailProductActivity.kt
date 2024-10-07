@@ -5,12 +5,20 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 
-class DetailProductActivity:AppCompatActivity() {
+class DetailProductActivity : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.detail_product)
+
+        // Ambil nama pengguna dari Intent
+        val userName = intent.getStringExtra("USER_NAME") ?: "Nama tidak tersedia"
+
+        // Tampilkan nama pengguna di TextView dengan ID textView14
+        findViewById<TextView>(R.id.textView14).text = userName
 
         // Handle click event untuk gotobarter
         val goToBarterButton = findViewById<Button>(R.id.btn_gotobarter)
