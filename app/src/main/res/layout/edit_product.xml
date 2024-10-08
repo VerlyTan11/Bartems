@@ -44,7 +44,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView18"
         app:layout_constraintVertical_bias="0.044"
-        tools:srcCompat="@tools:sample/avatars" />
+        tools:srcCompat="@drawable/box" />
 
     <ImageView
         android:id="@+id/back_detail_product"

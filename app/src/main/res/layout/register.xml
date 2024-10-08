@@ -117,13 +117,15 @@
         android:layout_marginEnd="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/email_regist">
+        app:layout_constraintTop_toBottomOf="@+id/email_regist"
+        android:inputType="textPassword">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/password_regist_edittext"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Password" />
+            android:hint="Password"
+            android:inputType="textPassword"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -135,13 +137,15 @@
         android:layout_marginEnd="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/password_regist">
+        app:layout_constraintTop_toBottomOf="@+id/password_regist"
+        android:inputType="textPassword">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/confirm_password_edittext"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Confirm Password" />
+            android:hint="Confirm Password"
+            android:inputType="textPassword"/>
     </com.google.android.material.textfield.TextInputLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
