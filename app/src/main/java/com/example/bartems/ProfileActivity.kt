@@ -80,27 +80,24 @@ class ProfileActivity : AppCompatActivity() {
 
     // Method to get user data from Firestore
     private fun getUserData() {
-        val userId = auth.currentUser?.uid // Dapatkan ID pengguna yang sedang login
+        val userId = auth.currentUser?.uid
+        val userEmail = auth.currentUser?.email // Ambil email dari FirebaseAuth
         if (userId != null) {
             firestore.collection("users").document(userId)
                 .get()
                 .addOnSuccessListener { document ->
                     if (document != null) {
-                        // Ambil data dari dokumen dan tampilkan
+                        // Ambil data dari dokumen Firestore
                         val name = document.getString("name") ?: "Nama tidak tersedia"
-                        val email = document.getString("email") ?: "Email tidak tersedia"
                         val noHp = document.getString("phone") ?: "Nomor HP tidak tersedia"
-                        val imageUrl = document.getString("imageUrl") // Ambil URL gambar profil
-
-                        // Tambahkan log untuk memeriksa data
-                        Log.d("ProfileActivity", "Name: $name, Email: $email, No HP: $noHp, ImageURL: $imageUrl")
+                        val imageUrl = document.getString("imageUrl")
 
                         // Tampilkan data di TextView
                         namaTextView.text = name
-                        emailTextView.text = email
+                        emailTextView.text = userEmail // Tampilkan email dari FirebaseAuth
                         noHpTextView.text = noHp
 
-                        // Tampilkan gambar profil menggunakan Glide
+                        // Tampilkan gambar profil
                         Glide.with(this)
                             .load(imageUrl)
                             .placeholder(R.drawable.box)

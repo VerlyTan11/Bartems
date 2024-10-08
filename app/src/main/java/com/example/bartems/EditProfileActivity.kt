@@ -80,11 +80,13 @@ class EditProfileActivity : AppCompatActivity() {
                     if (document.exists()) {
                         val name = document.getString("name") ?: ""
                         val phone = document.getString("phone") ?: ""
-                        val email = document.getString("email") ?: ""
                         val imageUrl = document.getString("imageUrl") // Ambil URL gambar
 
                         nameEditText.setText(name)
                         phoneEditText.setText(phone)
+
+                        // Dapatkan email dari Firebase Authentication
+                        val email = auth.currentUser?.email ?: ""
                         emailEditText.setText(email)
 
                         // Disable editing for email
