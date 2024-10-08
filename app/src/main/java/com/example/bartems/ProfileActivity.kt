@@ -8,11 +8,11 @@ import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.TextView
 import android.widget.Toast
+import com.bumptech.glide.Glide
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.MenuCompat
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.SetOptions
 
 class ProfileActivity : AppCompatActivity() {
 
@@ -22,6 +22,7 @@ class ProfileActivity : AppCompatActivity() {
     private lateinit var namaTextView: TextView
     private lateinit var emailTextView: TextView
     private lateinit var noHpTextView: TextView
+    private lateinit var imageProfileView: ImageView // Menyimpan referensi untuk ImageView profil
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,10 +32,11 @@ class ProfileActivity : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
         firestore = FirebaseFirestore.getInstance()
 
-        // Inisialisasi TextViews untuk menampilkan data pengguna
+        // Inisialisasi TextViews dan ImageView untuk menampilkan data pengguna
         namaTextView = findViewById(R.id.textView5)
         emailTextView = findViewById(R.id.textView9)
         noHpTextView = findViewById(R.id.textView8)
+        imageProfileView = findViewById(R.id.image_profile) // Inisialisasi ImageView profil
 
         // Ambil data pengguna dari Firestore
         getUserData()
@@ -42,9 +44,8 @@ class ProfileActivity : AppCompatActivity() {
         // Handle click event for back_profile ImageView
         val backProfile = findViewById<ImageView>(R.id.back_profile)
         backProfile.setOnClickListener {
-            // Kirim nama pengguna ke HomeActivity sebelum berpindah
             val intent = Intent(this@ProfileActivity, HomeActivity::class.java)
-            intent.putExtra("USER_NAME", namaTextView.text.toString()) // Tambahkan nama pengguna
+            intent.putExtra("USER_NAME", namaTextView.text.toString())
             startActivity(intent)
         }
 
@@ -89,14 +90,21 @@ class ProfileActivity : AppCompatActivity() {
                         val name = document.getString("name") ?: "Nama tidak tersedia"
                         val email = document.getString("email") ?: "Email tidak tersedia"
                         val noHp = document.getString("phone") ?: "Nomor HP tidak tersedia"
+                        val imageUrl = document.getString("imageUrl") // Ambil URL gambar profil
 
                         // Tambahkan log untuk memeriksa data
-                        Log.d("ProfileActivity", "Name: $name, Email: $email, No HP: $noHp")
+                        Log.d("ProfileActivity", "Name: $name, Email: $email, No HP: $noHp, ImageURL: $imageUrl")
 
                         // Tampilkan data di TextView
                         namaTextView.text = name
                         emailTextView.text = email
                         noHpTextView.text = noHp
+
+                        // Tampilkan gambar profil menggunakan Glide
+                        Glide.with(this)
+                            .load(imageUrl)
+                            .placeholder(R.drawable.box)
+                            .into(imageProfileView)
                     } else {
                         Toast.makeText(this, "Dokumen tidak ditemukan", Toast.LENGTH_SHORT).show()
                     }
@@ -120,12 +128,10 @@ class ProfileActivity : AppCompatActivity() {
         popupMenu.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.action_logout -> {
-                    // Handle logout action
                     logoutUser()
                     true
                 }
                 R.id.action_delete_account -> {
-                    // Handle delete account action
                     deleteUserAccount()
                     true
                 }
@@ -138,7 +144,6 @@ class ProfileActivity : AppCompatActivity() {
     private fun logoutUser() {
         auth.signOut()
         Toast.makeText(this, "Logout berhasil", Toast.LENGTH_SHORT).show()
-        // Kembali ke halaman login
         startActivity(Intent(this, LoginActivity::class.java))
         finish() // Menutup ProfileActivity
     }
@@ -146,14 +151,11 @@ class ProfileActivity : AppCompatActivity() {
     private fun deleteUserAccount() {
         val userId = auth.currentUser?.uid
         if (userId != null) {
-            // Hapus pengguna dari Firestore
             firestore.collection("users").document(userId).delete()
                 .addOnSuccessListener {
-                    // Hapus pengguna dari FirebaseAuth
                     auth.currentUser?.delete()?.addOnCompleteListener { task ->
                         if (task.isSuccessful) {
                             Toast.makeText(this, "Akun berhasil dihapus", Toast.LENGTH_SHORT).show()
-                            // Kembali ke halaman register
                             startActivity(Intent(this, RegisterActivity::class.java))
                             finish() // Menutup ProfileActivity
                         } else {

@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
@@ -12,6 +13,7 @@ import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
 import com.google.firebase.storage.FirebaseStorage
 
 class EditProfileActivity : AppCompatActivity() {
@@ -79,6 +81,7 @@ class EditProfileActivity : AppCompatActivity() {
                         val name = document.getString("name") ?: ""
                         val phone = document.getString("phone") ?: ""
                         val email = document.getString("email") ?: ""
+                        val imageUrl = document.getString("imageUrl") // Ambil URL gambar
 
                         nameEditText.setText(name)
                         phoneEditText.setText(phone)
@@ -86,6 +89,14 @@ class EditProfileActivity : AppCompatActivity() {
 
                         // Disable editing for email
                         emailEditText.isEnabled = false // Disable editing
+
+                        // Load image into ImageView (optional)
+                        val imageView = findViewById<ImageView>(R.id.gambar_user)
+                        if (imageUrl != null) {
+                            // Load image using your preferred image loading library (e.g., Glide, Picasso)
+                            // Example with Glide:
+                            // Glide.with(this).load(imageUrl).into(imageView)
+                        }
                     }
                 }.addOnFailureListener {
                     Toast.makeText(this, "Failed to load user data", Toast.LENGTH_SHORT).show()
@@ -101,22 +112,22 @@ class EditProfileActivity : AppCompatActivity() {
         userId?.let {
             val userUpdates = mutableMapOf<String, Any>()
 
-            // Only add fields to update if they are not empty
+            // Only add fields to update if not empty
             if (name.isNotEmpty()) {
-                userUpdates["name"] = name // Ensure consistent key
+                userUpdates["name"] = name
             }
             if (phone.isNotEmpty()) {
                 userUpdates["phone"] = phone
             }
-            // Email is not updated, hence it's excluded from userUpdates
 
-            if (imageUrl != null) {
-                userUpdates["imageUrl"] = imageUrl // Save image URL if available
+            // Add imageUrl if available
+            if (!imageUrl.isNullOrEmpty()) {
+                userUpdates["imageUrl"] = imageUrl
             }
 
-            // Check if there's any update to perform
+            // Check if there are updates to perform
             if (userUpdates.isNotEmpty()) {
-                firestore.collection("users").document(it).update(userUpdates)
+                firestore.collection("users").document(it).set(userUpdates, SetOptions.merge())
                     .addOnSuccessListener {
                         Toast.makeText(this, "Profile updated successfully", Toast.LENGTH_SHORT).show()
                         setResult(RESULT_OK) // Indicate success
@@ -133,13 +144,19 @@ class EditProfileActivity : AppCompatActivity() {
 
     private fun uploadImageToFirebaseStorage(imageUri: Uri) {
         val userId = auth.currentUser?.uid ?: return
-        val storageReference = FirebaseStorage.getInstance().getReference("user_images/$userId")
+        val storageReference = FirebaseStorage.getInstance().getReference("user_images/$userId/profile_image.jpg")
+
+        // Log untuk debugging
+        Log.d("EditProfileActivity", "User ID: $userId")
+        Log.d("EditProfileActivity", "Image URI: $imageUri")
 
         storageReference.putFile(imageUri)
             .addOnSuccessListener {
                 storageReference.downloadUrl.addOnSuccessListener { uri ->
                     val imageUrl = uri.toString()
-                    updateUserProfile(imageUrl) // Call updateUserProfile with the image URL
+                    updateUserProfile(imageUrl) // Call updateUserProfile with image URL
+                }.addOnFailureListener { e ->
+                    Toast.makeText(this, "Error getting download URL: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
             }
             .addOnFailureListener { e ->
@@ -158,8 +175,9 @@ class EditProfileActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == IMAGE_PICK_CODE && resultCode == RESULT_OK && data != null) {
             imageUri = data.data
-            // Optional: Set the selected image to an ImageView (if you have one)
-            // imageView.setImageURI(imageUri)
+            // Display selected image in ImageView
+            val imageView = findViewById<ImageView>(R.id.gambar_user)
+            imageView.setImageURI(imageUri)
         }
     }
 }
