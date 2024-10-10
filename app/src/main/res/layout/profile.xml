@@ -45,16 +45,17 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/more" />
 
-    <ImageView
+    <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/image_profile"
         android:layout_width="127dp"
         android:layout_height="120dp"
-        app:circularflow_radiusInDP="12dp"
+        android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.256"
+        app:shapeAppearanceOverlay="@style/CircularImage"
         tools:srcCompat="@drawable/box" />
 
     <TextView
