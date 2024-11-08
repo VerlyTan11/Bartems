@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -41,6 +42,12 @@ class PostItemActivity : AppCompatActivity() {
                 startActivity(Intent(this@PostItemActivity, HomeActivity::class.java))
             }
             finish()
+        }
+
+        val goToMap = findViewById<TextView>(R.id.gotomap)
+        goToMap.setOnClickListener {
+            val intent = Intent(this, MapActivity::class.java)
+            startActivityForResult(intent, MAP_REQUEST_CODE)
         }
 
         // Tangani event klik untuk membuka kamera
@@ -108,7 +115,19 @@ class PostItemActivity : AppCompatActivity() {
             }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == MAP_REQUEST_CODE && resultCode == RESULT_OK) {
+            val latitude = data?.getDoubleExtra("latitude", 0.0)
+            val longitude = data?.getDoubleExtra("longitude", 0.0)
+
+            // Tampilkan atau simpan koordinat lokasi yang dipilih
+            Toast.makeText(this, "Selected location: $latitude, $longitude", Toast.LENGTH_SHORT).show()
+        }
+    }
+
     companion object {
         private const val CAMERA_REQUEST_CODE = 100
+        private const val MAP_REQUEST_CODE = 200
     }
 }
