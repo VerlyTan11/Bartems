@@ -1,55 +1,131 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
 
     <fragment
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_width="361dp"
+        android:layout_height="357dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.28" />
 
     <TextView
-        android:id="@+id/choose_location_text"
+        android:id="@+id/text_pilih"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="30dp"
         android:text="Pilih dari map"
-        android:textSize="18sp"
-        android:textStyle="bold"/>
+        android:textSize="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.004" />
 
-    <com.google.android.gms.maps.MapView
-        android:id="@+id/mapView"
-        android:layout_width="match_parent"
-        android:layout_height="400dp"
-        android:layout_below="@id/choose_location_text"
-        android:layout_marginTop="16dp" />
-
-    <TextView
-        android:id="@+id/selected_location_text"
-        android:layout_width="wrap_content"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textInputLayout"
+        android:layout_width="409dp"
         android:layout_height="wrap_content"
-        android:layout_below="@id/mapView"
-        android:layout_marginTop="16dp"
-        android:text="Pilih Lokasi"
-        android:textSize="16sp"
-        android:layout_centerHorizontal="true" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_pilih">
 
-    <EditText
-        android:id="@+id/address_input"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/selected_location_text"
-        android:layout_margin="16dp"
-        android:hint="Masukkan alamat" />
+    </com.google.android.material.textfield.TextInputLayout>
 
     <Button
-        android:id="@+id/confirm_location_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/address_input"
-        android:layout_margin="16dp"
-        android:text="Confirm Location" />
+        android:id="@+id/confirm_button"
+        android:layout_width="233dp"
+        android:layout_height="48dp"
+        android:backgroundTint="#697565"
+        android:text="Confirm Location"
+        app:cornerRadius="12dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textInputLayout"
+        app:layout_constraintVertical_bias="0.947" />
 
-</RelativeLayout>
+    <TextView
+        android:id="@+id/text_pilih_loct"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Pilih Lokasi"
+        android:textSize="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.139"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.706" />
+
+    <ImageView
+        android:id="@+id/icon_map"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.031"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.697"
+        app:srcCompat="@drawable/location" />
+
+    <ImageView
+        android:id="@+id/back"
+        android:layout_width="28dp"
+        android:layout_height="31dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.065"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.047"
+        app:srcCompat="@drawable/back" />
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/text_input_alamat"
+        android:layout_width="382dp"
+        android:layout_height="70dp"
+        android:hint="Masukkan alamat"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.413"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.791" />
+
+    <ImageView
+        android:id="@+id/icon_search"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.935"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.776"
+        app:srcCompat="@drawable/search" />
+
+    <TextView
+        android:id="@+id/text_full_address"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.851"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

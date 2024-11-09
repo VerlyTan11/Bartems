@@ -29,6 +29,15 @@ class PostItemActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.post_item)
 
+        // Ambil data alamat yang diterima dari MapActivity
+        val selectedAddress = intent.getStringExtra("selectedAddress")
+        val alamatEditText = findViewById<TextInputLayout>(R.id.alamat) // Field alamat di layout PostItemActivity
+
+        // Jika alamat tidak null, tampilkan di EditText
+        selectedAddress?.let {
+            alamatEditText.editText?.setText(it)
+        }
+
         // Inisialisasi Firestore
         val firestore = FirebaseFirestore.getInstance()
 
