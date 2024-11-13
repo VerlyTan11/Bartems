@@ -1,44 +1,81 @@
 package com.example.bartems
 
-import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
-import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.bumptech.glide.Glide
+import com.example.bartems.model.Product
+import com.google.firebase.firestore.FirebaseFirestore
 
 class DetailProductActivity : AppCompatActivity() {
+
+    private lateinit var firestore: FirebaseFirestore
+    private lateinit var productImageView: ImageView
+    private lateinit var productNameTextView: TextView
+    private lateinit var productDescriptionTextView: TextView
+    private lateinit var productWeightTextView: TextView
+    private lateinit var productQuantityTextView: TextView
+    private lateinit var productAddressTextView: TextView
+    private lateinit var productPostalCodeTextView: TextView
+    private lateinit var backButton: ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.detail_product)
 
-        // Ambil nama pengguna dari Intent
-        val userName = intent.getStringExtra("USER_NAME") ?: "Nama tidak tersedia"
+        firestore = FirebaseFirestore.getInstance()
 
-        // Tampilkan nama pengguna di TextView dengan ID textView14
-        findViewById<TextView>(R.id.textView14).text = userName
+        // Inisialisasi UI
+        productImageView = findViewById(R.id.product_image_detail)
+        productNameTextView = findViewById(R.id.product_name)
+        productDescriptionTextView = findViewById(R.id.product_description)
+        productWeightTextView = findViewById(R.id.product_weight)
+        productQuantityTextView = findViewById(R.id.product_quantity)
+        productAddressTextView = findViewById(R.id.product_address)
+        productPostalCodeTextView = findViewById(R.id.product_postal_code)
+        backButton = findViewById(R.id.back_detail_product)
 
-        // Handle click event untuk gotobarter
-        val goToBarterButton = findViewById<Button>(R.id.btn_gotobarter)
-        goToBarterButton.setOnClickListener {
-            val intent = Intent(this@DetailProductActivity, BarterActivity::class.java)
-            startActivity(intent)
+        // Ambil ID produk dari Intent
+        val productId = intent.getStringExtra("PRODUCT_ID")
+
+        if (productId.isNullOrEmpty()) {
+            Toast.makeText(this, "Invalid Product ID", Toast.LENGTH_SHORT).show()
+            finish() // Tutup aktivitas jika ID produk tidak valid
+        } else {
+            loadProductDetails(productId)
         }
 
-        // Handle click event untuk gotochat_detail
-        val goToChat = findViewById<ImageButton>(R.id.gotochat_detail)
-        goToChat.setOnClickListener {
-            val intent = Intent(this@DetailProductActivity, StartChatActivity::class.java)
-            startActivity(intent)
+        backButton.setOnClickListener {
+            onBackPressed() // Kembali ke aktivitas sebelumnya
         }
+    }
 
-        // Handle click event untuk imageview back_detail_product
-        val backDetailProduct = findViewById<ImageView>(R.id.back_detail_product)
-        backDetailProduct.setOnClickListener {
-            val intent = Intent(this@DetailProductActivity, HomeActivity::class.java)
-            startActivity(intent)
-        }
+    private fun loadProductDetails(productId: String) {
+        firestore.collection("items").document(productId)
+            .get()
+            .addOnSuccessListener { document ->
+                if (document.exists()) {
+                    val product = document.toObject(Product::class.java)
+                    if (product != null) {
+                        // Set data ke UI
+                        Glide.with(this)
+                            .load(product.imageUrl)
+                            .into(productImageView)
+                        productNameTextView.text = product.namaProduk
+                        productDescriptionTextView.text = product.catatan
+                        productWeightTextView.text = "Weight: ${product.berat} kg"
+                        productQuantityTextView.text = "Quantity: ${product.jumlah}"
+                        productAddressTextView.text = "Address: ${product.alamat}"
+                        productPostalCodeTextView.text = "Postal Code: ${product.kodePos}"
+                    }
+                } else {
+                    Toast.makeText(this, "Produk tidak ditemukan", Toast.LENGTH_SHORT).show()
+                }
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(this, "Gagal mengambil detail produk: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
     }
 }

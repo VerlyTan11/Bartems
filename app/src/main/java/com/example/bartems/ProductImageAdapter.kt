@@ -1,0 +1,55 @@
+package com.example.bartems
+
+import android.content.Context
+import android.content.Intent
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageView
+import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.example.bartems.model.Product
+
+class ProductImageAdapter(
+    private val context: Context,
+    private val productList: List<Product>
+) : RecyclerView.Adapter<ProductImageAdapter.ProductViewHolder>() {
+
+    inner class ProductViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val productImage: ImageView = itemView.findViewById(R.id.product_image)
+
+        init {
+            // Klik pada gambar untuk mengirimkan ID produk ke DetailProductActivity
+            itemView.setOnClickListener {
+                val product = productList[adapterPosition]
+                val productId = product.id
+
+                Log.d("ProductImageAdapter", "Product ID: $productId")  // Pastikan ID ada
+                if (productId.isNotEmpty()) {
+                    val intent = Intent(context, DetailProductActivity::class.java)
+                    intent.putExtra("PRODUCT_ID", productId)  // Pastikan ID produk diteruskan dengan benar
+                    context.startActivity(intent)
+                } else {
+                    Log.e("ProductImageAdapter", "Product ID is empty or null!")
+                }
+            }
+        }
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_image, parent, false)
+        return ProductViewHolder(view)
+    }
+
+    override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
+        val product = productList[position]
+        Glide.with(context)
+            .load(product.imageUrl)
+            .into(holder.productImage)
+    }
+
+    override fun getItemCount(): Int {
+        return productList.size
+    }
+}
