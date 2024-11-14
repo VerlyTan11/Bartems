@@ -20,15 +20,14 @@ class ProductImageAdapter(
         val productImage: ImageView = itemView.findViewById(R.id.product_image)
 
         init {
-            // Klik pada gambar untuk mengirimkan ID produk ke DetailProductActivity
             itemView.setOnClickListener {
                 val product = productList[adapterPosition]
                 val productId = product.id
 
-                Log.d("ProductImageAdapter", "Product ID: $productId")  // Pastikan ID ada
+                Log.d("ProductImageAdapter", "Product ID: $productId")
                 if (productId.isNotEmpty()) {
                     val intent = Intent(context, DetailProductActivity::class.java)
-                    intent.putExtra("PRODUCT_ID", productId)  // Pastikan ID produk diteruskan dengan benar
+                    intent.putExtra("PRODUCT_ID", productId)
                     context.startActivity(intent)
                 } else {
                     Log.e("ProductImageAdapter", "Product ID is empty or null!")

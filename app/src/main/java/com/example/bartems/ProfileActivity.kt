@@ -15,6 +15,11 @@ import com.bumptech.glide.Glide
 import com.example.bartems.model.Product
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
+import com.google.firebase.Timestamp
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class ProfileActivity : AppCompatActivity() {
 
@@ -25,21 +30,19 @@ class ProfileActivity : AppCompatActivity() {
     private lateinit var emailTextView: TextView
     private lateinit var noHpTextView: TextView
     private lateinit var imageProfileView: ImageView
-    private lateinit var recyclerView: RecyclerView // RecyclerView untuk produk
-    private lateinit var addButton: ImageView // Tombol tambah item
-    private lateinit var gotoEditButton: ImageView // Tombol untuk mengedit profil
-    private lateinit var backButton: ImageView // Tombol back
-    private lateinit var menuButton: ImageView // Tombol menu titik tiga
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var addButton: ImageView
+    private lateinit var gotoEditButton: ImageView
+    private lateinit var backButton: ImageView
+    private lateinit var menuButton: ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.profile)
 
-        // Inisialisasi FirebaseAuth dan Firestore
         auth = FirebaseAuth.getInstance()
         firestore = FirebaseFirestore.getInstance()
 
-        // Inisialisasi TextViews dan ImageView untuk menampilkan data pengguna
         namaTextView = findViewById(R.id.textView5)
         emailTextView = findViewById(R.id.textView9)
         noHpTextView = findViewById(R.id.textView8)
@@ -47,55 +50,44 @@ class ProfileActivity : AppCompatActivity() {
         recyclerView = findViewById(R.id.recyclerView_product_images)
         addButton = findViewById(R.id.add_item)
         gotoEditButton = findViewById(R.id.gotoedit)
-        backButton = findViewById(R.id.back_profile)  // Tombol back
-        menuButton = findViewById(R.id.menu)  // Tombol menu titik tiga
+        backButton = findViewById(R.id.back_profile)
+        menuButton = findViewById(R.id.menu)
 
-        // Atur RecyclerView dengan GridLayoutManager untuk 2 kolom
-        val gridLayoutManager = GridLayoutManager(this, 2) // 2 kolom
-        recyclerView.layoutManager = gridLayoutManager
+        recyclerView.layoutManager = GridLayoutManager(this, 2)
 
-        // Ambil data pengguna dari Firestore
         getUserData()
-
-        // Load semua gambar produk pengguna
         loadUserProducts()
 
-        // Tambahkan fungsi klik untuk tombol tambah item
         addButton.setOnClickListener {
             val intent = Intent(this, PostItemActivity::class.java)
             intent.putExtra("isFromProfile", true)
             startActivity(intent)
         }
 
-        // Tambahkan fungsi klik untuk tombol edit profil
         gotoEditButton.setOnClickListener {
             val intent = Intent(this, EditProfileActivity::class.java)
             startActivity(intent)
         }
 
-        // Fungsi untuk tombol back
         backButton.setOnClickListener {
-            // Kembali ke HomeActivity
             val intent = Intent(this, HomeActivity::class.java)
             startActivity(intent)
-            finish()  // Menutup ProfileActivity
+            finish()
         }
 
-        // Fungsi untuk tombol menu titik tiga (Logout / Delete Account)
         menuButton.setOnClickListener {
             showMenuDialog()
         }
     }
 
-    // Fungsi untuk menampilkan dialog Logout atau Delete Account
     private fun showMenuDialog() {
         val options = arrayOf("Logout", "Delete Account")
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Pilih Opsi")
-        builder.setItems(options) { dialog: DialogInterface, which: Int ->
+        builder.setItems(options) { _: DialogInterface, which: Int ->
             when (which) {
-                0 -> logoutUser()    // Logout
-                1 -> deleteUserAccount()   // Delete Account
+                0 -> logoutUser()
+                1 -> deleteUserAccount()
             }
         }
         builder.show()
@@ -122,46 +114,46 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     private fun loadUserProducts() {
-        val userId = auth.currentUser?.uid
-        val productList = mutableListOf<Product>()
-        if (userId != null) {
-            firestore.collection("items")
-                .whereEqualTo("userId", userId)
-                .get()
-                .addOnSuccessListener { snapshots ->
-                    if (snapshots != null) {
+        CoroutineScope(Dispatchers.IO).launch {
+            val userId = auth.currentUser?.uid
+            val productList = mutableListOf<Product>()
+            if (userId != null) {
+                firestore.collection("items")
+                    .whereEqualTo("userId", userId)
+                    .get()
+                    .addOnSuccessListener { snapshots ->
                         productList.clear()
-                        for (document in snapshots) {
-                            // Mengambil data produk dari Firestore dan menetapkan ID produk
-                            val product = document.toObject(Product::class.java)
-
-                            // Menetapkan ID produk yang diambil dari Firestore ke objek Product
-                            product?.id = document.id  // Menetapkan ID dari dokumen Firestore ke objek Product
-
-                            // Log untuk memverifikasi ID produk
-                            Log.d("ProfileActivity", "Product ID from Firestore: ${product?.id}")
-
-                            // Pastikan ID produk tidak kosong
-                            if (product?.id?.isNotEmpty() == true) {
+                        for (document in snapshots.documents) {
+                            val product = document.toObject(Product::class.java)?.apply {
+                                id = document.id
+                            }
+                            if (product != null && !product.id.isNullOrEmpty()) {
                                 productList.add(product)
-                            } else {
-                                Log.e("ProfileActivity", "Product ID is empty for product: ${document.id}")
                             }
                         }
-                        if (productList.isNotEmpty()) {
-                            // Menambahkan produk ke RecyclerView
-                            val adapter = ProductImageAdapter(this, productList)
-                            recyclerView.adapter = adapter
-                        } else {
-                            Toast.makeText(this, "Tidak ada produk untuk ditampilkan", Toast.LENGTH_SHORT).show()
+
+                        // Sort products by timestamp in descending order
+                        productList.sortByDescending { it.timestamp }
+
+                        runOnUiThread {
+                            // Ensure adapter is set after data is fetched
+                            if (productList.isNotEmpty()) {
+                                val adapter = ProductImageAdapter(this@ProfileActivity, productList)
+                                recyclerView.adapter = adapter
+                                adapter.notifyDataSetChanged()
+                            } else {
+                                Log.e("ProfileActivity", "No products found.")
+                                Toast.makeText(this@ProfileActivity, "Tidak ada produk untuk ditampilkan", Toast.LENGTH_SHORT).show()
+                            }
                         }
                     }
-                }
-                .addOnFailureListener { e ->
-                    Toast.makeText(this, "Gagal mengambil data produk: ${e.message}", Toast.LENGTH_SHORT).show()
-                }
-        } else {
-            Toast.makeText(this, "Pengguna tidak terautentikasi", Toast.LENGTH_SHORT).show()
+                    .addOnFailureListener { e ->
+                        runOnUiThread {
+                            Log.e("ProfileActivity", "Failed to load products: ${e.message}")
+                            Toast.makeText(this@ProfileActivity, "Gagal mengambil data produk: ${e.message}", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+            }
         }
     }
 
@@ -187,7 +179,7 @@ class ProfileActivity : AppCompatActivity() {
 
                         Glide.with(this)
                             .load(imageUrl ?: R.drawable.default_profile_image)
-                            .placeholder(R.drawable.box)
+                            .placeholder(R.drawable.default_profile_image)
                             .into(imageProfileView)
                     }
                 }

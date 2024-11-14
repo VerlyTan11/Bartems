@@ -6,28 +6,63 @@
     android:layout_height="match_parent">
 
     <ImageView
+        android:id="@+id/back_detail_product"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:src="@drawable/back_icon"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
         android:id="@+id/product_image_detail"
         android:layout_width="0dp"
         android:layout_height="250dp"
         android:scaleType="centerCrop"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/back_detail_product"
+        app:srcCompat="@drawable/kardus_horizontal" />
+
+    <Button
+        android:id="@+id/button5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:text="Tersedia"
+        android:textSize="10sp"
+        app:icon="@drawable/barter"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.501"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/product_image_detail"
+        tools:ignore="TouchTargetSizeCheck" />
 
     <TextView
         android:id="@+id/product_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Product Name"
-        app:layout_constraintTop_toBottomOf="@+id/product_image_detail"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/poppins_bold"
+        android:text="Nama Barang"
+        android:textAlignment="center"
+        android:textColor="#000000"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/button5" />
 
     <TextView
         android:id="@+id/product_description"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Product Description"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="Deskripsi Produk"
+        android:textColor="#000000"
         app:layout_constraintTop_toBottomOf="@+id/product_name"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -36,25 +71,32 @@
         android:id="@+id/product_weight"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Weight"
-        app:layout_constraintTop_toBottomOf="@+id/product_description"
+        android:text="Berat: 10 kg"
+        android:textColor="#000000"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.043"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/product_description" />
 
     <TextView
         android:id="@+id/product_quantity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Quantity"
-        app:layout_constraintTop_toBottomOf="@+id/product_weight"
+        android:text="Kuantitas: 1"
+        android:textColor="#000000"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.046"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/product_weight" />
 
     <TextView
         android:id="@+id/product_address"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Address"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="Alamat"
+        android:textColor="#000000"
         app:layout_constraintTop_toBottomOf="@+id/product_quantity"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -63,17 +105,39 @@
         android:id="@+id/product_postal_code"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Postal Code"
-        app:layout_constraintTop_toBottomOf="@+id/product_address"
+        android:text="Kode Pos"
+        android:textColor="#000000"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.044"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/product_address" />
 
-    <ImageView
-        android:id="@+id/back_detail_product"
-        android:layout_width="wrap_content"
+    <Button
+        android:id="@+id/btn_Edit"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:src="@drawable/back_icon"
-        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="16dp"
+        android:backgroundTint="#697565"
+        android:text="Edit"
+        app:cornerRadius="12dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/trash_icon"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageButton
+        android:id="@+id/trash_icon"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:background="?attr/selectableItemBackground"
+        android:contentDescription="Hapus Produk"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_trash"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

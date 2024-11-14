@@ -16,6 +16,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.google.android.material.textfield.TextInputLayout
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
@@ -23,6 +24,11 @@ import java.io.ByteArrayOutputStream
 import java.util.*
 
 class PostItemActivity : AppCompatActivity() {
+
+    private lateinit var auth: FirebaseAuth
+    private lateinit var firestore: FirebaseFirestore
+    private lateinit var storage: FirebaseStorage
+    private var imageUri: Uri? = null
 
     private val cameraPermissionRequestLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
         if (isGranted) {
@@ -35,14 +41,9 @@ class PostItemActivity : AppCompatActivity() {
     private val galleryLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK && result.data != null) {
             imageUri = result.data?.data
-            findViewById<ImageView>(R.id.gambar_product).setImageURI(imageUri) // Tampilkan gambar yang dipilih dari galeri
+            findViewById<ImageView>(R.id.gambar_product).setImageURI(imageUri)
         }
     }
-
-    private lateinit var auth: FirebaseAuth
-    private lateinit var firestore: FirebaseFirestore
-    private lateinit var storage: FirebaseStorage
-    private var imageUri: Uri? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,38 +53,31 @@ class PostItemActivity : AppCompatActivity() {
         firestore = FirebaseFirestore.getInstance()
         storage = FirebaseStorage.getInstance()
 
-        // Ambil data alamat yang diterima dari MapActivity
         val selectedAddress = intent.getStringExtra("selectedAddress")
         val alamatEditText = findViewById<TextInputLayout>(R.id.alamat)
-
         selectedAddress?.let {
             alamatEditText.editText?.setText(it)
         }
 
-        val backPostItem = findViewById<ImageView>(R.id.back_post_item)
-        backPostItem.setOnClickListener {
-            val intent = intent
-            if (intent.hasExtra("isFromProfile") && intent.getBooleanExtra("isFromProfile", false)) {
-                startActivity(Intent(this@PostItemActivity, ProfileActivity::class.java))
+        findViewById<ImageView>(R.id.back_post_item).setOnClickListener {
+            val intent = if (intent.hasExtra("isFromProfile") && intent.getBooleanExtra("isFromProfile", false)) {
+                Intent(this@PostItemActivity, ProfileActivity::class.java)
             } else {
-                startActivity(Intent(this@PostItemActivity, HomeActivity::class.java))
+                Intent(this@PostItemActivity, HomeActivity::class.java)
             }
+            startActivity(intent)
             finish()
         }
 
-        val goToMap = findViewById<TextView>(R.id.gotomap)
-        goToMap.setOnClickListener {
-            val intent = Intent(this, MapActivity::class.java)
-            startActivityForResult(intent, MAP_REQUEST_CODE)
+        findViewById<TextView>(R.id.gotomap).setOnClickListener {
+            startActivityForResult(Intent(this, MapActivity::class.java), MAP_REQUEST_CODE)
         }
 
-        val imageView = findViewById<ImageView>(R.id.gambar_product)
-        imageView.setOnClickListener {
+        findViewById<ImageView>(R.id.gambar_product).setOnClickListener {
             showImageSourceOptions()
         }
 
-        val btnSimpanEditProduct = findViewById<Button>(R.id.btn_simpan_edit_product)
-        btnSimpanEditProduct.setOnClickListener {
+        findViewById<Button>(R.id.btn_simpan_edit_product).setOnClickListener {
             if (imageUri != null) {
                 saveItemWithImage(imageUri!!)
             } else {
@@ -106,19 +100,15 @@ class PostItemActivity : AppCompatActivity() {
     }
 
     private fun checkCameraPermission() {
-        when {
-            ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED -> {
-                openCamera()
-            }
-            else -> {
-                cameraPermissionRequestLauncher.launch(Manifest.permission.CAMERA)
-            }
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+            openCamera()
+        } else {
+            cameraPermissionRequestLauncher.launch(Manifest.permission.CAMERA)
         }
     }
 
     private fun openCamera() {
-        val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        startActivityForResult(cameraIntent, CAMERA_REQUEST_CODE)
+        startActivityForResult(Intent(MediaStore.ACTION_IMAGE_CAPTURE), CAMERA_REQUEST_CODE)
     }
 
     private fun openGallery() {
@@ -168,15 +158,14 @@ class PostItemActivity : AppCompatActivity() {
             "no_rumah" to noRumah,
             "kode_pos" to kodePos,
             "userId" to auth.currentUser?.uid,
-            "imageUrl" to imageUrl
+            "imageUrl" to imageUrl,
+            "timestamp" to Timestamp.now()  // Pastikan timestamp disertakan
         )
 
         firestore.collection("items")
-            .add(itemData)
+            .add(itemData) // Gunakan .add() hanya untuk menambah produk baru
             .addOnSuccessListener {
                 Toast.makeText(this, "Item berhasil disimpan", Toast.LENGTH_SHORT).show()
-
-                // Mengarahkan ke ProfileActivity setelah berhasil menyimpan
                 val intent = Intent(this, ProfileActivity::class.java)
                 intent.putExtra("isFromProfile", true)  // Jika perlu mengirim data tambahan
                 startActivity(intent)
@@ -194,7 +183,7 @@ class PostItemActivity : AppCompatActivity() {
         if (requestCode == CAMERA_REQUEST_CODE && resultCode == RESULT_OK && data != null) {
             val photo = data.extras?.get("data") as? Bitmap
             imageView.setImageBitmap(photo)
-            imageUri = getImageUriFromBitmap(photo)  // Get URI from Bitmap for upload
+            imageUri = getImageUriFromBitmap(photo)
         } else if (requestCode == MAP_REQUEST_CODE && resultCode == RESULT_OK) {
             val latitude = data?.getDoubleExtra("latitude", 0.0)
             val longitude = data?.getDoubleExtra("longitude", 0.0)
