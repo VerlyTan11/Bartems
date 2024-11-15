@@ -54,10 +54,22 @@ class PostItemActivity : AppCompatActivity() {
         storage = FirebaseStorage.getInstance()
 
         val selectedAddress = intent.getStringExtra("selectedAddress")
+        val inputAddress = intent.getStringExtra("inputAddress") // Ambil alamat input
+
         val alamatEditText = findViewById<TextInputLayout>(R.id.alamat)
-        selectedAddress?.let {
-            alamatEditText.editText?.setText(it)
+
+        // Gabungkan alamat input dan alamat lengkap
+        val combinedAddress = StringBuilder()
+        if (!inputAddress.isNullOrEmpty()) {
+            combinedAddress.append(inputAddress)
+            combinedAddress.append(", ") // Tambahkan koma sebagai pemisah
         }
+        if (!selectedAddress.isNullOrEmpty()) {
+            combinedAddress.append(selectedAddress)
+        }
+
+        // Tampilkan alamat gabungan di TextInputLayout
+        alamatEditText.editText?.setText(combinedAddress.toString())
 
         findViewById<ImageView>(R.id.back_post_item).setOnClickListener {
             val intent = if (intent.hasExtra("isFromProfile") && intent.getBooleanExtra("isFromProfile", false)) {

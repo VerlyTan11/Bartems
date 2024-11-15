@@ -69,9 +69,12 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         // Dalam onCreate() MapActivity
         confirmButton.setOnClickListener {
             val selectedAddress = fullAddressText.text.toString() // Ambil alamat lengkap yang ditampilkan
-            if (selectedAddress.isNotEmpty()) {
+            val inputAddress = alamatInput.text.toString() // Ambil alamat yang diinput
+
+            if (selectedAddress.isNotEmpty() || inputAddress.isNotEmpty()) {
                 val intent = Intent(this@MapActivity, PostItemActivity::class.java)
-                intent.putExtra("selectedAddress", selectedAddress) // Kirimkan alamat ke PostItemActivity
+                intent.putExtra("selectedAddress", selectedAddress) // Kirimkan alamat lengkap ke PostItemActivity
+                intent.putExtra("inputAddress", inputAddress) // Kirimkan alamat input ke PostItemActivity
                 startActivity(intent)
             } else {
                 Toast.makeText(this, "Silakan pilih lokasi terlebih dahulu", Toast.LENGTH_SHORT).show()
