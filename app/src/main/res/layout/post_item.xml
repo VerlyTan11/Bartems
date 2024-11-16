@@ -95,20 +95,6 @@
             android:hint="Catatan" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <Spinner
-        android:id="@+id/hashtag"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
-        android:minHeight="48dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/catatan"
-        app:layout_constraintVertical_bias="0.03" />
-
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/berat"
         android:layout_width="175dp"
@@ -125,7 +111,7 @@
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Berat / pcs       |    kg" />
+            android:hint="Berat / pcs | kg" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -157,7 +143,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.056"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/hashtag"
+        app:layout_constraintTop_toBottomOf="@+id/catatan"
         app:layout_constraintVertical_bias="0.103" />
 
     <TextView
@@ -171,7 +157,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.856"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/hashtag"
+        app:layout_constraintTop_toBottomOf="@+id/catatan"
         app:layout_constraintVertical_bias="0.116" />
 
     <ImageView
@@ -182,7 +168,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/gotomap"
-        app:layout_constraintTop_toBottomOf="@+id/hashtag"
+        app:layout_constraintTop_toBottomOf="@+id/catatan"
         app:layout_constraintVertical_bias="0.101"
         app:srcCompat="@drawable/location" />
 
@@ -196,7 +182,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/hashtag"
+        app:layout_constraintTop_toBottomOf="@+id/catatan"
         app:layout_constraintVertical_bias="0.285">
 
         <com.google.android.material.textfield.TextInputEditText
