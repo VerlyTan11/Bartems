@@ -12,8 +12,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputEditText
+import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 
 class HomeActivity : AppCompatActivity() {
@@ -23,6 +25,7 @@ class HomeActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: ImageButtonAdapter
     private val productList = mutableListOf<String>() // List data produk
+    private val productRecyclerList= mutableListOf<ProductRecyclerList>()
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,12 +40,14 @@ class HomeActivity : AppCompatActivity() {
         recyclerView = findViewById(R.id.recyclerView)
 
         // Setup RecyclerView
-        adapter = ImageButtonAdapter(productList) { product ->
+        adapter = ImageButtonAdapter(productRecyclerList) { product ->
             // Handle item click
             val intent = Intent(this@HomeActivity, DetailProductActivity::class.java)
-            intent.putExtra("PRODUCT_NAME", product)
+            intent.putExtra("PRODUCT_NAME", product.name)
+            intent.putExtra("PRODUCT_IMAGE_URL", product.imageUrl)  // Pass the image URL as well
             startActivity(intent)
         }
+
         recyclerView.layoutManager = GridLayoutManager(this, 2) // Two columns
         recyclerView.adapter = adapter
 
@@ -61,6 +66,8 @@ class HomeActivity : AppCompatActivity() {
         // Ambil semua produk dari Firestore
         fetchProducts()
     }
+
+
 
     private fun fetchUserName() {
         val userNameTextView = findViewById<TextView>(R.id.textView16)
@@ -119,25 +126,27 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun fetchProducts() {
-        db.collection("products") // Ganti dengan nama koleksi Anda
+        db.collection("items")  // Assuming "items" is your collection name
             .get()
             .addOnSuccessListener { documents ->
                 productList.clear()
                 for (document in documents) {
-                    val name = document.getString("name") ?: "Tanpa Nama"
-                    productList.add(name) // Store product name in the list
+                    val name = document.getString("nama_produk") ?: "Tanpa Nama"
+                    val imageUrl = document.getString("imageUrl") ?: ""  // Fetch the imageUrl field
+                    productRecyclerList.add(ProductRecyclerList(name, imageUrl))  // Add Product with name and imageUrl to the list
                 }
-                adapter.notifyDataSetChanged() // Notify adapter to update the RecyclerView
+                adapter.notifyDataSetChanged()  // Notify adapter to update the RecyclerView
             }
             .addOnFailureListener {
                 productList.clear()
-                productList.add("Error: ${it.message}") // Add error message to list
+                productRecyclerList.add(ProductRecyclerList("Error: ${it.message}", ""))  // Add an error product to the list
                 adapter.notifyDataSetChanged()
             }
     }
 
+
     private fun searchProduct(query: String) {
-        db.collection("products") // Ganti dengan nama koleksi Anda
+        db.collection("products")
             .whereEqualTo("name", query)
             .get()
             .addOnSuccessListener { documents ->
