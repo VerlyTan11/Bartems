@@ -1,291 +1,216 @@
 package com.example.bartems
 
-import android.Manifest
-import android.app.Activity
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.example.bartems.model.Product
-import com.google.android.material.textfield.TextInputLayout
-import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.storage.FirebaseStorage
-import java.io.ByteArrayOutputStream
-import java.util.*
 
 class EditProductActivity : AppCompatActivity() {
 
     private lateinit var firestore: FirebaseFirestore
-    private lateinit var storage: FirebaseStorage
     private lateinit var auth: FirebaseAuth
-    private var imageUri: Uri? = null
-    private var oldImageUrl: String = ""
 
-    private lateinit var productNameInput: TextInputLayout
-    private lateinit var productQuantityInput: TextInputLayout
-    private lateinit var productNoteInput: TextInputLayout
-    private lateinit var productAddressInput: TextInputLayout
-    private lateinit var productHouseNumberInput: TextInputLayout
-    private lateinit var productPostalCodeInput: TextInputLayout
-    private lateinit var productWeightInput: TextInputLayout
     private lateinit var productImageView: ImageView
-    private lateinit var btnUpdateProduct: Button
-    private lateinit var btnBack: ImageView
-    private lateinit var btnSelectLocation: TextView
-
-    private val cameraPermissionRequestLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
-        if (isGranted) {
-            openCamera()
-        } else {
-            Toast.makeText(this, "Camera permission is required", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    private val galleryLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK && result.data != null) {
-            imageUri = result.data?.data
-            productImageView.setImageURI(imageUri)
-        }
-    }
+    private lateinit var productNameTextView: TextView
+    private lateinit var productDescriptionTextView: TextView
+    private lateinit var productWeightTextView: TextView
+    private lateinit var productQuantityTextView: TextView
+    private lateinit var productAddressTextView: TextView
+    private lateinit var productPostalCodeTextView: TextView
+    private lateinit var userAvatar: ImageView
+    private lateinit var userName: TextView
+    private lateinit var userPhone: TextView
+    private lateinit var backButton: ImageView
+    private lateinit var editButton: Button
+    private lateinit var trashButton: ImageButton
+    private lateinit var availabilityButton: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.edit_detail_product)
+        setContentView(R.layout.edit_product)
 
         firestore = FirebaseFirestore.getInstance()
-        storage = FirebaseStorage.getInstance()
         auth = FirebaseAuth.getInstance()
 
-        productNameInput = findViewById(R.id.nama_produk)
-        productQuantityInput = findViewById(R.id.jumlah)
-        productNoteInput = findViewById(R.id.catatan)
-        productAddressInput = findViewById(R.id.alamat)
-        productHouseNumberInput = findViewById(R.id.no_rumah)
-        productPostalCodeInput = findViewById(R.id.kode_pos)
-        productWeightInput = findViewById(R.id.berat)
-        productImageView = findViewById(R.id.gambar_product)
-        btnUpdateProduct = findViewById(R.id.btn_simpan_edit_product)
-        btnBack = findViewById(R.id.back_edit_product)
-        btnSelectLocation = findViewById(R.id.gotomap)
+        // Inisialisasi komponen UI
+        productImageView = findViewById(R.id.product_image_detail)
+        productNameTextView = findViewById(R.id.product_name)
+        productDescriptionTextView = findViewById(R.id.product_description)
+        productWeightTextView = findViewById(R.id.product_weight)
+        productQuantityTextView = findViewById(R.id.product_quantity)
+        productAddressTextView = findViewById(R.id.product_address)
+        productPostalCodeTextView = findViewById(R.id.product_postal_code)
+        userAvatar = findViewById(R.id.user_avatar)
+        userName = findViewById(R.id.user_name)
+        userPhone = findViewById(R.id.user_phone)
+        backButton = findViewById(R.id.back_detail_product)
+        editButton = findViewById(R.id.btn_Edit)
+        trashButton = findViewById(R.id.trash_icon)
+        availabilityButton = findViewById(R.id.button5)
 
+        // Ambil ID produk dari Intent
         val productId = intent.getStringExtra("PRODUCT_ID")
+
         if (productId.isNullOrEmpty()) {
             Toast.makeText(this, "Invalid Product ID", Toast.LENGTH_SHORT).show()
             finish()
         } else {
-            loadProductData(productId)
+            loadProductDetails(productId)
+            listenToProductChanges(productId)
         }
 
-        btnBack.setOnClickListener {
-            finish()
+        backButton.setOnClickListener {
+            onBackPressed()
         }
 
-        btnUpdateProduct.setOnClickListener {
-            val productName = productNameInput.editText?.text.toString()
-            val productQuantity = productQuantityInput.editText?.text.toString()
-            val productNote = productNoteInput.editText?.text.toString()
-            val address = productAddressInput.editText?.text.toString()
-            val houseNumber = productHouseNumberInput.editText?.text.toString()
-            val postalCode = productPostalCodeInput.editText?.text.toString()
-            val weight = productWeightInput.editText?.text.toString()
-
-            if (productId != null) {
-                if (imageUri != null) {
-                    updateProductWithImage(productId, productName, productQuantity, productNote, address, houseNumber, postalCode, weight, imageUri!!)
-                } else {
-                    updateProductWithoutImage(productId, productName, productQuantity, productNote, address, houseNumber, postalCode, weight, oldImageUrl)
-                }
-            }
+        editButton.setOnClickListener {
+            val intent = Intent(this, EditDetailProductActivity::class.java)
+            intent.putExtra("PRODUCT_ID", productId)
+            startActivity(intent)
         }
 
-        productImageView.setOnClickListener {
-            showImageSourceOptions()
+        trashButton.setOnClickListener {
+            productId?.let { id -> deleteProduct(id) }
         }
 
-        btnSelectLocation.setOnClickListener {
-            val intent = Intent(this, MapActivity::class.java)
-            startActivityForResult(intent, MAP_REQUEST_CODE)
+        availabilityButton.setOnClickListener {
+            productId?.let { id -> toggleProductAvailability(id) }
         }
     }
 
-    private fun loadProductData(productId: String) {
+    private fun loadProductDetails(productId: String) {
         firestore.collection("items").document(productId)
             .get()
             .addOnSuccessListener { document ->
                 if (document.exists()) {
                     val product = document.toObject(Product::class.java)
                     if (product != null) {
-                        productNameInput.editText?.setText(product.nama_produk)
-                        productQuantityInput.editText?.setText(product.jumlah)
-                        productNoteInput.editText?.setText(product.catatan)
-                        productAddressInput.editText?.setText(product.alamat)
-                        productHouseNumberInput.editText?.setText(product.no_rumah ?: "")
-                        productPostalCodeInput.editText?.setText(product.kode_pos)
-                        productWeightInput.editText?.setText(product.berat)
+                        Glide.with(this).load(product.imageUrl).into(productImageView)
+                        productNameTextView.text = product.nama_produk ?: "Nama Produk Tidak Tersedia"
+                        productDescriptionTextView.text = product.catatan ?: "Deskripsi Tidak Tersedia"
+                        productWeightTextView.text = "Berat: ${product.berat ?: "N/A"} kg"
+                        productQuantityTextView.text = "Kuantitas: ${product.jumlah ?: "N/A"}"
+                        productAddressTextView.text =
+                            "Alamat: ${product.alamat ?: ""}, No: ${product.no_rumah ?: ""}"
+                        productPostalCodeTextView.text = "Kode Pos: ${product.kode_pos ?: "Kode Pos Tidak Tersedia"}"
 
-                        oldImageUrl = product.imageUrl
-                        if (oldImageUrl.isNotEmpty()) {
-                            Glide.with(this).load(oldImageUrl).into(productImageView)
-                        }
+                        // Ambil data pengguna berdasarkan userId
+                        loadUserDetails(product.userId)
+
+                        // Set status ketersediaan
+                        setAvailabilityStatus(product.tersedia)
                     }
                 } else {
                     Toast.makeText(this, "Produk tidak ditemukan", Toast.LENGTH_SHORT).show()
                 }
             }
             .addOnFailureListener { e ->
-                Toast.makeText(this, "Gagal mengambil data produk: ${e.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Gagal mengambil detail produk: ${e.message}", Toast.LENGTH_SHORT).show()
             }
     }
 
-    private fun updateProductWithImage(
-        productId: String, productName: String, productQuantity: String, productNote: String,
-        address: String, houseNumber: String, postalCode: String, weight: String, imageUri: Uri
-    ) {
-        val currentUserId = auth.currentUser?.uid ?: return
-        uploadImageToStorage(imageUri) { imageUrl ->
-            if (imageUrl != null) {
-                val updatedFields = mapOf(
-                    "nama_produk" to productName,
-                    "jumlah" to productQuantity,
-                    "catatan" to productNote,
-                    "alamat" to address,
-                    "no_rumah" to houseNumber,
-                    "kode_pos" to postalCode,
-                    "berat" to weight,
-                    "imageUrl" to imageUrl,
-                    "userId" to currentUserId,
-                    "tersedia" to true,
-                    "timestamp" to Timestamp.now()
-                )
-                firestore.collection("items")
-                    .document(productId)
-                    .update(updatedFields)
-                    .addOnSuccessListener {
-                        Toast.makeText(this, "Produk berhasil diperbarui", Toast.LENGTH_SHORT).show()
-                        finish()
-                    }
-                    .addOnFailureListener {
-                        Toast.makeText(this, "Gagal memperbarui produk", Toast.LENGTH_SHORT).show()
-                    }
-            } else {
-                Toast.makeText(this, "Gagal mendapatkan URL gambar", Toast.LENGTH_SHORT).show()
-            }
+    private fun loadUserDetails(userId: String?) {
+        if (userId.isNullOrEmpty()) {
+            userName.text = "Nama User Tidak Tersedia"
+            userPhone.text = "Nomor HP Tidak Tersedia"
+            userAvatar.setImageResource(R.drawable.default_profile_image)
+            return
         }
-    }
 
-    private fun updateProductWithoutImage(
-        productId: String, productName: String, productQuantity: String, productNote: String,
-        address: String, houseNumber: String, postalCode: String, weight: String, imageUrl: String
-    ) {
-        val currentUserId = auth.currentUser?.uid ?: return
+        firestore.collection("users").document(userId)
+            .get()
+            .addOnSuccessListener { document ->
+                if (document.exists()) {
+                    val name = document.getString("name") ?: "Nama User Tidak Tersedia"
+                    val phone = document.getString("phone") ?: "Nomor HP Tidak Tersedia"
+                    val profileImageUrl = document.getString("imageUrl")
 
-        val updatedFields = mapOf(
-            "nama_produk" to productName,
-            "jumlah" to productQuantity,
-            "catatan" to productNote,
-            "alamat" to address,
-            "no_rumah" to houseNumber,
-            "kode_pos" to postalCode,
-            "berat" to weight,
-            "imageUrl" to imageUrl,
-            "userId" to currentUserId,
-            "tersedia" to true,
-            "timestamp" to Timestamp.now()
-        )
-
-        firestore.collection("items")
-            .document(productId)
-            .update(updatedFields)
-            .addOnSuccessListener {
-                Toast.makeText(this, "Produk berhasil diperbarui", Toast.LENGTH_SHORT).show()
-                finish()
-            }
-            .addOnFailureListener {
-                Toast.makeText(this, "Gagal memperbarui produk", Toast.LENGTH_SHORT).show()
-            }
-    }
-
-    private fun uploadImageToStorage(imageUri: Uri, callback: (String?) -> Unit) {
-        val storageRef = storage.reference.child("product_images/${UUID.randomUUID()}.jpg")
-        val uploadTask = storageRef.putFile(imageUri)
-
-        uploadTask.addOnSuccessListener {
-            storageRef.downloadUrl.addOnSuccessListener { uri ->
-                callback(uri.toString())
-            }
-        }.addOnFailureListener {
-            callback(null)
-        }
-    }
-
-    private fun showImageSourceOptions() {
-        val options = arrayOf("Ambil Foto", "Pilih dari Galeri")
-        android.app.AlertDialog.Builder(this)
-            .setTitle("Pilih Sumber Gambar")
-            .setItems(options) { _, which ->
-                when (which) {
-                    0 -> checkCameraPermission()
-                    1 -> openGallery()
+                    userName.text = name
+                    userPhone.text = phone
+                    Glide.with(this)
+                        .load(profileImageUrl ?: R.drawable.default_profile_image)
+                        .placeholder(R.drawable.default_profile_image)
+                        .into(userAvatar)
+                } else {
+                    userName.text = "Nama User Tidak Tersedia"
+                    userPhone.text = "Nomor HP Tidak Tersedia"
+                    userAvatar.setImageResource(R.drawable.default_profile_image)
                 }
             }
-            .show()
+            .addOnFailureListener { e ->
+                Toast.makeText(this, "Gagal mengambil data user: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
     }
 
-    private fun checkCameraPermission() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
-            openCamera()
+    private fun setAvailabilityStatus(tersedia: Boolean) {
+        if (tersedia) {
+            availabilityButton.text = "Tersedia"
+            availabilityButton.setBackgroundColor(ContextCompat.getColor(this, R.color.blue))
         } else {
-            cameraPermissionRequestLauncher.launch(Manifest.permission.CAMERA)
+            availabilityButton.text = "Tidak Tersedia"
+            availabilityButton.setBackgroundColor(ContextCompat.getColor(this, R.color.red))
         }
     }
 
-    private fun openCamera() {
-        startActivityForResult(Intent(MediaStore.ACTION_IMAGE_CAPTURE), CAMERA_REQUEST_CODE)
+    private fun toggleProductAvailability(productId: String) {
+        firestore.collection("items").document(productId)
+            .get()
+            .addOnSuccessListener { document ->
+                if (document.exists()) {
+                    val product = document.toObject(Product::class.java)
+                    val newStatus = !(product?.tersedia ?: true)
+                    firestore.collection("items").document(productId)
+                        .update("tersedia", newStatus)
+                        .addOnSuccessListener {
+                            setAvailabilityStatus(newStatus)
+                            Toast.makeText(
+                                this,
+                                if (newStatus) "Produk sekarang tersedia" else "Produk sekarang tidak tersedia",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                }
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(this, "Gagal memperbarui status: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
     }
 
-    private fun openGallery() {
-        val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-        galleryLauncher.launch(galleryIntent)
+    private fun deleteProduct(productId: String) {
+        firestore.collection("items").document(productId)
+            .delete()
+            .addOnSuccessListener {
+                Toast.makeText(this, "Produk berhasil dihapus", Toast.LENGTH_SHORT).show()
+                finish()
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(this, "Gagal menghapus produk: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        val imageView = findViewById<ImageView>(R.id.gambar_product)
+    private fun listenToProductChanges(productId: String) {
+        firestore.collection("items").document(productId)
+            .addSnapshotListener { snapshot, e ->
+                if (e != null) {
+                    Toast.makeText(this, "Gagal mendapatkan update: ${e.message}", Toast.LENGTH_SHORT).show()
+                    return@addSnapshotListener
+                }
 
-        if (requestCode == CAMERA_REQUEST_CODE && resultCode == RESULT_OK && data != null) {
-            val photo = data.extras?.get("data") as? Bitmap
-            imageView.setImageBitmap(photo)
-            imageUri = getImageUriFromBitmap(photo)
-        } else if (requestCode == MAP_REQUEST_CODE && resultCode == RESULT_OK) {
-            val latitude = data?.getDoubleExtra("latitude", 0.0)
-            val longitude = data?.getDoubleExtra("longitude", 0.0)
-            val selectedAddress = data?.getStringExtra("selectedAddress")
-            productAddressInput.editText?.setText(selectedAddress)
-            Toast.makeText(this, "Selected location: $latitude, $longitude", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    private fun getImageUriFromBitmap(bitmap: Bitmap?): Uri {
-        val bytes = ByteArrayOutputStream()
-        bitmap?.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
-        val path = MediaStore.Images.Media.insertImage(contentResolver, bitmap, "TempImage", null)
-        return Uri.parse(path)
-    }
-
-    companion object {
-        private const val CAMERA_REQUEST_CODE = 100
-        private const val MAP_REQUEST_CODE = 200
+                if (snapshot != null && snapshot.exists()) {
+                    val product = snapshot.toObject(Product::class.java)
+                    if (product != null) {
+                        setAvailabilityStatus(product.tersedia)
+                    }
+                }
+            }
     }
 }

@@ -6,211 +6,39 @@ import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
-import com.bumptech.glide.Glide
-import com.example.bartems.model.Product
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
 
 class DetailProductActivity : AppCompatActivity() {
-
-    private lateinit var firestore: FirebaseFirestore
-    private lateinit var auth: FirebaseAuth
-
-    private lateinit var productImageView: ImageView
-    private lateinit var productNameTextView: TextView
-    private lateinit var productDescriptionTextView: TextView
-    private lateinit var productWeightTextView: TextView
-    private lateinit var productQuantityTextView: TextView
-    private lateinit var productAddressTextView: TextView
-    private lateinit var productPostalCodeTextView: TextView
-    private lateinit var userAvatar: ImageView
-    private lateinit var userName: TextView
-    private lateinit var userPhone: TextView
-    private lateinit var backButton: ImageView
-    private lateinit var editButton: Button
-    private lateinit var trashButton: ImageButton
-    private lateinit var availabilityButton: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.detail_product)
 
-        firestore = FirebaseFirestore.getInstance()
-        auth = FirebaseAuth.getInstance()
+        // Ambil nama pengguna dari Intent
+        val userName = intent.getStringExtra("USER_NAME") ?: "Nama tidak tersedia"
 
-        // Inisialisasi komponen UI
-        productImageView = findViewById(R.id.product_image_detail)
-        productNameTextView = findViewById(R.id.product_name)
-        productDescriptionTextView = findViewById(R.id.product_description)
-        productWeightTextView = findViewById(R.id.product_weight)
-        productQuantityTextView = findViewById(R.id.product_quantity)
-        productAddressTextView = findViewById(R.id.product_address)
-        productPostalCodeTextView = findViewById(R.id.product_postal_code)
-        userAvatar = findViewById(R.id.user_avatar)
-        userName = findViewById(R.id.user_name)
-        userPhone = findViewById(R.id.user_phone)
-        backButton = findViewById(R.id.back_detail_product)
-        editButton = findViewById(R.id.btn_Edit)
-        trashButton = findViewById(R.id.trash_icon)
-        availabilityButton = findViewById(R.id.button5)
+        // Tampilkan nama pengguna di TextView dengan ID textView14
+        findViewById<TextView>(R.id.textView31).text = userName
 
-        // Ambil ID produk dari Intent
-        val productId = intent.getStringExtra("PRODUCT_ID")
-
-        if (productId.isNullOrEmpty()) {
-            Toast.makeText(this, "Invalid Product ID", Toast.LENGTH_SHORT).show()
-            finish()
-        } else {
-            loadProductDetails(productId)
-            listenToProductChanges(productId)
-        }
-
-        backButton.setOnClickListener {
-            onBackPressed()
-        }
-
-        editButton.setOnClickListener {
-            val intent = Intent(this, EditProductActivity::class.java)
-            intent.putExtra("PRODUCT_ID", productId)
+        // Handle click event untuk gotobarter
+        val goToBarterButton = findViewById<Button>(R.id.btn_gotobarter)
+        goToBarterButton.setOnClickListener {
+            val intent = Intent(this@DetailProductActivity, PilihBarangActivity::class.java)
             startActivity(intent)
         }
 
-        trashButton.setOnClickListener {
-            productId?.let { id -> deleteProduct(id) }
+        // Handle click event untuk gotochat_detail
+        val goToChat = findViewById<ImageButton>(R.id.gotochat_detail)
+        goToChat.setOnClickListener {
+            val intent = Intent(this@DetailProductActivity, StartChatActivity::class.java)
+            startActivity(intent)
         }
 
-        availabilityButton.setOnClickListener {
-            productId?.let { id -> toggleProductAvailability(id) }
+        // Handle click event untuk imageview back_detail_product
+        val backDetailProduct = findViewById<ImageView>(R.id.back_detail_product)
+        backDetailProduct.setOnClickListener {
+            val intent = Intent(this@DetailProductActivity, HomeActivity::class.java)
+            startActivity(intent)
         }
-    }
-
-    private fun loadProductDetails(productId: String) {
-        firestore.collection("items").document(productId)
-            .get()
-            .addOnSuccessListener { document ->
-                if (document.exists()) {
-                    val product = document.toObject(Product::class.java)
-                    if (product != null) {
-                        Glide.with(this).load(product.imageUrl).into(productImageView)
-                        productNameTextView.text = product.nama_produk ?: "Nama Produk Tidak Tersedia"
-                        productDescriptionTextView.text = product.catatan ?: "Deskripsi Tidak Tersedia"
-                        productWeightTextView.text = "Berat: ${product.berat ?: "N/A"} kg"
-                        productQuantityTextView.text = "Kuantitas: ${product.jumlah ?: "N/A"}"
-                        productAddressTextView.text =
-                            "Alamat: ${product.alamat ?: ""}, No: ${product.no_rumah ?: ""}"
-                        productPostalCodeTextView.text = "Kode Pos: ${product.kode_pos ?: "Kode Pos Tidak Tersedia"}"
-
-                        // Ambil data pengguna berdasarkan userId
-                        loadUserDetails(product.userId)
-
-                        // Set status ketersediaan
-                        setAvailabilityStatus(product.tersedia)
-                    }
-                } else {
-                    Toast.makeText(this, "Produk tidak ditemukan", Toast.LENGTH_SHORT).show()
-                }
-            }
-            .addOnFailureListener { e ->
-                Toast.makeText(this, "Gagal mengambil detail produk: ${e.message}", Toast.LENGTH_SHORT).show()
-            }
-    }
-
-    private fun loadUserDetails(userId: String?) {
-        if (userId.isNullOrEmpty()) {
-            userName.text = "Nama User Tidak Tersedia"
-            userPhone.text = "Nomor HP Tidak Tersedia"
-            userAvatar.setImageResource(R.drawable.default_profile_image)
-            return
-        }
-
-        firestore.collection("users").document(userId)
-            .get()
-            .addOnSuccessListener { document ->
-                if (document.exists()) {
-                    val name = document.getString("name") ?: "Nama User Tidak Tersedia"
-                    val phone = document.getString("phone") ?: "Nomor HP Tidak Tersedia"
-                    val profileImageUrl = document.getString("imageUrl")
-
-                    userName.text = name
-                    userPhone.text = phone
-                    Glide.with(this)
-                        .load(profileImageUrl ?: R.drawable.default_profile_image)
-                        .placeholder(R.drawable.default_profile_image)
-                        .into(userAvatar)
-                } else {
-                    userName.text = "Nama User Tidak Tersedia"
-                    userPhone.text = "Nomor HP Tidak Tersedia"
-                    userAvatar.setImageResource(R.drawable.default_profile_image)
-                }
-            }
-            .addOnFailureListener { e ->
-                Toast.makeText(this, "Gagal mengambil data user: ${e.message}", Toast.LENGTH_SHORT).show()
-            }
-    }
-
-    private fun setAvailabilityStatus(tersedia: Boolean) {
-        if (tersedia) {
-            availabilityButton.text = "Tersedia"
-            availabilityButton.setBackgroundColor(ContextCompat.getColor(this, R.color.blue))
-        } else {
-            availabilityButton.text = "Tidak Tersedia"
-            availabilityButton.setBackgroundColor(ContextCompat.getColor(this, R.color.red))
-        }
-    }
-
-    private fun toggleProductAvailability(productId: String) {
-        firestore.collection("items").document(productId)
-            .get()
-            .addOnSuccessListener { document ->
-                if (document.exists()) {
-                    val product = document.toObject(Product::class.java)
-                    val newStatus = !(product?.tersedia ?: true)
-                    firestore.collection("items").document(productId)
-                        .update("tersedia", newStatus)
-                        .addOnSuccessListener {
-                            setAvailabilityStatus(newStatus)
-                            Toast.makeText(
-                                this,
-                                if (newStatus) "Produk sekarang tersedia" else "Produk sekarang tidak tersedia",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                }
-            }
-            .addOnFailureListener { e ->
-                Toast.makeText(this, "Gagal memperbarui status: ${e.message}", Toast.LENGTH_SHORT).show()
-            }
-    }
-
-    private fun deleteProduct(productId: String) {
-        firestore.collection("items").document(productId)
-            .delete()
-            .addOnSuccessListener {
-                Toast.makeText(this, "Produk berhasil dihapus", Toast.LENGTH_SHORT).show()
-                finish()
-            }
-            .addOnFailureListener { e ->
-                Toast.makeText(this, "Gagal menghapus produk: ${e.message}", Toast.LENGTH_SHORT).show()
-            }
-    }
-
-    private fun listenToProductChanges(productId: String) {
-        firestore.collection("items").document(productId)
-            .addSnapshotListener { snapshot, e ->
-                if (e != null) {
-                    Toast.makeText(this, "Gagal mendapatkan update: ${e.message}", Toast.LENGTH_SHORT).show()
-                    return@addSnapshotListener
-                }
-
-                if (snapshot != null && snapshot.exists()) {
-                    val product = snapshot.toObject(Product::class.java)
-                    if (product != null) {
-                        setAvailabilityStatus(product.tersedia)
-                    }
-                }
-            }
     }
 }

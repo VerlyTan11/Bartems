@@ -55,6 +55,7 @@
         <!-- Daftar Activity lainnya -->
         <activity android:name=".HomeActivity" android:exported="true" />
         <activity android:name=".ProfileActivity" android:exported="true" />
+        <activity android:name=".PilihBarangActivity" android:exported="true" />
         <activity android:name=".BarterActivity" android:exported="true" />
         <activity android:name=".ChatActivity" android:exported="true" />
         <activity android:name=".DetailProductActivity" android:exported="true" />
