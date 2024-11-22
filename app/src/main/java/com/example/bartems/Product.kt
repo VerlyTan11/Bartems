@@ -16,3 +16,9 @@ data class Product(
     val tersedia: Boolean = true,
     val timestamp: Timestamp? = null  // Pastikan timestamp ada
 )
+
+data class User(
+    val name: String? = null,
+    val phone: String? = null,
+    val profileImageUrl: String? = null
+)
