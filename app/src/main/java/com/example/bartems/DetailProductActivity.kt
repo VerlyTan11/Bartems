@@ -154,7 +154,7 @@ class DetailProductActivity : AppCompatActivity() {
     private fun setAvailabilityStatus(tersedia: Boolean) {
         if (tersedia) {
             availabilityButton.text = "Tersedia"
-            availabilityButton.setBackgroundColor(ContextCompat.getColor(this, R.color.green))
+            availabilityButton.setBackgroundColor(ContextCompat.getColor(this, R.color.blue))
         } else {
             availabilityButton.text = "Tidak Tersedia"
             availabilityButton.setBackgroundColor(ContextCompat.getColor(this, R.color.red))
