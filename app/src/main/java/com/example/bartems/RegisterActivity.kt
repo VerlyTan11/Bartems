@@ -35,20 +35,21 @@ class RegisterActivity : AppCompatActivity() {
         val btnRegister = findViewById<Button>(R.id.btn_regist)
         btnRegister.setOnClickListener {
             // Ambil data dari TextInputEditText
-            val name = findViewById<TextInputEditText>(R.id.nama_edittext).text.toString() // Ganti "nama" dengan "name"
+            val name = findViewById<TextInputEditText>(R.id.nama_edittext).text.toString()
+            val phone = findViewById<TextInputEditText>(R.id.phone_regist_edittext).text.toString()
             val email = findViewById<TextInputEditText>(R.id.email_regist_edittext).text.toString()
             val password = findViewById<TextInputEditText>(R.id.password_regist_edittext).text.toString()
             val confirmPassword = findViewById<TextInputEditText>(R.id.confirm_password_edittext).text.toString()
 
             // Panggil fungsi registerUser
-            registerUser(name, email, password, confirmPassword) // Pastikan parameter sesuai
+            registerUser(name, phone, email, password, confirmPassword)
         }
     }
 
     // Fungsi untuk mendaftarkan user ke Firebase Authentication
-    private fun registerUser(name: String, email: String, password: String, confirmPassword: String) {
+    private fun registerUser(name: String, phone: String, email: String, password: String, confirmPassword: String) {
         // Validasi input
-        if (name.isEmpty() || email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
+        if (name.isEmpty() || phone.isEmpty() || email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
             Toast.makeText(this, "Semua field harus diisi", Toast.LENGTH_SHORT).show()
             return
         }
@@ -65,7 +66,8 @@ class RegisterActivity : AppCompatActivity() {
                     // Pendaftaran berhasil, simpan data tambahan ke Firestore
                     val userId = auth.currentUser?.uid // Dapatkan ID pengguna yang baru dibuat
                     val user = hashMapOf(
-                        "name" to name, // Gunakan kunci "name" di sini
+                        "name" to name,
+                        "phone" to phone,
                         "email" to email
                     )
 
