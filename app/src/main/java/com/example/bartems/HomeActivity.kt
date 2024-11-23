@@ -1,102 +1,92 @@
 package com.example.bartems
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
+import android.view.View
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputEditText
-import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 
 class HomeActivity : AppCompatActivity() {
 
     private lateinit var db: FirebaseFirestore
-    private lateinit var searchTextInput: TextInputEditText
     private lateinit var recyclerView: RecyclerView
-    private lateinit var adapter: ImageButtonAdapter
-    private val productList = mutableListOf<String>() // List data produk
-    private val productRecyclerList= mutableListOf<ProductRecyclerList>()
+    private lateinit var adapter: ProductAdapter
+    private lateinit var loadingIndicator: View
+    private val productRecyclerList = mutableListOf<ProductRecyclerList>()
 
-    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.home)
 
-        // Inisialisasi Firestore
         db = FirebaseFirestore.getInstance()
 
         // Inisialisasi UI
-        searchTextInput = findViewById(R.id.textInputEditText)
+        val searchTextInput: TextInputEditText = findViewById(R.id.textInputEditText)
         recyclerView = findViewById(R.id.recyclerView)
+        loadingIndicator = findViewById(R.id.loading_indicator)
+        recyclerView.layoutManager = GridLayoutManager(this, 2)
 
-        // Setup RecyclerView
-        adapter = ImageButtonAdapter(productRecyclerList) { product ->
-            // Handle item click
-            val intent = Intent(this@HomeActivity, DetailProductActivity::class.java)
-            intent.putExtra("PRODUCT_NAME", product.name)
-            intent.putExtra("PRODUCT_IMAGE_URL", product.imageUrl)  // Pass the image URL as well
-            startActivity(intent)
+        // Inisialisasi Adapter
+        adapter = ProductAdapter(productRecyclerList) { product ->
+            Log.d("HomeActivity", "Navigating to product detail: ${product.name} (ID: ${product.id})")
+
+            if (product.id.isNotBlank()) {
+                val intent = Intent(this, DetailProductActivity::class.java).apply {
+                    putExtra("PRODUCT_ID", product.id)
+                    putExtra("PRODUCT_NAME", product.name)
+                    putExtra("PRODUCT_IMAGE_URL", product.imageUrl)
+                }
+                Log.d("HomeActivity", "Starting DetailProductActivity with ID: ${product.id}")
+                startActivity(intent)
+            } else {
+                Log.e("HomeActivity", "Invalid product ID")
+                Toast.makeText(this, "ID produk tidak valid", Toast.LENGTH_SHORT).show()
+            }
         }
 
-        recyclerView.layoutManager = GridLayoutManager(this, 2) // Two columns
         recyclerView.adapter = adapter
 
-        // Ambil nama pengguna
         fetchUserName()
-
-        // Listener untuk pencarian
-        setupSearchListener()
-
-        // Navigasi tombol profil
+        setupSearchListener(searchTextInput)
         setupProfileNavigation()
-
-        // Navigasi tambah item
         setupAddItemNavigation()
-
-        // Ambil semua produk dari Firestore
         fetchProducts()
     }
 
-
-
     private fun fetchUserName() {
-        val userNameTextView = findViewById<TextView>(R.id.textView16)
-        val userName = intent.getStringExtra("USER_NAME")
-        if (userName != null) {
-            userNameTextView.text = userName
+        val userNameTextView: TextView = findViewById(R.id.textView16)
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+
+        if (userId != null) {
+            db.collection("users").document(userId)
+                .get()
+                .addOnSuccessListener { document ->
+                    val name = document.getString("name") ?: "Nama tidak ditemukan"
+                    userNameTextView.text = name
+                }
+                .addOnFailureListener {
+                    userNameTextView.text = "Error mengambil nama"
+                }
         } else {
-            val userId = FirebaseAuth.getInstance().currentUser?.uid
-            if (userId != null) {
-                FirebaseDatabase.getInstance().getReference("Users").child(userId).get()
-                    .addOnSuccessListener { dataSnapshot ->
-                        if (dataSnapshot.exists()) {
-                            val name = dataSnapshot.child("name").value.toString()
-                            userNameTextView.text = name
-                        } else {
-                            userNameTextView.text = "Nama tidak ditemukan"
-                        }
-                    }.addOnFailureListener {
-                        userNameTextView.text = "Error mengambil nama"
-                    }
-            } else {
-                userNameTextView.text = "User ID tidak ditemukan"
-            }
+            userNameTextView.text = "User ID tidak ditemukan"
         }
     }
 
-    private fun setupSearchListener() {
+    private fun setupSearchListener(searchTextInput: TextInputEditText) {
         searchTextInput.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val query = s.toString()
                 if (query.isNotEmpty()) {
@@ -105,66 +95,82 @@ class HomeActivity : AppCompatActivity() {
                     fetchProducts()
                 }
             }
+
             override fun afterTextChanged(s: Editable?) {}
         })
     }
 
     private fun setupProfileNavigation() {
-        val goToProfileButton = findViewById<ImageButton>(R.id.gotoprofile)
+        val goToProfileButton: ImageButton = findViewById(R.id.gotoprofile)
         goToProfileButton.setOnClickListener {
-            val intent = Intent(this@HomeActivity, ProfileActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(this, ProfileActivity::class.java))
         }
     }
 
     private fun setupAddItemNavigation() {
-        val addItem = findViewById<ImageView>(R.id.add_item)
-        addItem.setOnClickListener {
-            val intent = Intent(this@HomeActivity, PostItemActivity::class.java)
-            startActivity(intent)
+        val addItemButton: ImageView = findViewById(R.id.add_item)
+        addItemButton.setOnClickListener {
+            startActivity(Intent(this, PostItemActivity::class.java))
         }
     }
 
     private fun fetchProducts() {
-        db.collection("items")  // Assuming "items" is your collection name
+        Log.d("HomeActivity", "Fetching products from Firestore...")
+        loadingIndicator.visibility = View.VISIBLE
+
+        db.collection("items")
             .get()
             .addOnSuccessListener { documents ->
-                productList.clear()
+                Log.d("HomeActivity", "Products fetched successfully: ${documents.size()} items")
+                loadingIndicator.visibility = View.GONE
+                productRecyclerList.clear()
+
                 for (document in documents) {
+                    val id = document.id
                     val name = document.getString("nama_produk") ?: "Tanpa Nama"
-                    val imageUrl = document.getString("imageUrl") ?: ""  // Fetch the imageUrl field
-                    productRecyclerList.add(ProductRecyclerList(name, imageUrl))  // Add Product with name and imageUrl to the list
+                    val imageUrl = document.getString("imageUrl") ?: ""
+
+                    Log.d("HomeActivity", "Product loaded: $name (ID: $id)")
+                    productRecyclerList.add(ProductRecyclerList(id, name, imageUrl))
                 }
-                adapter.notifyDataSetChanged()  // Notify adapter to update the RecyclerView
-            }
-            .addOnFailureListener {
-                productList.clear()
-                productRecyclerList.add(ProductRecyclerList("Error: ${it.message}", ""))  // Add an error product to the list
+
                 adapter.notifyDataSetChanged()
             }
+            .addOnFailureListener { exception ->
+                loadingIndicator.visibility = View.GONE
+                Log.e("HomeActivity", "Error fetching products: ${exception.message}")
+                Toast.makeText(this, "Gagal memuat produk: ${exception.message}", Toast.LENGTH_SHORT).show()
+            }
     }
-
 
     private fun searchProduct(query: String) {
-        db.collection("products")
-            .whereEqualTo("name", query)
+        Log.d("HomeActivity", "Searching for products with query: $query")
+        loadingIndicator.visibility = View.VISIBLE
+
+        db.collection("items")
+            .whereEqualTo("nama_produk", query)
             .get()
             .addOnSuccessListener { documents ->
-                productList.clear()
-                if (documents.isEmpty) {
-                    productList.add("Produk tidak ditemukan") // Add message if no product found
-                } else {
-                    for (document in documents) {
-                        val name = document.getString("name") ?: "Tanpa Nama"
-                        productList.add(name)
-                    }
+                Log.d("HomeActivity", "Search results: ${documents.size()} items found")
+                loadingIndicator.visibility = View.GONE
+                productRecyclerList.clear()
+
+                for (document in documents) {
+                    val id = document.id
+                    val name = document.getString("nama_produk") ?: "Tanpa Nama"
+                    val imageUrl = document.getString("imageUrl") ?: ""
+
+                    Log.d("HomeActivity", "Product loaded from search: $name (ID: $id)")
+                    productRecyclerList.add(ProductRecyclerList(id, name, imageUrl))
                 }
+
                 adapter.notifyDataSetChanged()
             }
-            .addOnFailureListener {
-                productList.clear()
-                productList.add("Error: ${it.message}") // Add error message to list
-                adapter.notifyDataSetChanged()
+            .addOnFailureListener { exception ->
+                loadingIndicator.visibility = View.GONE
+                Log.e("HomeActivity", "Error searching for products: ${exception.message}")
+                Toast.makeText(this, "Gagal mencari produk: ${exception.message}", Toast.LENGTH_SHORT).show()
             }
     }
+
 }
