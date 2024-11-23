@@ -153,11 +153,11 @@ class EditProductActivity : AppCompatActivity() {
 
     private fun setAvailabilityStatus(tersedia: Boolean) {
         if (tersedia) {
-            availabilityButton.text = "Tersedia"
-            availabilityButton.setBackgroundColor(ContextCompat.getColor(this, R.color.blue))
+            availabilityButton.text = "Barterable"
+            availabilityButton.setBackgroundColor(ContextCompat.getColor(this, R.color.green))
         } else {
-            availabilityButton.text = "Tidak Tersedia"
-            availabilityButton.setBackgroundColor(ContextCompat.getColor(this, R.color.red))
+            availabilityButton.text = "Non Barterable"
+            availabilityButton.setBackgroundColor(ContextCompat.getColor(this, R.color.green))
         }
     }
 
