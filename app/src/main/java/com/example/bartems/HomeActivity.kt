@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import java.util.Locale
 
 class HomeActivity : AppCompatActivity() {
 
@@ -47,10 +48,8 @@ class HomeActivity : AppCompatActivity() {
                     putExtra("PRODUCT_NAME", product.name)
                     putExtra("PRODUCT_IMAGE_URL", product.imageUrl)
                 }
-                Log.d("HomeActivity", "Starting DetailProductActivity with ID: ${product.id}")
                 startActivity(intent)
             } else {
-                Log.e("HomeActivity", "Invalid product ID")
                 Toast.makeText(this, "ID produk tidak valid", Toast.LENGTH_SHORT).show()
             }
         }
@@ -88,16 +87,23 @@ class HomeActivity : AppCompatActivity() {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                val query = s.toString()
+                val query = s.toString().trim().lowercase(Locale.ROOT)
                 if (query.isNotEmpty()) {
                     searchProduct(query)
                 } else {
+                    // Jika input kosong, tampilkan semua produk
                     fetchProducts()
                 }
             }
 
             override fun afterTextChanged(s: Editable?) {}
         })
+    }
+
+
+    private fun resetSearch() {
+        productRecyclerList.clear()
+        adapter.notifyDataSetChanged() // Bersihkan data di RecyclerView
     }
 
     private fun setupProfileNavigation() {
@@ -121,24 +127,23 @@ class HomeActivity : AppCompatActivity() {
         db.collection("items")
             .get()
             .addOnSuccessListener { documents ->
-                Log.d("HomeActivity", "Products fetched successfully: ${documents.size()} items")
                 loadingIndicator.visibility = View.GONE
                 productRecyclerList.clear()
 
                 for (document in documents) {
                     val id = document.id
-                    val name = document.getString("nama_produk") ?: "Tanpa Nama"
+                    val name = document.getString("nama_produk") ?: "Nama produk tidak tersedia"
                     val imageUrl = document.getString("imageUrl") ?: ""
 
-                    Log.d("HomeActivity", "Product loaded: $name (ID: $id)")
-                    productRecyclerList.add(ProductRecyclerList(id, name, imageUrl))
+                    if (name.isNotBlank() && id.isNotBlank()) {
+                        productRecyclerList.add(ProductRecyclerList(id, name, imageUrl))
+                    }
                 }
 
                 adapter.notifyDataSetChanged()
             }
             .addOnFailureListener { exception ->
                 loadingIndicator.visibility = View.GONE
-                Log.e("HomeActivity", "Error fetching products: ${exception.message}")
                 Toast.makeText(this, "Gagal memuat produk: ${exception.message}", Toast.LENGTH_SHORT).show()
             }
     }
@@ -148,29 +153,31 @@ class HomeActivity : AppCompatActivity() {
         loadingIndicator.visibility = View.VISIBLE
 
         db.collection("items")
-            .whereEqualTo("nama_produk", query)
             .get()
             .addOnSuccessListener { documents ->
-                Log.d("HomeActivity", "Search results: ${documents.size()} items found")
                 loadingIndicator.visibility = View.GONE
                 productRecyclerList.clear()
 
                 for (document in documents) {
                     val id = document.id
-                    val name = document.getString("nama_produk") ?: "Tanpa Nama"
+                    val name = document.getString("nama_produk") ?: "Nama produk tidak tersedia"
                     val imageUrl = document.getString("imageUrl") ?: ""
 
-                    Log.d("HomeActivity", "Product loaded from search: $name (ID: $id)")
-                    productRecyclerList.add(ProductRecyclerList(id, name, imageUrl))
+                    // Case Insensitive Matching
+                    if (name.lowercase(Locale.ROOT).contains(query)) {
+                        productRecyclerList.add(ProductRecyclerList(id, name, imageUrl))
+                    }
+                }
+
+                if (productRecyclerList.isEmpty()) {
+                    Toast.makeText(this, "Tidak ada hasil pencarian untuk \"$query\"", Toast.LENGTH_SHORT).show()
                 }
 
                 adapter.notifyDataSetChanged()
             }
             .addOnFailureListener { exception ->
                 loadingIndicator.visibility = View.GONE
-                Log.e("HomeActivity", "Error searching for products: ${exception.message}")
                 Toast.makeText(this, "Gagal mencari produk: ${exception.message}", Toast.LENGTH_SHORT).show()
             }
     }
-
 }
