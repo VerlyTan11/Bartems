@@ -43,8 +43,8 @@
         app:layout_constraintHorizontal_bias="0.07"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.132"
-        tools:srcCompat="@drawable/box" />
+        app:layout_constraintVertical_bias="0.132" />
+<!--        tools:srcCompat="@drawable/box" />-->
 
     <ImageView
         android:id="@+id/imageView3"
@@ -78,52 +78,19 @@
             android:hint="Masukkan Nama Produk" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <Spinner
-        android:id="@+id/jenis"
+    <!-- Berat Produk (Ganti Jenis Menjadi Berat) -->
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/jumlah"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
-        android:minHeight="48dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.325" />
-
-    <!-- Berat Produk (Ganti Jenis Menjadi Berat) -->
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/berat"
-        android:layout_width="175dp"
-        android:layout_height="62dp"
-        android:layout_marginStart="11dp"
-        android:layout_marginTop="103dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.911"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.317">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Berat / pcs | kg" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <!-- Jumlah Produk -->
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/jumlah"
-        android:layout_width="175dp"
-        android:layout_height="62dp"
-        android:layout_marginStart="20dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/textView12"
         app:layout_constraintEnd_toStartOf="@+id/berat"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/jenis"
-        app:layout_constraintVertical_bias="0.022">
+        app:layout_constraintTop_toBottomOf="@+id/nama_produk"
+        app:layout_constraintVertical_bias="0.394">
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
@@ -131,7 +98,25 @@
             android:hint="Jumlah" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <!-- Catatan Produk -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/berat"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="20dp"
+        app:layout_constraintBottom_toTopOf="@+id/textView12"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/jumlah"
+        app:layout_constraintTop_toBottomOf="@+id/nama_produk"
+        app:layout_constraintVertical_bias="0.394">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Berat / pcs | kg" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/catatan"
         android:layout_width="0dp"
@@ -142,8 +127,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/jenis"
-        app:layout_constraintVertical_bias="0.207">
+        app:layout_constraintTop_toBottomOf="@+id/gambar_product"
+        app:layout_constraintVertical_bias="0.254">
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
@@ -151,7 +136,6 @@
             android:hint="Catatan" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <!-- Lokasi -->
     <TextView
         android:id="@+id/textView12"
         android:layout_width="wrap_content"
