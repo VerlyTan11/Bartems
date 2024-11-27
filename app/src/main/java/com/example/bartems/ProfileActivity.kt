@@ -35,6 +35,7 @@ class ProfileActivity : AppCompatActivity() {
     private lateinit var gotoEditButton: ImageView
     private lateinit var backButton: ImageView
     private lateinit var menuButton: ImageView
+    private lateinit var historyButton: ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,6 +53,7 @@ class ProfileActivity : AppCompatActivity() {
         gotoEditButton = findViewById(R.id.gotoedit)
         backButton = findViewById(R.id.back_profile)
         menuButton = findViewById(R.id.menu)
+        historyButton = findViewById(R.id.history)
 
         recyclerView.layoutManager = GridLayoutManager(this, 2)
 
@@ -77,6 +79,11 @@ class ProfileActivity : AppCompatActivity() {
 
         menuButton.setOnClickListener {
             showMenuDialog()
+        }
+
+        historyButton.setOnClickListener {
+            val intent = Intent(this, HistoryActivity::class.java)
+            startActivity(intent)
         }
     }
 

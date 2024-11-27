@@ -9,17 +9,20 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
 class BarterActivity : AppCompatActivity() {
 
     private lateinit var firestore: FirebaseFirestore
+    private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.barter_page)
 
         firestore = FirebaseFirestore.getInstance()
+        auth = FirebaseAuth.getInstance()
 
         // Ambil data intent
         val barterProductId = intent.getStringExtra("BARTER_PRODUCT_ID") ?: ""
@@ -119,6 +122,15 @@ class BarterActivity : AppCompatActivity() {
 
         // Tombol konfirmasi barter
         confirmButton.setOnClickListener {
+            // Ambil userId pengguna yang login
+            val currentUserId = auth.currentUser?.uid ?: run {
+                Toast.makeText(this, "Pengguna tidak terautentikasi", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            // Ambil nama pengguna saat ini
+            val currentUserName = auth.currentUser?.displayName ?: "Pengguna Tidak Diketahui"
+
             // Siapkan data untuk disimpan
             val barterHistoryData = mapOf(
                 "barterProductId" to barterProductId,
@@ -128,9 +140,10 @@ class BarterActivity : AppCompatActivity() {
                 "selectedProductId" to selectedProductId,
                 "selectedProductName" to selectedProductName,
                 "selectedProductImage" to selectedProductImage,
-                "selectedProductOwner" to "Anda",
+                "selectedProductOwner" to currentUserName, // Nama pengguna yang login
+                "userId" to currentUserId, // User ID pengguna yang login
                 "address" to addressTextView.text.toString(),
-                "timestamp" to System.currentTimeMillis() // Waktu transaksi
+                "timestamp" to System.currentTimeMillis()
             )
 
             // Simpan data ke Firestore
