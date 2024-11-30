@@ -1,18 +1,31 @@
 package com.example.bartems
 
+import android.Manifest
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import android.util.Log
 
 class BarterActivity : AppCompatActivity() {
+
+    companion object {
+        const val NOTIFICATION_PERMISSION_REQUEST_CODE = 1001
+    }
 
     private lateinit var firestore: FirebaseFirestore
     private lateinit var auth: FirebaseAuth
@@ -80,7 +93,7 @@ class BarterActivity : AppCompatActivity() {
                     addressTextView.text = barterProductAddress
                     Glide.with(this).load(barterProductImage).into(barterProductImageView)
 
-                    // Ambil nama pemilik produk dari koleksi `users`
+                    // Ambil nama pemilik produk dari koleksi users
                     if (userId.isNotEmpty()) {
                         firestore.collection("users").document(userId)
                             .get()
@@ -167,6 +180,14 @@ class BarterActivity : AppCompatActivity() {
                         .replace(R.id.fragment_container, fragment)
                         .addToBackStack(null)
                         .commit()
+
+                    // Tampilkan notifikasi dan lanjut ke HomeActivity
+                    if (checkNotificationPermission()) {
+                        showNotification("Produk Barter", "Produk Anda berhasil ditukar!")
+                        navigateToHomeActivity() // Change this to navigate to HomeActivity
+                    } else {
+                        requestNotificationPermission()
+                    }
                 }
                 .addOnFailureListener { exception ->
                     Log.e("BarterActivity", "Gagal menyimpan barter history: ${exception.message}")
@@ -183,5 +204,69 @@ class BarterActivity : AppCompatActivity() {
             Log.d("BarterActivity", "Navigating to MapActivity with address: ${addressTextView.text}")
             startActivity(intent)
         }
+    }
+
+    private fun checkNotificationPermission(): Boolean {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.POST_NOTIFICATIONS
+            ) == PackageManager.PERMISSION_GRANTED
+        } else {
+            true
+        }
+    }
+
+    private fun requestNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+                NOTIFICATION_PERMISSION_REQUEST_CODE
+            )
+        }
+    }
+
+    private fun showNotification(title: String, message: String) {
+        val notificationManager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val channelId = "barter_channel"
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(
+                channelId,
+                "Barter Notifications",
+                NotificationManager.IMPORTANCE_DEFAULT
+            )
+            notificationManager.createNotificationChannel(channel)
+        }
+
+        val notification = NotificationCompat.Builder(this, channelId)
+            .setContentTitle(title)
+            .setContentText(message)
+            .setSmallIcon(R.drawable.icon_notif)
+            .build()
+
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.POST_NOTIFICATIONS
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return
+        }
+        NotificationManagerCompat.from(this).notify(1, notification)
+    }
+
+    private fun navigateToHomeActivity() {
+        val intent = Intent(this, HomeActivity::class.java) // Change to HomeActivity
+        startActivity(intent)
+        finish()  // To finish the current activity
     }
 }
