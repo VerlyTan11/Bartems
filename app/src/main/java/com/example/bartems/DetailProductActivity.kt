@@ -11,23 +11,30 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
 class DetailProductActivity : AppCompatActivity() {
 
     private lateinit var firestore: FirebaseFirestore
+    private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.detail_product)
 
         firestore = FirebaseFirestore.getInstance()
+        auth = FirebaseAuth.getInstance()
 
+        val currentUserId = auth.currentUser?.uid
         val productId = intent.getStringExtra("PRODUCT_ID")
         val productName = intent.getStringExtra("PRODUCT_NAME") ?: "Nama tidak tersedia"
         val productImageUrl = intent.getStringExtra("PRODUCT_IMAGE_URL") ?: ""
 
-        Log.d("DetailProductActivity", "Intent received: PRODUCT_ID=$productId, PRODUCT_NAME=$productName, PRODUCT_IMAGE_URL=$productImageUrl")
+        Log.d(
+            "DetailProductActivity",
+            "Intent received: PRODUCT_ID=$productId, PRODUCT_NAME=$productName, PRODUCT_IMAGE_URL=$productImageUrl"
+        )
 
         if (productId.isNullOrEmpty()) {
             Log.e("DetailProductActivity", "ERROR: PRODUCT_ID tidak ditemukan!")
@@ -51,37 +58,48 @@ class DetailProductActivity : AppCompatActivity() {
             .apply(RequestOptions().placeholder(R.drawable.box).error(R.drawable.box))
             .into(productImageView)
 
-        fetchProductDetails(productId, productDescriptionTextView, productUserNameTextView, productUserPhoneTextView)
+        fetchProductDetails(
+            productId,
+            productDescriptionTextView,
+            productUserNameTextView,
+            productUserPhoneTextView
+        ) { ownerId ->
+            if (ownerId == currentUserId) {
+                // Produk milik pengguna saat ini
+                goToBarterButton.text = "Ke halaman edit"
+                goToBarterButton.setOnClickListener {
+                    val intent = Intent(this, EditProductActivity::class.java).apply {
+                        putExtra("PRODUCT_ID", productId)
+                        putExtra("PRODUCT_NAME", productName)
+                        putExtra("PRODUCT_IMAGE_URL", productImageUrl)
+                    }
+                    Log.d("DetailProductActivity", "Navigating to EditProductActivity with product ID: $productId")
+                    startActivity(intent)
+                }
+            } else {
+                // Produk bukan milik pengguna saat ini
+                goToBarterButton.text = "Barter"
+                goToBarterButton.setOnClickListener {
+                    val intent = Intent(this, PilihBarangActivity::class.java).apply {
+                        putExtra("BARTER_PRODUCT_ID", productId)
+                        putExtra("BARTER_PRODUCT_NAME", productName)
+                        putExtra("BARTER_PRODUCT_IMAGE", productImageUrl)
+                    }
+                    Log.d("DetailProductActivity", "Navigating to ChooseItemActivity with product ID: $productId")
+                    startActivity(intent)
+                }
+            }
+        }
 
         backButton.setOnClickListener { onBackPressed() }
-
-        // Navigasi ke ChatActivity
-        goToChatButton.setOnClickListener {
-            Log.d("DetailProductActivity", "Navigating to ChatActivity with product ID: $productId")
-            val intent = Intent(this, ChatActivity::class.java).apply {
-                putExtra("PRODUCT_ID", productId)
-                putExtra("PRODUCT_NAME", productName)
-            }
-            startActivity(intent)
-        }
-
-        // Tambahkan data barter product saat navigasi ke PilihBarangActivity
-        goToBarterButton.setOnClickListener {
-            val intent = Intent(this, PilihBarangActivity::class.java).apply {
-                putExtra("BARTER_PRODUCT_ID", productId) // ID produk yang ingin dibarter
-                putExtra("BARTER_PRODUCT_NAME", productName) // Nama produk yang ingin dibarter
-                putExtra("BARTER_PRODUCT_IMAGE", productImageUrl) // Gambar produk yang ingin dibarter
-            }
-            Log.d("DetailProductActivity", "Navigating to ChooseItemActivity with product ID: $productId")
-            startActivity(intent)
-        }
     }
 
     private fun fetchProductDetails(
         productId: String,
         descriptionTextView: TextView,
         userNameTextView: TextView,
-        userPhoneTextView: TextView
+        userPhoneTextView: TextView,
+        onOwnerIdFetched: (String?) -> Unit
     ) {
         Log.d("DetailProductActivity", "Fetching product details for ID: $productId")
 
@@ -94,6 +112,7 @@ class DetailProductActivity : AppCompatActivity() {
 
                     Log.d("DetailProductActivity", "Product details loaded. Description=$description, UserID=$userId")
                     descriptionTextView.text = description
+                    onOwnerIdFetched(userId)
 
                     if (userId.isNotEmpty()) {
                         fetchUserDetails(userId, userNameTextView, userPhoneTextView)
@@ -106,16 +125,22 @@ class DetailProductActivity : AppCompatActivity() {
                     Log.e("DetailProductActivity", "Product not found in Firestore for ID: $productId")
                     Toast.makeText(this, "Produk tidak ditemukan di database", Toast.LENGTH_SHORT).show()
                     descriptionTextView.text = "Deskripsi tidak ditemukan"
+                    onOwnerIdFetched(null)
                 }
             }
             .addOnFailureListener { exception ->
                 Log.e("DetailProductActivity", "Error fetching product details: ${exception.message}")
                 Toast.makeText(this, "Gagal memuat data produk: ${exception.message}", Toast.LENGTH_SHORT).show()
                 descriptionTextView.text = "Gagal memuat deskripsi produk"
+                onOwnerIdFetched(null)
             }
     }
 
-    private fun fetchUserDetails(userId: String?, userNameTextView: TextView, userPhoneTextView: TextView) {
+    private fun fetchUserDetails(
+        userId: String?,
+        userNameTextView: TextView,
+        userPhoneTextView: TextView
+    ) {
         if (userId.isNullOrEmpty()) {
             Log.e("DetailProductActivity", "User ID is null or empty")
             userNameTextView.text = "Nama pengguna tidak tersedia"
