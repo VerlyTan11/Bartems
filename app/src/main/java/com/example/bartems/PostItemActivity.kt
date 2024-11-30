@@ -45,6 +45,8 @@ class PostItemActivity : AppCompatActivity() {
         }
     }
 
+    private var savedInputValues: Bundle? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.post_item)
@@ -54,11 +56,10 @@ class PostItemActivity : AppCompatActivity() {
         storage = FirebaseStorage.getInstance()
 
         val selectedAddress = intent.getStringExtra("selectedAddress")
-        val inputAddress = intent.getStringExtra("inputAddress") // Ambil alamat input
+        val inputAddress = intent.getStringExtra("inputAddress")
 
         val alamatEditText = findViewById<TextInputLayout>(R.id.alamat)
 
-        // Gabungkan alamat input dan alamat lengkap
         val combinedAddress = StringBuilder()
         if (!inputAddress.isNullOrEmpty()) {
             combinedAddress.append(inputAddress)
@@ -68,7 +69,6 @@ class PostItemActivity : AppCompatActivity() {
             combinedAddress.append(selectedAddress)
         }
 
-        // Tampilkan alamat gabungan di TextInputLayout
         alamatEditText.editText?.setText(combinedAddress.toString())
 
         findViewById<ImageView>(R.id.back_post_item).setOnClickListener {
@@ -82,8 +82,24 @@ class PostItemActivity : AppCompatActivity() {
         }
 
         findViewById<TextView>(R.id.gotomap).setOnClickListener {
-            startActivityForResult(Intent(this, MapActivity::class.java), MAP_REQUEST_CODE)
+            val intent = Intent(this, MapActivity::class.java)
+
+            // Mengirimkan data inputan ke MapActivity
+            intent.putExtra("nama_produk", findViewById<TextInputLayout>(R.id.nama_produk).editText?.text.toString())
+            intent.putExtra("catatan", findViewById<TextInputLayout>(R.id.catatan).editText?.text.toString())
+            intent.putExtra("jumlah", findViewById<TextInputLayout>(R.id.jumlah).editText?.text.toString())
+            intent.putExtra("berat", findViewById<TextInputLayout>(R.id.berat).editText?.text.toString())
+            intent.putExtra("alamat", findViewById<TextInputLayout>(R.id.alamat).editText?.text.toString())
+            intent.putExtra("no_rumah", findViewById<TextInputLayout>(R.id.no_rumah).editText?.text.toString())
+            intent.putExtra("kode_pos", findViewById<TextInputLayout>(R.id.kode_pos).editText?.text.toString())
+
+            // Kirimkan alamat yang sudah dipilih sebelumnya (jika ada)
+            val selectedAddress = findViewById<TextInputLayout>(R.id.alamat).editText?.text.toString()
+            intent.putExtra("selectedAddress", selectedAddress)
+
+            startActivityForResult(intent, MAP_REQUEST_CODE)
         }
+
 
         findViewById<ImageView>(R.id.gambar_product).setOnClickListener {
             showImageSourceOptions()
@@ -97,6 +113,32 @@ class PostItemActivity : AppCompatActivity() {
             }
         }
     }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+
+        outState.putString("nama_produk", findViewById<TextInputLayout>(R.id.nama_produk).editText?.text.toString())
+        outState.putString("catatan", findViewById<TextInputLayout>(R.id.catatan).editText?.text.toString())
+        outState.putString("jumlah", findViewById<TextInputLayout>(R.id.jumlah).editText?.text.toString())
+        outState.putString("berat", findViewById<TextInputLayout>(R.id.berat).editText?.text.toString())
+        outState.putString("alamat", findViewById<TextInputLayout>(R.id.alamat).editText?.text.toString())
+        outState.putString("no_rumah", findViewById<TextInputLayout>(R.id.no_rumah).editText?.text.toString())
+        outState.putString("kode_pos", findViewById<TextInputLayout>(R.id.kode_pos).editText?.text.toString())
+    }
+
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+
+        findViewById<TextInputLayout>(R.id.nama_produk).editText?.setText(savedInstanceState.getString("nama_produk"))
+        findViewById<TextInputLayout>(R.id.catatan).editText?.setText(savedInstanceState.getString("catatan"))
+        findViewById<TextInputLayout>(R.id.jumlah).editText?.setText(savedInstanceState.getString("jumlah"))
+        findViewById<TextInputLayout>(R.id.berat).editText?.setText(savedInstanceState.getString("berat"))
+        findViewById<TextInputLayout>(R.id.alamat).editText?.setText(savedInstanceState.getString("alamat"))
+        findViewById<TextInputLayout>(R.id.no_rumah).editText?.setText(savedInstanceState.getString("no_rumah"))
+        findViewById<TextInputLayout>(R.id.kode_pos).editText?.setText(savedInstanceState.getString("kode_pos"))
+    }
+
 
     private fun showImageSourceOptions() {
         val options = arrayOf("Ambil Foto", "Pilih dari Galeri")
@@ -188,6 +230,7 @@ class PostItemActivity : AppCompatActivity() {
             }
     }
 
+    // Memproses hasil yang dikirimkan kembali dari MapActivity
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         val imageView = findViewById<ImageView>(R.id.gambar_product)
@@ -200,6 +243,33 @@ class PostItemActivity : AppCompatActivity() {
             val latitude = data?.getDoubleExtra("latitude", 0.0)
             val longitude = data?.getDoubleExtra("longitude", 0.0)
             Toast.makeText(this, "Selected location: $latitude, $longitude", Toast.LENGTH_SHORT).show()
+        }
+
+        if (requestCode == MAP_REQUEST_CODE && resultCode == RESULT_OK && data != null) {
+            // Ambil data dari MapActivity
+            val selectedAddress = data.getStringExtra("selectedAddress")
+            val inputAddress = data.getStringExtra("inputAddress")
+
+            // Ambil data lainnya
+            val namaProduk = data.getStringExtra("nama_produk")
+            val catatan = data.getStringExtra("catatan")
+            val jumlah = data.getStringExtra("jumlah")
+            val berat = data.getStringExtra("berat")
+            val alamat = data.getStringExtra("alamat")
+            val noRumah = data.getStringExtra("no_rumah")
+            val kodePos = data.getStringExtra("kode_pos")
+
+            // Set kembali nilai inputan ke dalam field
+            findViewById<TextInputLayout>(R.id.nama_produk).editText?.setText(namaProduk)
+            findViewById<TextInputLayout>(R.id.catatan).editText?.setText(catatan)
+            findViewById<TextInputLayout>(R.id.jumlah).editText?.setText(jumlah)
+            findViewById<TextInputLayout>(R.id.berat).editText?.setText(berat)
+            findViewById<TextInputLayout>(R.id.alamat).editText?.setText(alamat)
+            findViewById<TextInputLayout>(R.id.no_rumah).editText?.setText(noRumah)
+            findViewById<TextInputLayout>(R.id.kode_pos).editText?.setText(kodePos)
+
+            // Update alamat dengan alamat yang dipilih atau diinputkan
+            findViewById<TextInputLayout>(R.id.alamat).editText?.setText(selectedAddress ?: inputAddress)
         }
     }
 

@@ -67,20 +67,37 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
         // Confirm button action if needed
         // Dalam onCreate() MapActivity
+        // Ketika button diklik di MapActivity
         confirmButton.setOnClickListener {
-            val selectedAddress = fullAddressText.text.toString() // Ambil alamat lengkap yang ditampilkan
-            val inputAddress = alamatInput.text.toString() // Ambil alamat yang diinput
+            val selectedAddress = fullAddressText.text.toString() // Alamat lengkap yang dipilih
+            val inputAddress = alamatInput.text.toString() // Alamat yang diinputkan
 
+            // Pastikan alamat lengkap atau alamat input tidak kosong
             if (selectedAddress.isNotEmpty() || inputAddress.isNotEmpty()) {
-                val intent = Intent(this@MapActivity, PostItemActivity::class.java)
-                intent.putExtra("selectedAddress", selectedAddress) // Kirimkan alamat lengkap ke PostItemActivity
-                intent.putExtra("inputAddress", inputAddress) // Kirimkan alamat input ke PostItemActivity
-                startActivity(intent)
+                // Membuat intent untuk kembali ke PostItemActivity
+                val resultIntent = Intent()
+
+                // Mengirimkan data yang sudah diinputkan dari MapActivity
+                resultIntent.putExtra("selectedAddress", selectedAddress) // Alamat yang dipilih
+                resultIntent.putExtra("inputAddress", inputAddress) // Alamat input yang ditambahkan oleh pengguna
+
+                // Mengirimkan data lain yang diambil sebelumnya dari PostItemActivity
+                resultIntent.putExtra("nama_produk", intent.getStringExtra("nama_produk"))
+                resultIntent.putExtra("catatan", intent.getStringExtra("catatan"))
+                resultIntent.putExtra("jumlah", intent.getStringExtra("jumlah"))
+                resultIntent.putExtra("berat", intent.getStringExtra("berat"))
+                resultIntent.putExtra("alamat", intent.getStringExtra("alamat"))
+                resultIntent.putExtra("no_rumah", intent.getStringExtra("no_rumah"))
+                resultIntent.putExtra("kode_pos", intent.getStringExtra("kode_pos"))
+
+                // Mengembalikan data ke PostItemActivity dengan RESULT_OK
+                setResult(RESULT_OK, resultIntent)
+                finish() // Menutup MapActivity dan kembali ke PostItemActivity
             } else {
+                // Jika alamat tidak dipilih atau diinputkan, tampilkan pesan
                 Toast.makeText(this, "Silakan pilih lokasi terlebih dahulu", Toast.LENGTH_SHORT).show()
             }
         }
-
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
