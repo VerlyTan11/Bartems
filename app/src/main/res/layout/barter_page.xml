@@ -184,6 +184,28 @@
         app:layout_constraintVertical_bias="0.421" />
 
     <TextView
+        android:id="@+id/textView_own_quantity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/inter"
+        android:text="Jumlah Anda: "
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.07"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textView23" />
+
+    <TextView
+        android:id="@+id/textView_other_quantity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/inter"
+        android:text="Jumlah Diterima: "
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.75"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textView27" />
+
+    <TextView
         android:id="@+id/textView28"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -261,9 +283,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintBottom_toTopOf="@id/btn_confirm_barter"
-        app:layout_constraintTop_toBottomOf="@id/textView11"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/textView11" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

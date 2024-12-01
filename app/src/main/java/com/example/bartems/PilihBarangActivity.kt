@@ -12,13 +12,18 @@ import com.example.bartems.model.Product
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
-class PilihBarangActivity : AppCompatActivity() {
+class PilihBarangActivity : AppCompatActivity(), JumlahBarangFragment.OnQuantityInputListener {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var backButton: ImageView
     private lateinit var firestore: FirebaseFirestore
     private lateinit var auth: FirebaseAuth
     private lateinit var adapter: PilihBarangAdapter
+
+    private var selectedProduct: Product? = null
+    private var barterProductId: String? = null
+    private var barterProductName: String? = null
+    private var barterProductImage: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,6 +32,11 @@ class PilihBarangActivity : AppCompatActivity() {
         // Inisialisasi Firestore dan FirebaseAuth
         firestore = FirebaseFirestore.getInstance()
         auth = FirebaseAuth.getInstance()
+
+        // Ambil data barter dari Intent
+        barterProductId = intent.getStringExtra("BARTER_PRODUCT_ID")
+        barterProductName = intent.getStringExtra("BARTER_PRODUCT_NAME")
+        barterProductImage = intent.getStringExtra("BARTER_PRODUCT_IMAGE")
 
         // Inisialisasi UI
         recyclerView = findViewById(R.id.recycler_view_products)
@@ -68,21 +78,37 @@ class PilihBarangActivity : AppCompatActivity() {
     }
 
     private fun onProductSelected(product: Product) {
-        val barterProductId = intent.getStringExtra("BARTER_PRODUCT_ID") ?: ""
-        val barterProductName = intent.getStringExtra("BARTER_PRODUCT_NAME") ?: ""
-
-        if (barterProductId.isEmpty() || barterProductName.isEmpty()) {
+        selectedProduct = product
+        if (barterProductId.isNullOrEmpty() || barterProductName.isNullOrEmpty() || barterProductImage.isNullOrEmpty()) {
             Toast.makeText(this, "Data produk barter tidak lengkap", Toast.LENGTH_SHORT).show()
             return
         }
 
-        val intent = Intent(this, JumlahBarangActivity::class.java).apply {
+        // Navigasi ke fragment jumlah barang
+        supportFragmentManager.beginTransaction().apply {
+            replace(
+                R.id.fragment_container, // FrameLayout di layout PilihBarang
+                JumlahBarangFragment.newInstance(product.nama_produk)
+            )
+            addToBackStack(null)
+            commit() // Gunakan commit() dengan FragmentTransaction
+        }
+    }
+
+    override fun onQuantityInput(quantityOwn: Int, quantityOther: Int) {
+        val selectedProduct = selectedProduct ?: return
+
+        // Kirim data ke BarterActivity
+        val intent = Intent(this, BarterActivity::class.java).apply {
             putExtra("BARTER_PRODUCT_ID", barterProductId)
             putExtra("BARTER_PRODUCT_NAME", barterProductName)
-            putExtra("SELECTED_PRODUCT_ID", product.id)
-            putExtra("SELECTED_PRODUCT_NAME", product.nama_produk)
+            putExtra("BARTER_PRODUCT_IMAGE", barterProductImage)
+            putExtra("SELECTED_PRODUCT_ID", selectedProduct.id)
+            putExtra("SELECTED_PRODUCT_NAME", selectedProduct.nama_produk)
+            putExtra("SELECTED_PRODUCT_IMAGE_URL", selectedProduct.imageUrl)
+            putExtra("QUANTITY_OWN", quantityOwn)  // Kirim quantityOwn
+            putExtra("QUANTITY_OTHER", quantityOther)  // Kirim quantityOther
         }
         startActivity(intent)
     }
-
 }

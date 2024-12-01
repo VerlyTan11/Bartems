@@ -41,5 +41,17 @@
         app:layout_constraintTop_toBottomOf="@id/title_text"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/fragment_container" />
+
+    <!-- FrameLayout untuk fragmen -->
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@android:color/white"
+        app:layout_constraintTop_toBottomOf="@id/recycler_view_products"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

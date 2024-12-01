@@ -43,7 +43,9 @@ class BarterActivity : AppCompatActivity() {
         val barterProductImage = intent.getStringExtra("BARTER_PRODUCT_IMAGE") ?: ""
         val selectedProductId = intent.getStringExtra("SELECTED_PRODUCT_ID") ?: ""
         val selectedProductName = intent.getStringExtra("SELECTED_PRODUCT_NAME") ?: ""
-        val selectedProductImage = intent.getStringExtra("SELECTED_PRODUCT_IMAGE") ?: ""
+        val selectedProductImage = intent.getStringExtra("SELECTED_PRODUCT_IMAGE_URL") ?: ""
+        val ownQuantity = intent.getIntExtra("QUANTITY_OWN", 0)
+        val otherQuantity = intent.getIntExtra("QUANTITY_OTHER", 0)
 
         // Debugging data intent
         Log.d("BarterActivity", "Intent Data:")
@@ -53,6 +55,7 @@ class BarterActivity : AppCompatActivity() {
         Log.d("BarterActivity", "SELECTED_PRODUCT_ID: $selectedProductId")
         Log.d("BarterActivity", "SELECTED_PRODUCT_NAME: $selectedProductName")
         Log.d("BarterActivity", "SELECTED_PRODUCT_IMAGE: $selectedProductImage")
+        Log.d("BarterActivity", "Own Quantity: $ownQuantity, Other Quantity: $otherQuantity")
 
         if (barterProductId.isEmpty() || selectedProductId.isEmpty()) {
             Log.e("BarterActivity", "Data produk tidak lengkap")
@@ -71,6 +74,12 @@ class BarterActivity : AppCompatActivity() {
         val selectedProductSellerTextView = findViewById<TextView>(R.id.textView23)
         val barterProductSellerTextView = findViewById<TextView>(R.id.textView27)
         val addressTextView = findViewById<TextView>(R.id.textView32)
+        val ownQuantityTextView = findViewById<TextView>(R.id.textView_own_quantity)
+        val otherQuantityTextView = findViewById<TextView>(R.id.textView_other_quantity)
+
+        // Set jumlah produk
+        ownQuantityTextView.text = "Jumlah Anda: $ownQuantity"
+        otherQuantityTextView.text = "Jumlah Produk Lain: $otherQuantity"
 
         // Set produk Anda
         selectedProductNameTextView.text = selectedProductName
@@ -88,7 +97,7 @@ class BarterActivity : AppCompatActivity() {
                     val userId = document.getString("userId") ?: ""
                     val barterProductAddress = document.getString("alamat") ?: "Alamat tidak tersedia"
 
-                    // Set nama produk
+                    // Set nama produk barter dan alamat
                     barterProductNameTextView.text = barterProductName
                     addressTextView.text = barterProductAddress
                     Glide.with(this).load(barterProductImage).into(barterProductImageView)
@@ -104,29 +113,18 @@ class BarterActivity : AppCompatActivity() {
                                     Log.d("BarterActivity", "Produk barter berhasil dimuat: $barterProductName, Penjual=$barterProductSeller")
                                 } else {
                                     barterProductSellerTextView.text = "Penjual tidak diketahui"
-                                    Log.e("BarterActivity", "User ID tidak ditemukan di database")
+                                    Log.e("BarterActivity", "User ID tidak ditemukan")
                                 }
                             }
-                            .addOnFailureListener { exception ->
-                                barterProductSellerTextView.text = "Penjual tidak diketahui"
-                                Log.e("BarterActivity", "Gagal memuat data pengguna: ${exception.message}")
+                            .addOnFailureListener { e ->
+                                Log.e("BarterActivity", "Gagal memuat data user: ${e.message}")
                             }
-                    } else {
-                        barterProductSellerTextView.text = "Penjual tidak diketahui"
-                        Log.e("BarterActivity", "User ID tidak tersedia di dokumen produk")
                     }
-                } else {
-                    Log.e("BarterActivity", "Produk barter tidak ditemukan di database")
-                    Toast.makeText(this, "Produk barter tidak ditemukan di database", Toast.LENGTH_SHORT).show()
-                    finish()
                 }
             }
-            .addOnFailureListener { exception ->
-                Log.e("BarterActivity", "Gagal memuat data produk barter: ${exception.message}")
-                Toast.makeText(this, "Gagal memuat data produk barter: ${exception.message}", Toast.LENGTH_SHORT).show()
-                finish()
+            .addOnFailureListener { e ->
+                Log.e("BarterActivity", "Gagal memuat produk barter: ${e.message}")
             }
-
         // Tombol kembali
         backButton.setOnClickListener {
             Log.d("BarterActivity", "Tombol kembali ditekan")
@@ -207,24 +205,16 @@ class BarterActivity : AppCompatActivity() {
     }
 
     private fun checkNotificationPermission(): Boolean {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.POST_NOTIFICATIONS
-            ) == PackageManager.PERMISSION_GRANTED
-        } else {
-            true
-        }
+        return ActivityCompat.checkSelfPermission(
+            this, Manifest.permission.POST_NOTIFICATIONS
+        ) == PackageManager.PERMISSION_GRANTED
     }
 
     private fun requestNotificationPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.POST_NOTIFICATIONS),
-                NOTIFICATION_PERMISSION_REQUEST_CODE
-            )
-        }
+        ActivityCompat.requestPermissions(
+            this, arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+            NOTIFICATION_PERMISSION_REQUEST_CODE
+        )
     }
 
     private fun showNotification(title: String, message: String) {
@@ -265,8 +255,8 @@ class BarterActivity : AppCompatActivity() {
     }
 
     private fun navigateToHomeActivity() {
-        val intent = Intent(this, HomeActivity::class.java) // Change to HomeActivity
+        val intent = Intent(this, HomeActivity::class.java)
         startActivity(intent)
-        finish()  // To finish the current activity
+        finish() // Close the current activity
     }
 }

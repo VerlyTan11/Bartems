@@ -76,7 +76,6 @@
         <activity android:name=".RegisterActivity" android:exported="true" />
         <activity android:name=".StartChatActivity" android:exported="true" />
         <activity android:name=".HistoryActivity" android:exported="true" />
-        <activity android:name=".JumlahBarangActivity" android:exported="true" />
 
     </application>
 
