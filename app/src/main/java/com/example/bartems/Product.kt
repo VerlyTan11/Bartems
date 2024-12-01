@@ -7,7 +7,7 @@ data class Product(
     val nama_produk: String = "",
     val catatan: String = "",
     val berat: String = "",
-    val jumlah: String = "",
+    val jumlah: Int = 0,
     val alamat: String = "",
     val kode_pos: String = "",
     val no_rumah: String? = null,

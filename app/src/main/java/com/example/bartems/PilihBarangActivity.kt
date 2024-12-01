@@ -70,25 +70,19 @@ class PilihBarangActivity : AppCompatActivity() {
     private fun onProductSelected(product: Product) {
         val barterProductId = intent.getStringExtra("BARTER_PRODUCT_ID") ?: ""
         val barterProductName = intent.getStringExtra("BARTER_PRODUCT_NAME") ?: ""
-        val barterProductImage = intent.getStringExtra("BARTER_PRODUCT_IMAGE") ?: ""
 
-        if (barterProductId.isEmpty() || barterProductName.isEmpty() || barterProductImage.isEmpty()) {
-            Log.e("PilihBarangActivity", "Data produk barter tidak lengkap")
+        if (barterProductId.isEmpty() || barterProductName.isEmpty()) {
             Toast.makeText(this, "Data produk barter tidak lengkap", Toast.LENGTH_SHORT).show()
             return
         }
 
-        val intent = Intent(this, BarterActivity::class.java).apply {
+        val intent = Intent(this, JumlahBarangActivity::class.java).apply {
             putExtra("BARTER_PRODUCT_ID", barterProductId)
             putExtra("BARTER_PRODUCT_NAME", barterProductName)
-            putExtra("BARTER_PRODUCT_IMAGE", barterProductImage)
             putExtra("SELECTED_PRODUCT_ID", product.id)
             putExtra("SELECTED_PRODUCT_NAME", product.nama_produk)
-            putExtra("SELECTED_PRODUCT_IMAGE", product.imageUrl)
         }
-
-        Log.d("PilihBarangActivity", "Selected Product: ${product.nama_produk} (ID: ${product.id})")
-        Log.d("PilihBarangActivity", "Barter Product ID: $barterProductId")
         startActivity(intent)
     }
+
 }
