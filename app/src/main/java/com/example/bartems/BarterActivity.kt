@@ -1,13 +1,9 @@
 package com.example.bartems
 
-import android.Manifest
-import android.app.NotificationChannel
-import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
@@ -19,7 +15,16 @@ import androidx.core.app.NotificationManagerCompat
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import android.util.Log
+import com.google.firebase.firestore.FirebaseFirestoreException
+import com.google.firebase.firestore.Transaction
+import com.google.firebase.firestore.QuerySnapshot
+import com.google.firebase.firestore.DocumentSnapshot
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
+import android.app.NotificationManager
+import android.app.NotificationChannel
+
 
 class BarterActivity : AppCompatActivity() {
 
@@ -142,54 +147,119 @@ class BarterActivity : AppCompatActivity() {
             // Ambil nama pengguna saat ini
             val currentUserName = auth.currentUser?.displayName ?: "Pengguna Tidak Diketahui"
 
-            // Siapkan data untuk disimpan
-            val barterHistoryData = mapOf(
-                "barterProductId" to barterProductId,
-                "barterProductName" to barterProductName,
-                "barterProductImage" to barterProductImage,
-                "barterProductOwner" to barterProductSellerTextView.text.toString(),
-                "selectedProductId" to selectedProductId,
-                "selectedProductName" to selectedProductName,
-                "selectedProductImage" to selectedProductImage,
-                "selectedProductOwner" to currentUserName, // Nama pengguna yang login
-                "userId" to currentUserId, // User ID pengguna yang login
-                "address" to addressTextView.text.toString(),
-                "timestamp" to System.currentTimeMillis()
-            )
+            // Retrieve quantities from Firestore for both products
+            firestore.collection("items").document(barterProductId)
+                .get()
+                .addOnSuccessListener { barterProductDocument ->
+                    if (barterProductDocument.exists()) {
+                        // Mengambil jumlah produk barter dari field 'jumlah' dan konversi ke Int
+                        val barterProductAvailableQuantity = (barterProductDocument.get("jumlah") as? Long)?.toInt() ?: 0
 
-            // Simpan data ke Firestore
-            firestore.collection("barter_history")
-                .add(barterHistoryData)
-                .addOnSuccessListener { documentReference ->
-                    Log.d("BarterActivity", "Barter history berhasil disimpan dengan ID: ${documentReference.id}")
+                        firestore.collection("items").document(selectedProductId)
+                            .get()
+                            .addOnSuccessListener { selectedProductDocument ->
+                                if (selectedProductDocument.exists()) {
+                                    // Mengambil jumlah produk yang dipilih dari field 'jumlah' dan konversi ke Int
+                                    val selectedProductAvailableQuantity = (selectedProductDocument.get("jumlah") as? Long)?.toInt() ?: 0
 
-                    // Kirim data ke DoneFragment
-                    val fragment = DoneFragment()
-                    val bundle = Bundle().apply {
-                        putString("barterProductName", barterProductName)
-                        putString("selectedProductName", selectedProductName)
-                        putString("barterProductImage", barterProductImage)
-                        putString("selectedProductImage", selectedProductImage)
-                    }
-                    fragment.arguments = bundle
+                                    // Log untuk memeriksa nilai jumlah yang tersedia
+                                    Log.d("BarterActivity", "Jumlah yang diminta: $ownQuantity, Jumlah yang tersedia: $selectedProductAvailableQuantity")
 
-                    // Tampilkan DoneFragment
-                    supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragment_container, fragment)
-                        .addToBackStack(null)
-                        .commit()
+                                    // Pastikan tipe data untuk perbandingan benar
+                                    if (ownQuantity <= selectedProductAvailableQuantity && otherQuantity <= barterProductAvailableQuantity) {
+                                        // Kurangi jumlah produk yang dipilih dan produk barter
+                                        val updatedSelectedProductQuantity = selectedProductAvailableQuantity - ownQuantity
+                                        val updatedBarterProductQuantity = barterProductAvailableQuantity - otherQuantity
 
-                    // Tampilkan notifikasi dan lanjut ke HomeActivity
-                    if (checkNotificationPermission()) {
-                        showNotification("Produk Barter", "Produk Anda berhasil ditukar!")
-                        navigateToHomeActivity() // Change this to navigate to HomeActivity
+                                        // Perbarui jumlah produk di Firestore
+                                        firestore.collection("items").document(selectedProductId)
+                                            .update("jumlah", updatedSelectedProductQuantity)
+                                            .addOnSuccessListener {
+                                                Log.d("BarterActivity", "Jumlah produk yang dipilih berhasil diperbarui di Firestore")
+
+                                                firestore.collection("items").document(barterProductId)
+                                                    .update("jumlah", updatedBarterProductQuantity)
+                                                    .addOnSuccessListener {
+                                                        Log.d("BarterActivity", "Jumlah produk barter berhasil diperbarui di Firestore")
+
+                                                        // Siapkan data untuk disimpan ke sejarah barter
+                                                        val barterHistoryData = mapOf(
+                                                            "barterProductId" to barterProductId,
+                                                            "barterProductName" to barterProductName,
+                                                            "barterProductImage" to barterProductImage,
+                                                            "barterProductOwner" to barterProductSellerTextView.text.toString(),
+                                                            "selectedProductId" to selectedProductId,
+                                                            "selectedProductName" to selectedProductName,
+                                                            "selectedProductImage" to selectedProductImage,
+                                                            "selectedProductOwner" to currentUserName, // Nama pengguna yang login
+                                                            "userId" to currentUserId, // User ID pengguna yang login
+                                                            "address" to addressTextView.text.toString(),
+                                                            "timestamp" to System.currentTimeMillis()
+                                                        )
+
+                                                        // Simpan data ke Firestore
+                                                        firestore.collection("barter_history")
+                                                            .add(barterHistoryData)
+                                                            .addOnSuccessListener { documentReference ->
+                                                                Log.d("BarterActivity", "Barter history berhasil disimpan dengan ID: ${documentReference.id}")
+
+                                                                // Kirim data ke DoneFragment
+                                                                val fragment = DoneFragment()
+                                                                val bundle = Bundle().apply {
+                                                                    putString("barterProductName", barterProductName)
+                                                                    putString("selectedProductName", selectedProductName)
+                                                                    putString("barterProductImage", barterProductImage)
+                                                                    putString("selectedProductImage", selectedProductImage)
+                                                                }
+                                                                fragment.arguments = bundle
+
+                                                                // Tampilkan DoneFragment
+                                                                supportFragmentManager.beginTransaction()
+                                                                    .replace(R.id.fragment_container, fragment)
+                                                                    .addToBackStack(null)
+                                                                    .commit()
+
+                                                                // Tampilkan notifikasi dan lanjut ke HomeActivity
+                                                                if (checkNotificationPermission()) {
+                                                                    showNotification("Produk Barter", "Produk Anda berhasil ditukar!")
+                                                                    navigateToHomeActivity() // Change this to navigate to HomeActivity
+                                                                } else {
+                                                                    requestNotificationPermission()
+                                                                }
+                                                            }
+                                                            .addOnFailureListener { exception ->
+                                                                Log.e("BarterActivity", "Gagal menyimpan barter history: ${exception.message}")
+                                                                Toast.makeText(this, "Gagal menyimpan transaksi barter. Coba lagi.", Toast.LENGTH_SHORT).show()
+                                                            }
+                                                    }
+                                                    .addOnFailureListener { exception ->
+                                                        Log.e("BarterActivity", "Gagal memperbarui jumlah produk barter: ${exception.message}")
+                                                        Toast.makeText(this, "Gagal memperbarui jumlah produk barter", Toast.LENGTH_SHORT).show()
+                                                    }
+                                            }
+                                            .addOnFailureListener { exception ->
+                                                Log.e("BarterActivity", "Gagal memperbarui jumlah produk yang dipilih: ${exception.message}")
+                                                Toast.makeText(this, "Gagal memperbarui jumlah produk yang dipilih", Toast.LENGTH_SHORT).show()
+                                            }
+                                    } else {
+                                        // If quantities are not sufficient, show an error message
+                                        Toast.makeText(this, "Jumlah produk tidak mencukupi untuk barter", Toast.LENGTH_SHORT).show()
+                                    }
+                                } else {
+                                    Log.e("BarterActivity", "Produk yang dipilih tidak ditemukan di Firestore")
+                                    Toast.makeText(this, "Produk yang dipilih tidak ditemukan", Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                            .addOnFailureListener { exception ->
+                                Log.e("BarterActivity", "Gagal memuat data produk yang dipilih: ${exception.message}")
+                            }
                     } else {
-                        requestNotificationPermission()
+                        Log.e("BarterActivity", "Produk barter tidak ditemukan di Firestore")
+                        Toast.makeText(this, "Produk barter tidak ditemukan", Toast.LENGTH_SHORT).show()
                     }
                 }
                 .addOnFailureListener { exception ->
-                    Log.e("BarterActivity", "Gagal menyimpan barter history: ${exception.message}")
-                    Toast.makeText(this, "Gagal menyimpan transaksi barter. Coba lagi.", Toast.LENGTH_SHORT).show()
+                    Log.e("BarterActivity", "Gagal memuat data produk barter: ${exception.message}")
                 }
         }
 
