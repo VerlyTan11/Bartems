@@ -54,8 +54,8 @@
 
     <ImageView
         android:id="@+id/imageView17"
-        android:layout_width="52dp"
-        android:layout_height="46dp"
+        android:layout_width="71dp"
+        android:layout_height="61dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.055"
@@ -80,16 +80,16 @@
 
     <ImageButton
         android:id="@+id/gotochat_detail"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="60dp"
+        android:layout_height="45dp"
         android:backgroundTint="#102533"
         app:circularflow_radiusInDP="12dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.956"
+        app:layout_constraintHorizontal_bias="0.954"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView18"
-        app:layout_constraintVertical_bias="0.069"
+        app:layout_constraintVertical_bias="0.058"
         app:srcCompat="@drawable/chat"
         tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
 
@@ -207,6 +207,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Nama User"
+        android:textAlignment="textStart"
         app:layout_constraintBottom_toTopOf="@+id/button6"
         app:layout_constraintEnd_toStartOf="@+id/gotochat_detail"
         app:layout_constraintHorizontal_bias="0.079"
@@ -219,11 +220,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="No. Hp"
+        android:textAlignment="textStart"
         app:layout_constraintBottom_toTopOf="@+id/button6"
         app:layout_constraintEnd_toStartOf="@+id/gotochat_detail"
-        app:layout_constraintHorizontal_bias="0.079"
+        app:layout_constraintHorizontal_bias="0.064"
         app:layout_constraintStart_toEndOf="@+id/imageView17"
         app:layout_constraintTop_toBottomOf="@+id/imageView18"
-        app:layout_constraintVertical_bias="0.412" />
+        app:layout_constraintVertical_bias="0.409" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

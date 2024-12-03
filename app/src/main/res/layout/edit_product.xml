@@ -81,45 +81,49 @@
         <!-- Informasi User -->
         <LinearLayout
             android:id="@+id/user_info_container"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_width="381dp"
+            android:layout_height="48dp"
             android:orientation="horizontal"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+            app:layout_constraintTop_toTopOf="parent">
 
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/user_avatar"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="48dp"
+                android:layout_height="match_parent"
                 android:scaleType="centerCrop"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:translationX="5dp"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
                 app:shapeAppearanceOverlay="@style/CircularImage"
                 tools:srcCompat="@drawable/default_profile_image" />
 
             <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="80dp"
+                android:layout_height="match_parent"
                 android:layout_marginStart="8dp"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:translationX="5dp">
 
                 <TextView
                     android:id="@+id/user_name"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Nama User"
-                    android:textSize="14sp"
+                    android:textAlignment="textStart"
+                    android:textSize="16sp"
                     android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/user_phone"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="No. HP"
-                    android:textSize="12sp" />
+                    android:textAlignment="textStart"
+                    android:textSize="14sp" />
             </LinearLayout>
         </LinearLayout>
 
