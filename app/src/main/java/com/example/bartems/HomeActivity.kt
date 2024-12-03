@@ -13,6 +13,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.airbnb.lottie.LottieAnimationView
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -24,6 +25,7 @@ class HomeActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: ProductAdapter
     private lateinit var loadingIndicator: View
+    private lateinit var loadingAnimation: LottieAnimationView
     private val productRecyclerList = mutableListOf<ProductRecyclerList>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,6 +38,7 @@ class HomeActivity : AppCompatActivity() {
         val searchTextInput: TextInputEditText = findViewById(R.id.textInputEditText)
         recyclerView = findViewById(R.id.recyclerView)
         loadingIndicator = findViewById(R.id.loading_indicator)
+        loadingAnimation = findViewById(R.id.loadingAnimation)
         recyclerView.layoutManager = GridLayoutManager(this, 2)
 
         // Inisialisasi Adapter
@@ -100,7 +103,6 @@ class HomeActivity : AppCompatActivity() {
         })
     }
 
-
     private fun resetSearch() {
         productRecyclerList.clear()
         adapter.notifyDataSetChanged() // Bersihkan data di RecyclerView
@@ -109,8 +111,28 @@ class HomeActivity : AppCompatActivity() {
     private fun setupProfileNavigation() {
         val goToProfileButton: ImageButton = findViewById(R.id.gotoprofile)
         goToProfileButton.setOnClickListener {
-            startActivity(Intent(this, ProfileActivity::class.java))
+            showLoadingAnimation() // Tampilkan animasi loading
+            goToProfileWithDelay() // Pindah setelah animasi selesai
         }
+    }
+
+    private fun goToProfileWithDelay() {
+        val delayTime: Long = 1500 // Waktu tunda (1,5 detik)
+        recyclerView.postDelayed({
+            // Pastikan animasi berhenti sebelum pindah
+            hideLoadingAnimation()
+            startActivity(Intent(this, ProfileActivity::class.java))
+        }, delayTime)
+    }
+
+    private fun showLoadingAnimation() {
+        loadingAnimation.visibility = View.VISIBLE
+        loadingAnimation.playAnimation()
+    }
+
+    private fun hideLoadingAnimation() {
+        loadingAnimation.cancelAnimation()
+        loadingAnimation.visibility = View.GONE
     }
 
     private fun setupAddItemNavigation() {
@@ -122,12 +144,11 @@ class HomeActivity : AppCompatActivity() {
 
     private fun fetchProducts() {
         Log.d("HomeActivity", "Fetching products from Firestore...")
-        loadingIndicator.visibility = View.VISIBLE
+        showLoadingAnimation() // Tampilkan animasi loading
 
         db.collection("items")
             .get()
             .addOnSuccessListener { documents ->
-                loadingIndicator.visibility = View.GONE
                 productRecyclerList.clear()
 
                 for (document in documents) {
@@ -143,19 +164,20 @@ class HomeActivity : AppCompatActivity() {
                 adapter.notifyDataSetChanged()
             }
             .addOnFailureListener { exception ->
-                loadingIndicator.visibility = View.GONE
                 Toast.makeText(this, "Gagal memuat produk: ${exception.message}", Toast.LENGTH_SHORT).show()
+            }
+            .addOnCompleteListener {
+                hideLoadingAnimation() // Pastikan animasi berhenti setelah proses selesai (sukses atau gagal)
             }
     }
 
     private fun searchProduct(query: String) {
         Log.d("HomeActivity", "Searching for products with query: $query")
-        loadingIndicator.visibility = View.VISIBLE
+        showLoadingAnimation() // Tampilkan animasi loading
 
         db.collection("items")
             .get()
             .addOnSuccessListener { documents ->
-                loadingIndicator.visibility = View.GONE
                 productRecyclerList.clear()
 
                 for (document in documents) {
@@ -176,8 +198,10 @@ class HomeActivity : AppCompatActivity() {
                 adapter.notifyDataSetChanged()
             }
             .addOnFailureListener { exception ->
-                loadingIndicator.visibility = View.GONE
                 Toast.makeText(this, "Gagal mencari produk: ${exception.message}", Toast.LENGTH_SHORT).show()
+            }
+            .addOnCompleteListener {
+                hideLoadingAnimation() // Pastikan animasi berhenti setelah proses selesai (sukses atau gagal)
             }
     }
 }

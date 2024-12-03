@@ -2,17 +2,19 @@ package com.example.bartems
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import android.widget.TextView
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.auth.FirebaseAuth
+import com.airbnb.lottie.LottieAnimationView
 
 class LoginActivity : AppCompatActivity() {
 
-    // Inisialisasi FirebaseAuth
     private lateinit var auth: FirebaseAuth
+    private lateinit var loadingAnimation: LottieAnimationView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,6 +22,9 @@ class LoginActivity : AppCompatActivity() {
 
         // Inisialisasi FirebaseAuth
         auth = FirebaseAuth.getInstance()
+
+        // Inisialisasi LottieAnimationView untuk loading
+        loadingAnimation = findViewById(R.id.loadingAnimation)
 
         // Handle click event untuk TextView goToSignUp
         val goToSignUp = findViewById<TextView>(R.id.gotosignup)
@@ -48,9 +53,15 @@ class LoginActivity : AppCompatActivity() {
             return
         }
 
+        // Tampilkan animasi loading
+        showLoadingAnimation()
+
         // Login dengan Firebase Authentication
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
+                // Sembunyikan animasi loading setelah login selesai
+                hideLoadingAnimation()
+
                 if (task.isSuccessful) {
                     // Login berhasil, arahkan ke HomeActivity
                     val intent = Intent(this@LoginActivity, HomeActivity::class.java)
@@ -61,5 +72,17 @@ class LoginActivity : AppCompatActivity() {
                     Toast.makeText(this, "Login gagal: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
                 }
             }
+    }
+
+    // Fungsi untuk menampilkan animasi loading
+    private fun showLoadingAnimation() {
+        loadingAnimation.visibility = View.VISIBLE
+        loadingAnimation.playAnimation()  // Memulai animasi
+    }
+
+    // Fungsi untuk menyembunyikan animasi loading
+    private fun hideLoadingAnimation() {
+        loadingAnimation.cancelAnimation()  // Menghentikan animasi
+        loadingAnimation.visibility = View.GONE  // Menyembunyikan animasi
     }
 }

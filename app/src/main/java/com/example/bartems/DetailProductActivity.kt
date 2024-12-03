@@ -2,6 +2,7 @@ package com.example.bartems
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.widget.Button
 import android.widget.ImageButton
@@ -13,11 +14,13 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.airbnb.lottie.LottieAnimationView
 
 class DetailProductActivity : AppCompatActivity() {
 
     private lateinit var firestore: FirebaseFirestore
     private lateinit var auth: FirebaseAuth
+    private lateinit var loadingAnimation: LottieAnimationView  // Declare Lottie animation view
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,6 +28,9 @@ class DetailProductActivity : AppCompatActivity() {
 
         firestore = FirebaseFirestore.getInstance()
         auth = FirebaseAuth.getInstance()
+
+        // Initialize Lottie Animation
+        loadingAnimation = findViewById(R.id.loadingAnimation)
 
         val currentUserId = auth.currentUser?.uid
         val productId = intent.getStringExtra("PRODUCT_ID")
@@ -68,30 +74,46 @@ class DetailProductActivity : AppCompatActivity() {
                 // Produk milik pengguna saat ini
                 goToBarterButton.text = "Ke halaman edit"
                 goToBarterButton.setOnClickListener {
-                    val intent = Intent(this, EditProductActivity::class.java).apply {
-                        putExtra("PRODUCT_ID", productId)
-                        putExtra("PRODUCT_NAME", productName)
-                        putExtra("PRODUCT_IMAGE_URL", productImageUrl)
-                    }
-                    Log.d("DetailProductActivity", "Navigating to EditProductActivity with product ID: $productId")
-                    startActivity(intent)
+                    showLoadingAnimation()  // Show animation when button is clicked
+                    Handler().postDelayed({
+                        val intent = Intent(this, EditProductActivity::class.java).apply {
+                            putExtra("PRODUCT_ID", productId)
+                            putExtra("PRODUCT_NAME", productName)
+                            putExtra("PRODUCT_IMAGE_URL", productImageUrl)
+                        }
+                        Log.d("DetailProductActivity", "Navigating to EditProductActivity with product ID: $productId")
+                        startActivity(intent)
+                        hideLoadingAnimation()  // Hide animation after navigating
+                    }, 1500) // Wait for 1.5 seconds before navigating to the next page
                 }
             } else {
                 // Produk bukan milik pengguna saat ini
                 goToBarterButton.text = "Barter"
                 goToBarterButton.setOnClickListener {
-                    val intent = Intent(this, PilihBarangActivity::class.java).apply {
-                        putExtra("BARTER_PRODUCT_ID", productId)
-                        putExtra("BARTER_PRODUCT_NAME", productName)
-                        putExtra("BARTER_PRODUCT_IMAGE", productImageUrl)
-                    }
-                    Log.d("DetailProductActivity", "Navigating to ChooseItemActivity with product ID: $productId")
-                    startActivity(intent)
+                    showLoadingAnimation()  // Show animation when button is clicked
+                    Handler().postDelayed({
+                        val intent = Intent(this, PilihBarangActivity::class.java).apply {
+                            putExtra("BARTER_PRODUCT_ID", productId)
+                            putExtra("BARTER_PRODUCT_NAME", productName)
+                            putExtra("BARTER_PRODUCT_IMAGE", productImageUrl)
+                        }
+                        Log.d("DetailProductActivity", "Navigating to PilihBarangActivity with product ID: $productId")
+                        startActivity(intent)
+                        hideLoadingAnimation()  // Hide animation after navigating
+                    }, 1500) // Wait for 1.5 seconds before navigating to the next page
                 }
             }
         }
 
         backButton.setOnClickListener { onBackPressed() }
+    }
+
+    private fun showLoadingAnimation() {
+        loadingAnimation.visibility = android.view.View.VISIBLE  // Make the animation visible
+    }
+
+    private fun hideLoadingAnimation() {
+        loadingAnimation.visibility = android.view.View.GONE  // Hide the animation
     }
 
     private fun fetchProductDetails(

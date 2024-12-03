@@ -8,6 +8,7 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
@@ -15,6 +16,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import com.airbnb.lottie.LottieAnimationView
 import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
@@ -25,6 +27,7 @@ import java.util.*
 
 class PostItemActivity : AppCompatActivity() {
 
+    private lateinit var loadingAnimation: LottieAnimationView
     private lateinit var auth: FirebaseAuth
     private lateinit var firestore: FirebaseFirestore
     private lateinit var storage: FirebaseStorage
@@ -50,7 +53,7 @@ class PostItemActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.post_item)
-
+        loadingAnimation = findViewById(R.id.loadingAnimation)
         auth = FirebaseAuth.getInstance()
         firestore = FirebaseFirestore.getInstance()
         storage = FirebaseStorage.getInstance()
@@ -198,32 +201,40 @@ class PostItemActivity : AppCompatActivity() {
         val namaProduk = findViewById<TextInputLayout>(R.id.nama_produk).editText?.text.toString()
         val catatan = findViewById<TextInputLayout>(R.id.catatan).editText?.text.toString()
         val berat = findViewById<TextInputLayout>(R.id.berat).editText?.text.toString()
-        val jumlah = findViewById<TextInputLayout>(R.id.jumlah).editText?.text.toString()
+        val jumlahString = findViewById<TextInputLayout>(R.id.jumlah).editText?.text.toString()
         val alamat = findViewById<TextInputLayout>(R.id.alamat).editText?.text.toString()
         val noRumah = findViewById<TextInputLayout>(R.id.no_rumah).editText?.text.toString()
         val kodePos = findViewById<TextInputLayout>(R.id.kode_pos).editText?.text.toString()
+
+        // Convert jumlah to an integer. If it's invalid, show a toast and return.
+        val jumlah: Int = try {
+            jumlahString.toInt()
+        } catch (e: NumberFormatException) {
+            Toast.makeText(this, "Jumlah harus berupa angka", Toast.LENGTH_SHORT).show()
+            return
+        }
 
         val itemData = hashMapOf(
             "nama_produk" to namaProduk,
             "catatan" to catatan,
             "berat" to berat,
-            "jumlah" to jumlah,
+            "jumlah" to jumlah,  // Now it's an integer
             "alamat" to alamat,
             "no_rumah" to noRumah,
             "kode_pos" to kodePos,
             "userId" to auth.currentUser?.uid,
             "imageUrl" to imageUrl,
-            "timestamp" to Timestamp.now()  // Pastikan timestamp disertakan
+            "timestamp" to Timestamp.now()  // Ensure timestamp is included
         )
 
         firestore.collection("items")
-            .add(itemData) // Gunakan .add() hanya untuk menambah produk baru
+            .add(itemData) // Use .add() to create a new product
             .addOnSuccessListener {
                 Toast.makeText(this, "Item berhasil disimpan", Toast.LENGTH_SHORT).show()
                 val intent = Intent(this, ProfileActivity::class.java)
-                intent.putExtra("isFromProfile", true)  // Jika perlu mengirim data tambahan
+                intent.putExtra("isFromProfile", true)  // If you need to pass additional data
                 startActivity(intent)
-                finish()  // Menutup PostItemActivity agar tidak kembali ke halaman ini
+                finish()  // Close PostItemActivity so the user cannot return here
             }
             .addOnFailureListener { e ->
                 Toast.makeText(this, "Gagal menyimpan data: ${e.message}", Toast.LENGTH_SHORT).show()
@@ -283,5 +294,16 @@ class PostItemActivity : AppCompatActivity() {
     companion object {
         private const val CAMERA_REQUEST_CODE = 100
         private const val MAP_REQUEST_CODE = 200
+    }
+    // Fungsi untuk menampilkan animasi loading
+    private fun showLoadingAnimation() {
+        loadingAnimation.visibility = View.VISIBLE
+        loadingAnimation.playAnimation()  // Memulai animasi
+    }
+
+    // Fungsi untuk menyembunyikan animasi loading
+    private fun hideLoadingAnimation() {
+        loadingAnimation.cancelAnimation()  // Menghentikan animasi
+        loadingAnimation.visibility = View.GONE  // Menyembunyikan animasi
     }
 }

@@ -8,6 +8,7 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
@@ -15,6 +16,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import com.airbnb.lottie.LottieAnimationView
 import com.bumptech.glide.Glide
 import com.example.bartems.model.Product
 import com.google.android.material.textfield.TextInputLayout
@@ -32,7 +34,7 @@ class EditDetailProductActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     private var imageUri: Uri? = null
     private var oldImageUrl: String = ""
-
+    private lateinit var loadingAnimation: LottieAnimationView
     private lateinit var productNameInput: TextInputLayout
     private lateinit var productQuantityInput: TextInputLayout
     private lateinit var productNoteInput: TextInputLayout
@@ -63,7 +65,7 @@ class EditDetailProductActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.edit_detail_product)
-
+        loadingAnimation = findViewById(R.id.loadingAnimation)
         firestore = FirebaseFirestore.getInstance()
         storage = FirebaseStorage.getInstance()
         auth = FirebaseAuth.getInstance()
@@ -287,5 +289,16 @@ class EditDetailProductActivity : AppCompatActivity() {
     companion object {
         private const val CAMERA_REQUEST_CODE = 100
         private const val MAP_REQUEST_CODE = 200
+    }
+    // Fungsi untuk menampilkan animasi loading
+    private fun showLoadingAnimation() {
+        loadingAnimation.visibility = View.VISIBLE
+        loadingAnimation.playAnimation()  // Memulai animasi
+    }
+
+    // Fungsi untuk menyembunyikan animasi loading
+    private fun hideLoadingAnimation() {
+        loadingAnimation.cancelAnimation()  // Menghentikan animasi
+        loadingAnimation.visibility = View.GONE  // Menyembunyikan animasi
     }
 }

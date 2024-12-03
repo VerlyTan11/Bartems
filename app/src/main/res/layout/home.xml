@@ -5,17 +5,37 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <!-- Lottie Animation with transparent white background -->
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/loadingAnimation"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        android:background="@android:color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/loading"
+        tools:ignore="MissingConstraints"
+        android:elevation="10dp"/>
+
+    <!-- Search TextView -->
     <TextView
         android:id="@+id/searchResultTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text=""
+        android:text="Search results will appear here"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textInputLayout"
         tools:ignore="NotSibling" />
 
+    <!-- Text Input Layout for Search -->
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/textInputLayout"
         android:layout_width="291dp"
@@ -37,6 +57,8 @@
             android:textAlignment="center" />
     </com.google.android.material.textfield.TextInputLayout>
 
+    <!-- Other UI Elements -->
+    <!-- Profile Image Button -->
     <ImageButton
         android:id="@+id/gotoprofile"
         android:layout_width="55dp"
@@ -51,6 +73,7 @@
         app:srcCompat="@drawable/profile"
         tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
 
+    <!-- Frame Layout for Content -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/frameLayout"
         android:layout_width="348dp"
@@ -64,6 +87,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textInputLayout"
         app:layout_constraintVertical_bias="0.0">
 
+        <!-- TextView and Button inside Frame Layout -->
         <TextView
             android:id="@+id/textView16"
             android:layout_width="91dp"
@@ -115,6 +139,7 @@
             app:layout_constraintVertical_bias="0.86" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <!-- Beranda TextView -->
     <TextView
         android:id="@+id/textView37"
         android:layout_width="wrap_content"
@@ -127,6 +152,7 @@
         app:layout_constraintTop_toBottomOf="@+id/frameLayout"
         tools:ignore="MissingConstraints" />
 
+    <!-- RecyclerView -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
@@ -141,6 +167,7 @@
         tools:layout_editor_absoluteX="16dp"
         tools:listitem="@layout/item_image_button" />
 
+    <!-- Loading Indicator -->
     <ProgressBar
         android:id="@+id/loading_indicator"
         android:layout_width="wrap_content"
@@ -151,6 +178,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- Add Item Button -->
     <ImageView
         android:id="@+id/add_item"
         android:layout_width="66dp"

@@ -2,6 +2,7 @@ package com.example.bartems
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import android.widget.TextView
 import android.widget.Button
@@ -9,12 +10,14 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.airbnb.lottie.LottieAnimationView
 
 class RegisterActivity : AppCompatActivity() {
 
     // Inisialisasi FirebaseAuth dan Firestore
     private lateinit var auth: FirebaseAuth
     private lateinit var firestore: FirebaseFirestore
+    private lateinit var loadingAnimation: LottieAnimationView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,6 +26,9 @@ class RegisterActivity : AppCompatActivity() {
         // Inisialisasi FirebaseAuth dan Firestore
         auth = FirebaseAuth.getInstance()
         firestore = FirebaseFirestore.getInstance()
+
+        // Inisialisasi LottieAnimationView untuk loading
+        loadingAnimation = findViewById(R.id.loadingAnimation)
 
         // Handle click event untuk TextView goToLogin
         val goToLogin = findViewById<TextView>(R.id.gotologin)
@@ -59,9 +65,15 @@ class RegisterActivity : AppCompatActivity() {
             return
         }
 
+        // Tampilkan animasi loading
+        showLoadingAnimation()
+
         // Mendaftarkan user dengan Firebase Authentication
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
+                // Sembunyikan animasi loading setelah proses selesai
+                hideLoadingAnimation()
+
                 if (task.isSuccessful) {
                     // Pendaftaran berhasil, simpan data tambahan ke Firestore
                     val userId = auth.currentUser?.uid // Dapatkan ID pengguna yang baru dibuat
@@ -89,5 +101,17 @@ class RegisterActivity : AppCompatActivity() {
                     Toast.makeText(this, "Pendaftaran gagal: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
                 }
             }
+    }
+
+    // Fungsi untuk menampilkan animasi loading
+    private fun showLoadingAnimation() {
+        loadingAnimation.visibility = View.VISIBLE
+        loadingAnimation.playAnimation()  // Memulai animasi
+    }
+
+    // Fungsi untuk menyembunyikan animasi loading
+    private fun hideLoadingAnimation() {
+        loadingAnimation.cancelAnimation()  // Menghentikan animasi
+        loadingAnimation.visibility = View.GONE  // Menyembunyikan animasi
     }
 }

@@ -5,10 +5,12 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
+import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.airbnb.lottie.LottieAnimationView
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
@@ -20,7 +22,7 @@ class EditProfileActivity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
     private lateinit var firestore: FirebaseFirestore
-
+    private lateinit var loadingAnimation: LottieAnimationView
     // Declare EditText for name, phone, and email
     private lateinit var nameEditText: TextInputEditText
     private lateinit var phoneEditText: TextInputEditText
@@ -35,7 +37,7 @@ class EditProfileActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.edit_profile)
-
+        loadingAnimation = findViewById(R.id.loadingAnimation)
         // Initialize Firebase Auth and Firestore
         auth = FirebaseAuth.getInstance()
         firestore = FirebaseFirestore.getInstance()
@@ -181,5 +183,17 @@ class EditProfileActivity : AppCompatActivity() {
             val imageView = findViewById<ImageView>(R.id.gambar_user)
             imageView.setImageURI(imageUri)
         }
+    }
+
+    // Fungsi untuk menampilkan animasi loading
+    private fun showLoadingAnimation() {
+        loadingAnimation.visibility = View.VISIBLE
+        loadingAnimation.playAnimation()  // Memulai animasi
+    }
+
+    // Fungsi untuk menyembunyikan animasi loading
+    private fun hideLoadingAnimation() {
+        loadingAnimation.cancelAnimation()  // Menghentikan animasi
+        loadingAnimation.visibility = View.GONE  // Menyembunyikan animasi
     }
 }
