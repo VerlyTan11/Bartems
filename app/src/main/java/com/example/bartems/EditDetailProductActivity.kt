@@ -94,7 +94,7 @@ class EditDetailProductActivity : AppCompatActivity() {
 
         btnUpdateProduct.setOnClickListener {
             val productName = productNameInput.editText?.text.toString()
-            val productQuantity = productQuantityInput.editText?.text.toString()
+            val productQuantity = productQuantityInput.editText?.text.toString().toInt() // Ambil langsung sebagai Int
             val productNote = productNoteInput.editText?.text.toString()
             val address = productAddressInput.editText?.text.toString()
             val houseNumber = productHouseNumberInput.editText?.text.toString()
@@ -128,7 +128,7 @@ class EditDetailProductActivity : AppCompatActivity() {
                     val product = document.toObject(Product::class.java)
                     if (product != null) {
                         productNameInput.editText?.setText(product.nama_produk)
-                        productQuantityInput.editText?.setText(product.jumlah)
+                        productQuantityInput.editText?.setText(product.jumlah.toString()) // jumlah langsung sebagai Integer
                         productNoteInput.editText?.setText(product.catatan)
                         productAddressInput.editText?.setText(product.alamat)
                         productHouseNumberInput.editText?.setText(product.no_rumah ?: "")
@@ -150,7 +150,7 @@ class EditDetailProductActivity : AppCompatActivity() {
     }
 
     private fun updateProductWithImage(
-        productId: String, productName: String, productQuantity: String, productNote: String,
+        productId: String, productName: String, productQuantity: Int, productNote: String,
         address: String, houseNumber: String, postalCode: String, weight: String, imageUri: Uri
     ) {
         val currentUserId = auth.currentUser?.uid ?: return
@@ -186,7 +186,7 @@ class EditDetailProductActivity : AppCompatActivity() {
     }
 
     private fun updateProductWithoutImage(
-        productId: String, productName: String, productQuantity: String, productNote: String,
+        productId: String, productName: String, productQuantity: Int, productNote: String,
         address: String, houseNumber: String, postalCode: String, weight: String, imageUrl: String
     ) {
         val currentUserId = auth.currentUser?.uid ?: return
