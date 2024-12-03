@@ -74,10 +74,10 @@ class BarterActivity : AppCompatActivity() {
         val confirmButton = findViewById<Button>(R.id.btn_confirm_barter)
         val selectedProductImageView = findViewById<ImageView>(R.id.imageView20)
         val barterProductImageView = findViewById<ImageView>(R.id.imageView22)
-        val selectedProductNameTextView = findViewById<TextView>(R.id.textView22)
-        val barterProductNameTextView = findViewById<TextView>(R.id.textView26)
-        val selectedProductSellerTextView = findViewById<TextView>(R.id.textView23)
-        val barterProductSellerTextView = findViewById<TextView>(R.id.textView27)
+        val selectedProductNameTextView = findViewById<TextView>(R.id.textView24)
+        val barterProductNameTextView = findViewById<TextView>(R.id.textView20)
+        val selectedProductSellerTextView = findViewById<TextView>(R.id.textView25)
+        val barterProductSellerTextView = findViewById<TextView>(R.id.textView21)
         val addressTextView = findViewById<TextView>(R.id.textView32)
         val ownQuantityTextView = findViewById<TextView>(R.id.textView_own_quantity)
         val otherQuantityTextView = findViewById<TextView>(R.id.textView_other_quantity)
@@ -86,10 +86,9 @@ class BarterActivity : AppCompatActivity() {
         ownQuantityTextView.text = "Jumlah Anda: $ownQuantity"
         otherQuantityTextView.text = "Jumlah Produk Lain: $otherQuantity"
 
-        // Set produk Anda
-        selectedProductNameTextView.text = selectedProductName
+        selectedProductNameTextView.text = "Produk: $selectedProductName"
         Glide.with(this).load(selectedProductImage).into(selectedProductImageView)
-        selectedProductSellerTextView.text = "Anda"
+        selectedProductSellerTextView.text = "Pemilik: Anda"
 
         // Debugging produk Anda
         Log.d("BarterActivity", "Produk Anda berhasil di-set: $selectedProductName")
@@ -103,7 +102,7 @@ class BarterActivity : AppCompatActivity() {
                     val barterProductAddress = document.getString("alamat") ?: "Alamat tidak tersedia"
 
                     // Set nama produk barter dan alamat
-                    barterProductNameTextView.text = barterProductName
+                    barterProductNameTextView.text = "Produk: $barterProductName"
                     addressTextView.text = barterProductAddress
                     Glide.with(this).load(barterProductImage).into(barterProductImageView)
 
@@ -114,7 +113,7 @@ class BarterActivity : AppCompatActivity() {
                             .addOnSuccessListener { userDocument ->
                                 if (userDocument.exists()) {
                                     val barterProductSeller = userDocument.getString("name") ?: "Penjual tidak diketahui"
-                                    barterProductSellerTextView.text = barterProductSeller
+                                    barterProductSellerTextView.text = "Pemilik: $barterProductSeller"
                                     Log.d("BarterActivity", "Produk barter berhasil dimuat: $barterProductName, Penjual=$barterProductSeller")
                                 } else {
                                     barterProductSellerTextView.text = "Penjual tidak diketahui"
