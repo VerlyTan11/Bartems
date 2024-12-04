@@ -21,7 +21,7 @@
         app:lottie_autoPlay="true"
         app:lottie_loop="true"
         app:lottie_rawRes="@raw/loading"
-        tools:ignore="MissingConstraints"
+        tools:ignore="MissingClass,MissingConstraints"
         android:elevation="10dp"/>
 
     <ImageView
@@ -241,18 +241,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.586" />
-
-    <ImageView
-        android:id="@+id/gotomap_barter"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.929"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.611"
-        app:srcCompat="@drawable/next" />
 
     <FrameLayout
         android:id="@+id/fragment_container"

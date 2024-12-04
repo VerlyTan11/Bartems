@@ -264,15 +264,6 @@ class BarterActivity : AppCompatActivity() {
                 }
         }
 
-        // Tombol ke peta
-        val goToMapButton = findViewById<ImageView>(R.id.gotomap_barter)
-        goToMapButton.setOnClickListener {
-            val intent = Intent(this, MapActivity::class.java).apply {
-                putExtra("ADDRESS", addressTextView.text.toString())
-            }
-            Log.d("BarterActivity", "Navigating to MapActivity with address: ${addressTextView.text}")
-            startActivity(intent)
-        }
     }
 
     private fun checkNotificationPermission(): Boolean {
