@@ -51,11 +51,11 @@ class BarterHistoryAdapter(
 
         // Set nama dan pemilik produk barter
         holder.barterProductName.text = history.barterProductName
-        holder.barterProductOwner.text = "Pemilik: ${history.barterProductOwner}"
+        holder.barterProductOwner.text = "${history.barterProductOwner}"
 
         // Set nama dan pemilik produk yang dipilih
         holder.selectedProductName.text = history.selectedProductName
-        holder.selectedProductOwner.text = "Pemilik: ${history.selectedProductOwner}"
+        holder.selectedProductOwner.text = "${history.selectedProductOwner ?: "Tidak diketahui"}"
 
         // Set alamat dan waktu transaksi
         holder.address.text = "Alamat: ${history.address}"

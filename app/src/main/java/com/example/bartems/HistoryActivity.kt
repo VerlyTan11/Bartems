@@ -54,7 +54,15 @@ class HistoryActivity : AppCompatActivity() {
                     historyList.clear()
                     for (document in snapshots.documents) {
                         val history = document.toObject(BarterHistory::class.java)
+
                         if (history != null) {
+                            // Periksa apakah userId cocok dengan akun login
+                            if (history.selectedProductOwner == "Pengguna Tidak Diketahui" &&
+                                history.userId == currentUserId
+                            ) {
+                                history.selectedProductOwner = "Saya"
+                            }
+
                             Log.d("HistoryActivity", "Data ditemukan: $history")
                             historyList.add(history)
                         }
