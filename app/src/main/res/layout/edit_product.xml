@@ -140,20 +140,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginTop="8dp" />
 
-        <!-- Tombol Barter -->
-        <Button
-            android:id="@+id/button5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:backgroundTint="#A4F1E1"
-            android:text="Tersedia"
-            android:textSize="12sp"
-            android:textColor="#102533"
-            android:drawableLeft="@drawable/barter"
-            app:layout_constraintTop_toBottomOf="@id/product_name"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="8dp" />
 
         <!-- Detail Produk -->
         <TextView
@@ -163,9 +149,10 @@
             android:text="Detail Barang"
             android:textStyle="bold"
             android:textSize="14sp"
-            app:layout_constraintTop_toBottomOf="@id/button5"
+            app:layout_constraintTop_toBottomOf="@id/product_name"
             app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginTop="16dp" />
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="8dp" />
 
         <!-- Deskripsi Produk -->
         <TextView

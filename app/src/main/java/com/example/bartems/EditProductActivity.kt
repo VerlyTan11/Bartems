@@ -8,7 +8,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.example.bartems.model.Product
 import com.google.firebase.auth.FirebaseAuth
@@ -32,7 +31,6 @@ class EditProductActivity : AppCompatActivity() {
     private lateinit var backButton: ImageView
     private lateinit var editButton: Button
     private lateinit var trashButton: ImageButton
-    private lateinit var availabilityButton: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,7 +53,6 @@ class EditProductActivity : AppCompatActivity() {
         backButton = findViewById(R.id.back_detail_product)
         editButton = findViewById(R.id.btn_Edit)
         trashButton = findViewById(R.id.trash_icon)
-        availabilityButton = findViewById(R.id.button5)
 
         // Ambil ID produk dari Intent
         val productId = intent.getStringExtra("PRODUCT_ID")
@@ -65,7 +62,6 @@ class EditProductActivity : AppCompatActivity() {
             finish()
         } else {
             loadProductDetails(productId)
-            listenToProductChanges(productId)
         }
 
         backButton.setOnClickListener {
@@ -80,10 +76,6 @@ class EditProductActivity : AppCompatActivity() {
 
         trashButton.setOnClickListener {
             productId?.let { id -> deleteProduct(id) }
-        }
-
-        availabilityButton.setOnClickListener {
-            productId?.let { id -> toggleProductAvailability(id) }
         }
     }
 
@@ -105,9 +97,6 @@ class EditProductActivity : AppCompatActivity() {
 
                         // Ambil data pengguna berdasarkan userId
                         loadUserDetails(product.userId)
-
-                        // Set status ketersediaan
-                        setAvailabilityStatus(product.tersedia)
                     }
                 } else {
                     Toast.makeText(this, "Produk tidak ditemukan", Toast.LENGTH_SHORT).show()
@@ -151,42 +140,6 @@ class EditProductActivity : AppCompatActivity() {
             }
     }
 
-    private fun setAvailabilityStatus(tersedia: Boolean) {
-        if (tersedia) {
-            availabilityButton.text = "Barterable"
-            availabilityButton.setBackgroundColor(ContextCompat.getColor(this, R.color.green))
-            availabilityButton.setTextColor(ContextCompat.getColor(this, R.color.white))
-        } else {
-            availabilityButton.text = "Non Barterable"
-            availabilityButton.setBackgroundColor(ContextCompat.getColor(this, R.color.red))
-            availabilityButton.setTextColor(ContextCompat.getColor(this, R.color.white))
-        }
-    }
-
-    private fun toggleProductAvailability(productId: String) {
-        firestore.collection("items").document(productId)
-            .get()
-            .addOnSuccessListener { document ->
-                if (document.exists()) {
-                    val product = document.toObject(Product::class.java)
-                    val newStatus = !(product?.tersedia ?: true)
-                    firestore.collection("items").document(productId)
-                        .update("tersedia", newStatus)
-                        .addOnSuccessListener {
-                            setAvailabilityStatus(newStatus)
-                            Toast.makeText(
-                                this,
-                                if (newStatus) "Produk sekarang tersedia" else "Produk sekarang tidak tersedia",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                }
-            }
-            .addOnFailureListener { e ->
-                Toast.makeText(this, "Gagal memperbarui status: ${e.message}", Toast.LENGTH_SHORT).show()
-            }
-    }
-
     private fun deleteProduct(productId: String) {
         firestore.collection("items").document(productId)
             .delete()
@@ -196,23 +149,6 @@ class EditProductActivity : AppCompatActivity() {
             }
             .addOnFailureListener { e ->
                 Toast.makeText(this, "Gagal menghapus produk: ${e.message}", Toast.LENGTH_SHORT).show()
-            }
-    }
-
-    private fun listenToProductChanges(productId: String) {
-        firestore.collection("items").document(productId)
-            .addSnapshotListener { snapshot, e ->
-                if (e != null) {
-                    Toast.makeText(this, "Gagal mendapatkan update: ${e.message}", Toast.LENGTH_SHORT).show()
-                    return@addSnapshotListener
-                }
-
-                if (snapshot != null && snapshot.exists()) {
-                    val product = snapshot.toObject(Product::class.java)
-                    if (product != null) {
-                        setAvailabilityStatus(product.tersedia)
-                    }
-                }
             }
     }
 }
