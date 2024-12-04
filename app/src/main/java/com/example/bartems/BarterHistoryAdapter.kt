@@ -25,6 +25,8 @@ class BarterHistoryAdapter(
         val selectedProductName: TextView = view.findViewById(R.id.text_selected_product_name)
         val barterProductOwner: TextView = view.findViewById(R.id.text_barter_product_owner)
         val selectedProductOwner: TextView = view.findViewById(R.id.text_selected_product_owner)
+        val barterProductQuantity: TextView = view.findViewById(R.id.text_barter_product_quantity) // Tambahkan referensi untuk jumlah barang barter
+        val selectedProductQuantity: TextView = view.findViewById(R.id.text_selected_product_quantity) // Tambahkan referensi untuk jumlah barang yang dipilih
         val address: TextView = view.findViewById(R.id.text_address)
         val timestamp: TextView = view.findViewById(R.id.text_timestamp)
     }
@@ -51,14 +53,20 @@ class BarterHistoryAdapter(
 
         // Set nama dan pemilik produk barter
         holder.barterProductName.text = history.barterProductName
-        holder.barterProductOwner.text = "${history.barterProductOwner}"
+        holder.barterProductOwner.text = history.barterProductOwner ?: "Pemilik tidak diketahui"
 
         // Set nama dan pemilik produk yang dipilih
         holder.selectedProductName.text = history.selectedProductName
-        holder.selectedProductOwner.text = "${history.selectedProductOwner ?: "Tidak diketahui"}"
+        holder.selectedProductOwner.text = history.selectedProductOwner ?: "Pemilik tidak diketahui"
+
+        // Set jumlah barang barter
+        holder.barterProductQuantity.text = "Jumlah: ${history.quantityOther ?: 0}"
+
+        // Set jumlah barang yang dipilih
+        holder.selectedProductQuantity.text = "Jumlah: ${history.quantityOwn ?: 0}"
 
         // Set alamat dan waktu transaksi
-        holder.address.text = "Alamat: ${history.address}"
+        holder.address.text = "Alamat: ${history.address ?: "Tidak tersedia"}"
         holder.timestamp.text = "Tanggal: ${convertTimestampToDate(history.timestamp)}"
     }
 

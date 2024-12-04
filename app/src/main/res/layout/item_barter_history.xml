@@ -45,6 +45,14 @@
                     android:textSize="14sp" />
 
                 <TextView
+                    android:id="@+id/text_barter_product_quantity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Jumlah: "
+                    android:textSize="12sp"
+                    android:layout_marginTop="4dp" />
+
+                <TextView
                     android:id="@+id/text_barter_product_owner"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -73,6 +81,14 @@
                     android:text="Nama Produk"
                     android:textStyle="bold"
                     android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/text_selected_product_quantity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Jumlah: "
+                    android:textSize="12sp"
+                    android:layout_marginTop="4dp" />
 
                 <TextView
                     android:id="@+id/text_selected_product_owner"

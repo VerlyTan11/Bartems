@@ -193,6 +193,8 @@ class BarterActivity : AppCompatActivity() {
                                                             "selectedProductOwner" to currentUserName, // Nama pengguna yang login
                                                             "userId" to currentUserId, // User ID pengguna yang login
                                                             "address" to addressTextView.text.toString(),
+                                                            "quantityOwn" to ownQuantity, // Tambahkan jumlah produk Anda
+                                                            "quantityOther" to otherQuantity, // Tambahkan jumlah produk lain
                                                             "timestamp" to System.currentTimeMillis()
                                                         )
 

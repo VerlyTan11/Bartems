@@ -18,28 +18,31 @@ class HistoryActivity : AppCompatActivity() {
     private lateinit var backButton: ImageView
     private lateinit var firestore: FirebaseFirestore
     private lateinit var auth: FirebaseAuth
-    private val historyList = mutableListOf<BarterHistory>()
     private lateinit var adapter: BarterHistoryAdapter
+    private val historyList = mutableListOf<BarterHistory>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_history)
 
+        // Inisialisasi komponen UI
         recyclerView = findViewById(R.id.recyclerView_history)
         backButton = findViewById(R.id.back_button)
 
+        // Atur RecyclerView
         recyclerView.layoutManager = LinearLayoutManager(this)
-        adapter = BarterHistoryAdapter(this, emptyList()) // Initialize with empty data
+        adapter = BarterHistoryAdapter(this, emptyList())
         recyclerView.adapter = adapter
 
+        // Inisialisasi Firebase
         firestore = FirebaseFirestore.getInstance()
         auth = FirebaseAuth.getInstance()
 
+        // Load data riwayat barter
         loadHistoryData()
 
-        backButton.setOnClickListener {
-            finish()
-        }
+        // Tombol kembali
+        backButton.setOnClickListener { finish() }
     }
 
     private fun loadHistoryData() {
@@ -56,11 +59,11 @@ class HistoryActivity : AppCompatActivity() {
                         val history = document.toObject(BarterHistory::class.java)
 
                         if (history != null) {
-                            // Periksa apakah userId cocok dengan akun login
+                            // Periksa apakah pemilik produk yang dipilih perlu diubah menjadi "Milik Saya"
                             if (history.selectedProductOwner == "Pengguna Tidak Diketahui" &&
                                 history.userId == currentUserId
                             ) {
-                                history.selectedProductOwner = "Saya"
+                                history.selectedProductOwner = "Milik Saya"
                             }
 
                             Log.d("HistoryActivity", "Data ditemukan: $history")
@@ -68,9 +71,10 @@ class HistoryActivity : AppCompatActivity() {
                         }
                     }
 
+                    // Perbarui RecyclerView dengan data baru
                     if (historyList.isNotEmpty()) {
                         Log.d("HistoryActivity", "Total data: ${historyList.size}")
-                        adapter.updateData(historyList) // Update the adapter
+                        adapter.updateData(historyList)
                     } else {
                         Log.w("HistoryActivity", "Tidak ada data history ditemukan.")
                         Toast.makeText(this, "Tidak ada proses barter ditemukan", Toast.LENGTH_SHORT).show()

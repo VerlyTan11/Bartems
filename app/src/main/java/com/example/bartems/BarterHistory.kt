@@ -10,7 +10,9 @@ data class BarterHistory(
     val selectedProductId: String? = null,
     val selectedProductImage: String? = null,
     val selectedProductName: String? = null,
-    var selectedProductOwner: String? = null, // Ubah ke var
+    var selectedProductOwner: String? = null,
     val userId: String? = null,
-    val timestamp: Long? = null
+    val timestamp: Long? = null,
+    val quantityOwn: Int? = null,
+    val quantityOther: Int? = null
 )
