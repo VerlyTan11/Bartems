@@ -57,6 +57,7 @@ class DetailProductActivity : AppCompatActivity() {
         val productUserPhoneTextView: TextView = findViewById(R.id.textView32)
         val goToChatButton: ImageButton = findViewById(R.id.gotochat_detail)
         val goToBarterButton: Button = findViewById(R.id.btn_gotobarter)
+        val imageView17: ImageView = findViewById(R.id.imageView17)
 
         productNameTextView.text = productName
         Glide.with(this)
@@ -178,10 +179,18 @@ class DetailProductActivity : AppCompatActivity() {
                 if (document.exists()) {
                     val userName = document.getString("name") ?: "Nama pengguna tidak tersedia"
                     val userPhone = document.getString("phone") ?: "No. HP tidak tersedia"
+                    val userImageUrl = document.getString("imageUrl") // Assuming the image URL is stored in the "imageUrl" field
 
-                    Log.d("DetailProductActivity", "User details loaded: Name=$userName, Phone=$userPhone")
+                    Log.d("DetailProductActivity", "User details loaded: Name=$userName, Phone=$userPhone, Image URL=$userImageUrl")
                     userNameTextView.text = userName
                     userPhoneTextView.text = userPhone
+
+                    // Load the user image into imageView17 using Glide
+                    val imageView17: ImageView = findViewById(R.id.imageView17)  // Assuming this is the ImageView where the image should be displayed
+                    Glide.with(this)
+                        .load(userImageUrl)  // Use the fetched imageUrl
+                        .apply(RequestOptions().placeholder(R.drawable.box).error(R.drawable.box))  // Placeholder in case the image fails to load
+                        .into(imageView17)  // Load the image into imageView17
                 } else {
                     Log.e("DetailProductActivity", "User document not found for ID: $userId")
                     userNameTextView.text = "Nama pengguna tidak ditemukan"

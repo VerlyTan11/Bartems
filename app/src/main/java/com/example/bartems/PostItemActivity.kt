@@ -110,6 +110,7 @@ class PostItemActivity : AppCompatActivity() {
 
         findViewById<Button>(R.id.btn_simpan_edit_product).setOnClickListener {
             if (imageUri != null) {
+                showLoadingAnimation()
                 saveItemWithImage(imageUri!!)
             } else {
                 Toast.makeText(this, "Pilih gambar terlebih dahulu", Toast.LENGTH_SHORT).show()
