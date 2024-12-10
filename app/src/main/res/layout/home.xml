@@ -89,11 +89,12 @@
         app:layout_constraintVertical_bias="0.0">
 
         <!-- TextView and Button inside Frame Layout -->
+
         <TextView
             android:id="@+id/textView16"
             android:layout_width="91dp"
             android:layout_height="29dp"
-            android:layout_marginStart="88dp"
+            android:layout_marginStart="16dp"
             android:layout_marginBottom="136dp"
             android:fontFamily="@font/poppins_bold"
             android:text=""
@@ -121,23 +122,24 @@
             android:id="@+id/imageView18"
             android:layout_width="108dp"
             android:layout_height="113dp"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/box" />
+            app:srcCompat="@drawable/logo" />
 
         <Button
             android:id="@+id/button4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:backgroundTint="#000000"
+            android:backgroundTint="#697565"
             android:text="Mulai Barter"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.072"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.86" />
+            app:layout_constraintVertical_bias="0.882" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!-- Beranda TextView -->

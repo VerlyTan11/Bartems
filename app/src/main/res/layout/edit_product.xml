@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:layout_height="match_parent">
 
     <!-- Loading Animation -->
     <com.airbnb.lottie.LottieAnimationView
@@ -21,8 +22,7 @@
         app:lottie_autoPlay="true"
         app:lottie_loop="true"
         app:lottie_rawRes="@raw/loading"
-        tools:ignore="MissingConstraints"
-        android:elevation="10dp"/>
+        android:elevation="10dp" />
 
     <!-- Layout untuk Gambar -->
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -55,17 +55,27 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <!-- Tombol Hapus -->
-        <ImageButton
-            android:id="@+id/trash_icon"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:contentDescription="Hapus Produk"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_trash"
+        <!-- Tombol Hapus dengan Latar Belakang Lingkaran -->
+        <FrameLayout
+            android:layout_width="56dp"
+            android:layout_height="56dp"
             android:layout_margin="8dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent">
+
+            <!-- Tombol Hapus -->
+            <ImageButton
+                android:id="@+id/trash_icon"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_gravity="center"
+                android:contentDescription="Hapus Produk"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_trash"
+                android:tint="#FF0000"
+                tools:ignore="UseAppTint" />
+        </FrameLayout>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!-- Layout untuk Konten -->
@@ -82,131 +92,128 @@
         <!-- Informasi User -->
         <LinearLayout
             android:id="@+id/user_info_container"
-            android:layout_width="381dp"
+            android:layout_width="match_parent"
             android:layout_height="48dp"
             android:orientation="horizontal"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            tools:ignore="MissingConstraints">
 
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/user_avatar"
                 android:layout_width="48dp"
-                android:layout_height="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginEnd="8dp"
                 android:scaleType="centerCrop"
-                android:translationX="5dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
+                android:contentDescription="Avatar Pengguna"
                 app:shapeAppearanceOverlay="@style/CircularImage"
-                tools:srcCompat="@drawable/default_profile_image" />
+                android:src="@drawable/default_profile_image" />
 
             <LinearLayout
-                android:layout_width="136dp"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_marginStart="8dp"
-                android:orientation="vertical"
-                android:translationX="5dp">
+                android:layout_weight="1"
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/user_name"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Nama User"
-                    android:textAlignment="textStart"
                     android:textSize="16sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:textColor="#000000" />
 
                 <TextView
                     android:id="@+id/user_phone"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="No. HP"
-                    android:textAlignment="textStart"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    android:textColor="#666666" />
             </LinearLayout>
         </LinearLayout>
 
         <!-- Nama Produk -->
-        <TextView
-            android:id="@+id/product_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Nama Barang"
-            android:textStyle="bold"
-            android:textSize="16sp"
-            app:layout_constraintTop_toBottomOf="@id/user_info_container"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="8dp" />
 
 
         <!-- Detail Produk -->
         <TextView
-            android:id="@+id/detail_title"
-            android:layout_width="wrap_content"
+            android:id="@+id/product_name"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Detail Barang"
+            android:layout_marginTop="16dp"
+            android:text="Nama Barang"
+            android:textSize="18sp"
             android:textStyle="bold"
-            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/user_info_container" />
+
+        <TextView
+            android:id="@+id/detail_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Catatan"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:textColor="#000000"
+            android:layout_marginTop="16dp"
             app:layout_constraintTop_toBottomOf="@id/product_name"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="8dp" />
+            app:layout_constraintEnd_toEndOf="parent" />
 
-        <!-- Deskripsi Produk -->
         <TextView
             android:id="@+id/product_description"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="48dp"
             android:text="Deskripsi Produk"
+            android:textSize="14sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/detail_title"
-            android:layout_marginTop="8dp" />
+            app:layout_constraintTop_toBottomOf="@id/product_name" />
 
-        <!-- Berat -->
         <TextView
             android:id="@+id/product_weight"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Berat: 10 kg"
+            android:layout_marginTop="48dp"
+            android:text="Berat        : "
+            android:textColor="#555555"
+            android:textSize="14sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/product_description"
-            android:layout_marginTop="8dp" />
+            app:layout_constraintTop_toBottomOf="@id/detail_title" />
 
-        <!-- Kuantitas -->
         <TextView
             android:id="@+id/product_quantity"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Kuantitas: 1"
+            android:layout_marginTop="20dp"
+            android:text="Kuantitas : "
+            android:textColor="#555555"
+            android:textSize="14sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/product_weight"
-            android:layout_marginTop="8dp" />
+            app:layout_constraintTop_toBottomOf="@id/product_weight" />
 
-        <!-- Alamat -->
         <TextView
             android:id="@+id/product_address"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Alamat"
+            android:layout_marginTop="16dp"
+            android:text="Alamat     : "
+            android:textColor="#555555"
+            android:textSize="14sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/product_quantity"
-            android:layout_marginTop="8dp" />
+            app:layout_constraintTop_toBottomOf="@id/product_quantity" />
 
-        <!-- Kode Pos -->
         <TextView
             android:id="@+id/product_postal_code"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Kode Pos"
+            android:layout_marginTop="20dp"
+            android:text="Kode Pos : "
+            android:textColor="#555555"
+            android:textSize="14sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/product_address"
-            android:layout_marginTop="8dp" />
+            app:layout_constraintTop_toBottomOf="@id/product_address" />
 
-        <!-- Tombol Edit -->
         <Button
             android:id="@+id/btn_Edit"
             android:layout_width="0dp"

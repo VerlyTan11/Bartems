@@ -55,7 +55,6 @@ class DetailProductActivity : AppCompatActivity() {
         val productDescriptionTextView: TextView = findViewById(R.id.textView18)
         val productUserNameTextView: TextView = findViewById(R.id.textView31)
         val productUserPhoneTextView: TextView = findViewById(R.id.textView32)
-        val goToChatButton: ImageButton = findViewById(R.id.gotochat_detail)
         val goToBarterButton: Button = findViewById(R.id.btn_gotobarter)
         val imageView17: ImageView = findViewById(R.id.imageView17)
 
