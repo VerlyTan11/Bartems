@@ -11,5 +11,7 @@
         android:layout_height="150dp"
         android:layout_weight="1"
         android:scaleType="centerCrop"
-        android:contentDescription="Product image" />
+        android:background="@drawable/rounded_button"
+        android:contentDescription="Product image"
+        android:clipToOutline="true"/>
 </LinearLayout>

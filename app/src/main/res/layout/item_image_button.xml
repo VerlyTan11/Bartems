@@ -8,9 +8,10 @@
         android:id="@+id/itemImageButton"
         android:layout_width="match_parent"
         android:layout_height="150dp"
+        android:background="@drawable/rounded_button"
+        android:contentDescription="Gambar Produk"
         android:scaleType="centerCrop"
-        android:background="@null"
-        android:contentDescription="Gambar Produk" />
+        android:clipToOutline="true"/>
 
     <TextView
         android:id="@+id/itemTextView"

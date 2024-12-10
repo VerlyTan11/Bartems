@@ -33,7 +33,9 @@
                     android:id="@+id/image_selected_product"
                     android:layout_width="80dp"
                     android:layout_height="80dp"
-                    android:scaleType="centerCrop" />
+                    android:background="@drawable/rounded_button"
+                    android:clipToOutline="true"
+                    android:scaleType="centerCrop"/>
 
                 <TextView
                     android:id="@+id/text_selected_product_name"
@@ -71,7 +73,9 @@
                     android:id="@+id/image_barter_product"
                     android:layout_width="80dp"
                     android:layout_height="80dp"
-                    android:scaleType="centerCrop" />
+                    android:background="@drawable/rounded_button"
+                    android:scaleType="centerCrop"
+                    android:clipToOutline="true"/>
 
                 <TextView
                     android:id="@+id/text_barter_product_name"
