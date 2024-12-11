@@ -81,8 +81,8 @@
         android:id="@+id/textView15"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/poppins_bold"
         android:layout_marginStart="5dp"
+        android:fontFamily="@font/poppins_bold"
         android:text="Kardus"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -97,84 +97,77 @@
         android:id="@+id/textView16"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:fontFamily="@font/poppins_semibold"
         android:text="Catatan"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.056"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView15"
-        app:layout_constraintVertical_bias="0.56" />
+        app:layout_constraintEnd_toEndOf="@+id/product_postal_code"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/product_postal_code"
+        app:layout_constraintTop_toBottomOf="@+id/product_postal_code" />
 
     <TextView
         android:id="@+id/textView18"
-        android:layout_width="364dp"
-        android:layout_height="39dp"
-        android:layout_marginStart="19dp"
+        android:layout_width="359dp"
+        android:layout_height="110dp"
         android:fontFamily="@font/inter"
         android:text="Kardus is an ideal solution for creating a cozy atmosphere in your home. This stylish and functional lighting element provides comfortable"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.428"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.856" />
+        app:layout_constraintEnd_toEndOf="@+id/textView16"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/textView16"
+        app:layout_constraintTop_toBottomOf="@+id/textView16" />
 
     <TextView
         android:id="@+id/product_weight"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
+        android:layout_width="365dp"
+        android:layout_height="21dp"
         android:fontFamily="@font/inter"
         android:text="Berat: "
         android:textColor="#555555"
         android:textSize="14sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.652" />
+        app:layout_constraintEnd_toEndOf="@+id/product_quantity"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/product_quantity"
+        app:layout_constraintTop_toBottomOf="@+id/product_quantity" />
 
     <TextView
         android:id="@+id/product_quantity"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
+        android:layout_width="363dp"
+        android:layout_height="23dp"
+        android:layout_marginTop="12dp"
         android:fontFamily="@font/inter"
         android:text="Kuantitas: "
         android:textColor="#555555"
         android:textSize="14sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.611" />
+        app:layout_constraintEnd_toEndOf="@+id/button5"
+        app:layout_constraintHorizontal_bias="0.014"
+        app:layout_constraintStart_toStartOf="@+id/button5"
+        app:layout_constraintTop_toBottomOf="@+id/button5" />
 
     <TextView
         android:id="@+id/product_address"
         android:layout_width="385dp"
         android:layout_height="35dp"
-        android:layout_marginStart="20dp"
         android:fontFamily="@font/inter"
         android:text="Alamat: "
         android:textColor="#555555"
         android:textSize="14sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.706" />
+        app:layout_constraintEnd_toEndOf="@+id/product_weight"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/product_weight"
+        app:layout_constraintTop_toBottomOf="@+id/product_weight" />
 
     <TextView
         android:id="@+id/product_postal_code"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
+        android:layout_width="360dp"
+        android:layout_height="23dp"
         android:fontFamily="@font/inter"
         android:text="Kode Pos: "
         android:textColor="#555555"
         android:textSize="14sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.745" />
+        app:layout_constraintEnd_toEndOf="@+id/product_address"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/product_address"
+        app:layout_constraintTop_toBottomOf="@+id/product_address" />
 
     <Button
         android:id="@+id/button5"
@@ -189,18 +182,17 @@
         android:textSize="10sp"
         app:iconPadding="2dp"
         app:iconSize="12dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.066"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/textView15"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/textView15"
         app:layout_constraintTop_toBottomOf="@+id/textView15"
-        app:layout_constraintVertical_bias="0.0"
         tools:ignore="TouchTargetSizeCheck" />
 
     <Button
         android:id="@+id/button6"
         android:layout_width="112dp"
         android:layout_height="34dp"
+        android:layout_marginStart="12dp"
         android:backgroundTint="#BEE2FD"
         android:drawableLeft="@drawable/best"
         android:paddingLeft="16dp"
@@ -210,12 +202,8 @@
         android:textSize="10sp"
         app:iconPadding="2dp"
         app:iconSize="12dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.468"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/button5"
         app:layout_constraintTop_toBottomOf="@+id/textView15"
-        app:layout_constraintVertical_bias="0.0"
         tools:ignore="TouchTargetSizeCheck" />
 
     <TextView
@@ -229,7 +217,7 @@
         app:layout_constraintBottom_toTopOf="@+id/button6"
         app:layout_constraintStart_toEndOf="@+id/imageView17"
         app:layout_constraintTop_toBottomOf="@+id/imageView18"
-        app:layout_constraintVertical_bias="0.144" />
+        app:layout_constraintVertical_bias="0.304" />
 
     <TextView
         android:id="@+id/textView32"
@@ -242,6 +230,6 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/textView31"
         app:layout_constraintTop_toBottomOf="@+id/textView31"
-        app:layout_constraintVertical_bias="0.015" />
+        app:layout_constraintVertical_bias="0.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
