@@ -145,8 +145,8 @@
 
     <TextView
         android:id="@+id/product_address"
-        android:layout_width="385dp"
-        android:layout_height="35dp"
+        android:layout_width="370dp"
+        android:layout_height="66dp"
         android:fontFamily="@font/inter"
         android:text="Alamat: "
         android:textColor="#555555"
