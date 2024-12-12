@@ -2,30 +2,32 @@ package com.example.bartems
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
+import android.view.View
 import android.widget.Button
-import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.airbnb.lottie.LottieAnimationView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.example.bartems.model.Product
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.airbnb.lottie.LottieAnimationView
-import com.example.bartems.model.Product
 
 class DetailProductActivity : AppCompatActivity() {
 
     private lateinit var firestore: FirebaseFirestore
     private lateinit var auth: FirebaseAuth
-    private lateinit var loadingAnimation: LottieAnimationView  // Declare Lottie animation view
+    private lateinit var loadingAnimation: LottieAnimationView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.detail_product)
 
+        // Initialize Firebase
         firestore = FirebaseFirestore.getInstance()
         auth = FirebaseAuth.getInstance()
 
@@ -37,11 +39,6 @@ class DetailProductActivity : AppCompatActivity() {
         val productName = intent.getStringExtra("PRODUCT_NAME") ?: "Nama tidak tersedia"
         val productImageUrl = intent.getStringExtra("PRODUCT_IMAGE_URL") ?: ""
 
-        Log.d(
-            "DetailProductActivity",
-            "Intent received: PRODUCT_ID=$productId, PRODUCT_NAME=$productName, PRODUCT_IMAGE_URL=$productImageUrl"
-        )
-
         if (productId.isNullOrEmpty()) {
             Log.e("DetailProductActivity", "ERROR: PRODUCT_ID tidak ditemukan!")
             Toast.makeText(this, "ID Produk tidak ditemukan", Toast.LENGTH_SHORT).show()
@@ -49,6 +46,7 @@ class DetailProductActivity : AppCompatActivity() {
             return
         }
 
+        // Bind views
         val productImageView: ImageView = findViewById(R.id.imageView18)
         val backButton: ImageView = findViewById(R.id.back_detail_product)
         val productNameTextView: TextView = findViewById(R.id.textView15)
@@ -56,7 +54,6 @@ class DetailProductActivity : AppCompatActivity() {
         val productUserNameTextView: TextView = findViewById(R.id.textView31)
         val productUserPhoneTextView: TextView = findViewById(R.id.textView32)
         val goToBarterButton: Button = findViewById(R.id.btn_gotobarter)
-        val imageView17: ImageView = findViewById(R.id.imageView17)
 
         productNameTextView.text = productName
         Glide.with(this)
@@ -64,65 +61,110 @@ class DetailProductActivity : AppCompatActivity() {
             .apply(RequestOptions().placeholder(R.drawable.box).error(R.drawable.box))
             .into(productImageView)
 
-        // Call fetchProductDetails with only productId
-        fetchProductDetails(productId)
+        fetchProductDetails(productId, productDescriptionTextView, productUserNameTextView, productUserPhoneTextView) { ownerId ->
+            if (currentUserId == ownerId) {
+                setupEditButton(goToBarterButton, productId, productName, productImageUrl)
+            } else {
+                setupBarterButton(goToBarterButton, productId, productName, productImageUrl)
+            }
+        }
 
-        // The rest of your code for handling the button clicks
         backButton.setOnClickListener { onBackPressed() }
-
-        goToBarterButton.setOnClickListener {
-            // Add code to handle Go To Barter button click
-        }
-
-        currentUserId?.let {
-            fetchUserDetails(it, productUserNameTextView, productUserPhoneTextView)
-        } ?: run {
-            // Handle case where the user is not authenticated (currentUserId is null)
-            Log.e("DetailProductActivity", "User is not authenticated")
-        }
     }
 
     private fun showLoadingAnimation() {
-        loadingAnimation.visibility = android.view.View.VISIBLE  // Make the animation visible
+        loadingAnimation.visibility = View.VISIBLE
     }
 
     private fun hideLoadingAnimation() {
-        loadingAnimation.visibility = android.view.View.GONE  // Hide the animation
+        loadingAnimation.visibility = View.GONE
     }
 
-    private fun fetchProductDetails(productId: String) {
-        Log.d("DetailProductActivity", "Fetching product details for ID: $productId")
+    private fun setupEditButton(button: Button, productId: String, productName: String, productImageUrl: String) {
+        button.text = "Ke halaman edit"
+        button.setOnClickListener {
+            navigateWithDelay {
+                val intent = Intent(this, EditProductActivity::class.java).apply {
+                    putExtra("PRODUCT_ID", productId)
+                    putExtra("PRODUCT_NAME", productName)
+                    putExtra("PRODUCT_IMAGE_URL", productImageUrl)
+                }
+                startActivity(intent)
+            }
+        }
+    }
 
+    private fun setupBarterButton(button: Button, productId: String, productName: String, productImageUrl: String) {
+        button.text = "Barter"
+        button.setOnClickListener {
+            navigateWithDelay {
+                val intent = Intent(this, PilihBarangActivity::class.java).apply {
+                    putExtra("BARTER_PRODUCT_ID", productId)
+                    putExtra("BARTER_PRODUCT_NAME", productName)
+                    putExtra("BARTER_PRODUCT_IMAGE", productImageUrl)
+                }
+                startActivity(intent)
+            }
+        }
+    }
+
+    private fun navigateWithDelay(action: () -> Unit) {
+        showLoadingAnimation()
+        Handler(mainLooper).postDelayed({
+            action()
+            hideLoadingAnimation()
+        }, 1500)
+    }
+
+    private fun fetchProductDetails(
+        productId: String,
+        descriptionTextView: TextView,
+        userNameTextView: TextView,
+        userPhoneTextView: TextView,
+        onOwnerIdFetched: (String?) -> Unit
+    ) {
         firestore.collection("items").document(productId)
             .get()
             .addOnSuccessListener { document ->
                 if (document.exists()) {
-                    // Convert the document to a Product object
                     val product = document.toObject(Product::class.java)
                     product?.let {
-                        // Update the UI with product details
+                        descriptionTextView.text = it.catatan ?: "Deskripsi tidak tersedia"
                         findViewById<TextView>(R.id.product_weight).text = "Berat: ${it.berat}"
                         findViewById<TextView>(R.id.product_quantity).text = "Kuantitas: ${it.jumlah}"
                         findViewById<TextView>(R.id.product_address).text = "Alamat: ${it.alamat}"
                         findViewById<TextView>(R.id.product_postal_code).text = "Kode Pos: ${it.kode_pos}"
-                        findViewById<TextView>(R.id.textView18).text = it.catatan // Assuming this is the description
                     }
+                    val ownerId = document.getString("userId")
+                    onOwnerIdFetched(ownerId)
+                    fetchUserDetails(ownerId, userNameTextView, userPhoneTextView)
                 } else {
-                    Log.e("DetailProductActivity", "Product not found for ID: $productId")
-                    Toast.makeText(this, "Produk tidak ditemukan", Toast.LENGTH_SHORT).show()
+                    Log.e("DetailProductActivity", "Product not found in Firestore for ID: $productId")
+                    Toast.makeText(this, "Produk tidak ditemukan di database", Toast.LENGTH_SHORT).show()
+                    descriptionTextView.text = "Deskripsi tidak ditemukan"
+                    onOwnerIdFetched(null)
                 }
             }
             .addOnFailureListener { exception ->
                 Log.e("DetailProductActivity", "Error fetching product details: ${exception.message}")
                 Toast.makeText(this, "Gagal memuat data produk: ${exception.message}", Toast.LENGTH_SHORT).show()
+                descriptionTextView.text = "Gagal memuat deskripsi produk"
+                onOwnerIdFetched(null)
             }
     }
 
     private fun fetchUserDetails(
-        userId: String,
+        userId: String?,
         userNameTextView: TextView,
         userPhoneTextView: TextView
     ) {
+        if (userId.isNullOrEmpty()) {
+            Log.e("DetailProductActivity", "User ID is null or empty")
+            userNameTextView.text = "Nama pengguna tidak tersedia"
+            userPhoneTextView.text = "No. HP tidak tersedia"
+            return
+        }
+
         Log.d("DetailProductActivity", "Fetching user details for ID: $userId")
 
         firestore.collection("users").document(userId)
@@ -138,19 +180,11 @@ class DetailProductActivity : AppCompatActivity() {
                     userPhoneTextView.text = userPhone
 
                     // Load the user image into imageView17 using Glide
-                    val imageView17: ImageView = findViewById(R.id.imageView17)
-                    if (userImageUrl != null) {
-                        Glide.with(this)
-                            .load(userImageUrl)
-                            .apply(RequestOptions().placeholder(R.drawable.box).error(R.drawable.box))
-                            .into(imageView17)
-                    } else {
-                        // Set default image if userImageUrl is null
-                        Glide.with(this)
-                            .load(R.drawable.default_profile_image)
-                            .apply(RequestOptions().placeholder(R.drawable.box).error(R.drawable.box))
-                            .into(imageView17)
-                    }
+                    val imageView17: ImageView = findViewById(R.id.imageView17)  // Assuming this is the ImageView where the image should be displayed
+                    Glide.with(this)
+                        .load(userImageUrl)  // Use the fetched imageUrl
+                        .apply(RequestOptions().placeholder(R.drawable.box).error(R.drawable.box))  // Placeholder in case the image fails to load
+                        .into(imageView17)  // Load the image into imageView17
                 } else {
                     Log.e("DetailProductActivity", "User document not found for ID: $userId")
                     userNameTextView.text = "Nama pengguna tidak ditemukan"
@@ -163,4 +197,6 @@ class DetailProductActivity : AppCompatActivity() {
                 userPhoneTextView.text = "Gagal memuat No. HP"
             }
     }
+
+
 }
