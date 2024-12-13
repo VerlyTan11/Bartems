@@ -60,6 +60,14 @@
                     android:layout_height="wrap_content"
                     android:text="Pemilik"
                     android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/text_selected_product_owner_phone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="No HP"
+                    android:textSize="12sp"
+                    android:paddingTop="4dp" />
             </LinearLayout>
 
             <LinearLayout
@@ -100,6 +108,14 @@
                     android:layout_height="wrap_content"
                     android:text="Pemilik"
                     android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/text_barter_product_owner_phone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="No HP"
+                    android:textSize="12sp"
+                    android:paddingTop="4dp" />
             </LinearLayout>
         </LinearLayout>
 

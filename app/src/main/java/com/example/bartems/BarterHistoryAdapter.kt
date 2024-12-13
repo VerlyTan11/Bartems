@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.bartems.model.BarterHistory
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -25,7 +26,9 @@ class BarterHistoryAdapter(
         val barterProductName: TextView = view.findViewById(R.id.text_barter_product_name)
         val selectedProductName: TextView = view.findViewById(R.id.text_selected_product_name)
         val barterProductOwner: TextView = view.findViewById(R.id.text_barter_product_owner)
+        val barterProductOwnerPhone: TextView = view.findViewById(R.id.text_barter_product_owner_phone)
         val selectedProductOwner: TextView = view.findViewById(R.id.text_selected_product_owner)
+        val selectedProductOwnerPhone: TextView = view.findViewById(R.id.text_selected_product_owner_phone)
         val barterProductQuantity: TextView = view.findViewById(R.id.text_barter_product_quantity) // Tambahkan referensi untuk jumlah barang barter
         val selectedProductQuantity: TextView = view.findViewById(R.id.text_selected_product_quantity) // Tambahkan referensi untuk jumlah barang yang dipilih
         val address: TextView = view.findViewById(R.id.text_address)
@@ -40,8 +43,6 @@ class BarterHistoryAdapter(
     override fun onBindViewHolder(holder: HistoryViewHolder, position: Int) {
         val history = historyList[position]
 
-        Log.d("BarterHistoryAdapter", "Mengatur item: $history")
-
         // Set data gambar produk barter
         Glide.with(context)
             .load(history.barterProductImage)
@@ -52,22 +53,21 @@ class BarterHistoryAdapter(
             .load(history.selectedProductImage)
             .into(holder.selectedProductImage)
 
-        // Tentukan apakah pengguna adalah pengirim atau penerima
-        val currentUserId = FirebaseAuth.getInstance().currentUser?.uid
-        val isSender = history.userId == currentUserId
+        // Tampilkan nama dan nomor HP pemilik barang barter
+        holder.barterProductOwner.text = history.barterProductOwner ?: "Pemilik tidak diketahui"
+        holder.barterProductOwnerPhone.text = history.barterProductOwnerPhone ?: "No HP tidak tersedia"
 
-        // Set nama produk dan pemiliknya
+        // Tampilkan nama dan nomor HP pemilik barang yang dipilih
+        holder.selectedProductOwner.text = history.selectedProductOwner ?: "Pemilik tidak diketahui"
+        holder.selectedProductOwnerPhone.text = history.selectedProductOwnerPhone ?: "No HP tidak tersedia"
+
+        // Tampilkan nama produk dan jumlah barang
         holder.barterProductName.text = history.barterProductName
-        holder.barterProductOwner.text = if (isSender) "Milik Saya" else history.barterProductOwner ?: "Pemilik tidak diketahui"
-
         holder.selectedProductName.text = history.selectedProductName
-        holder.selectedProductOwner.text = if (!isSender) "Milik Saya" else history.selectedProductOwner ?: "Pemilik tidak diketahui"
-
-        // Set jumlah barang
         holder.barterProductQuantity.text = "Jumlah: ${history.quantityOther ?: 0}"
         holder.selectedProductQuantity.text = "Jumlah: ${history.quantityOwn ?: 0}"
 
-        // Set alamat dan waktu transaksi
+        // Tampilkan alamat dan waktu transaksi
         holder.address.text = "Alamat: ${history.address ?: "Tidak tersedia"}"
         holder.timestamp.text = "Tanggal: ${convertTimestampToDate(history.timestamp)}"
     }
