@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.bartems.model.Product
@@ -33,14 +34,22 @@ class PilihBarangAdapter(private val onItemClick: (Product) -> Unit) :
     override fun getItemCount(): Int = productList.size
 
     inner class ProductViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val productImage: ImageView = itemView.findViewById(R.id.product_image)
+        private val productImage: ImageView? = itemView.findViewById(R.id.product_image)
+        private val productName: TextView? = itemView.findViewById(R.id.product_name)
 
         fun bind(product: Product) {
-            Glide.with(itemView.context)
-                .load(product.imageUrl)
-                .placeholder(R.drawable.box)
-                .into(productImage)
+            // Set gambar produk
+            productImage?.let {
+                Glide.with(itemView.context)
+                    .load(product.imageUrl)
+                    .placeholder(R.drawable.box) // Gambar placeholder
+                    .into(it)
+            }
 
+            // Set nama produk
+            productName?.text = product.nama_produk ?: "Tidak diketahui"
+
+            // Tambahkan onClickListener
             itemView.setOnClickListener {
                 onItemClick(product)
             }

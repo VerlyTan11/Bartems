@@ -10,6 +10,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.bartems.model.BarterHistory
+import com.google.firebase.auth.FirebaseAuth
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -51,18 +52,19 @@ class BarterHistoryAdapter(
             .load(history.selectedProductImage)
             .into(holder.selectedProductImage)
 
-        // Set nama dan pemilik produk barter
+        // Tentukan apakah pengguna adalah pengirim atau penerima
+        val currentUserId = FirebaseAuth.getInstance().currentUser?.uid
+        val isSender = history.userId == currentUserId
+
+        // Set nama produk dan pemiliknya
         holder.barterProductName.text = history.barterProductName
-        holder.barterProductOwner.text = history.barterProductOwner ?: "Pemilik tidak diketahui"
+        holder.barterProductOwner.text = if (isSender) "Milik Saya" else history.barterProductOwner ?: "Pemilik tidak diketahui"
 
-        // Set nama dan pemilik produk yang dipilih
         holder.selectedProductName.text = history.selectedProductName
-        holder.selectedProductOwner.text = history.selectedProductOwner ?: "Pemilik tidak diketahui"
+        holder.selectedProductOwner.text = if (!isSender) "Milik Saya" else history.selectedProductOwner ?: "Pemilik tidak diketahui"
 
-        // Set jumlah barang barter
+        // Set jumlah barang
         holder.barterProductQuantity.text = "Jumlah: ${history.quantityOther ?: 0}"
-
-        // Set jumlah barang yang dipilih
         holder.selectedProductQuantity.text = "Jumlah: ${history.quantityOwn ?: 0}"
 
         // Set alamat dan waktu transaksi

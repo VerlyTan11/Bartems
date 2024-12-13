@@ -8,7 +8,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.bartems.model.BarterHistory
+import com.google.android.gms.tasks.Task
+import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 
@@ -55,29 +58,55 @@ class HistoryActivity : AppCompatActivity() {
                 .get()
                 .addOnSuccessListener { snapshots ->
                     historyList.clear()
+                    val fetchTasks = mutableListOf<Task<DocumentSnapshot>>()
+
                     for (document in snapshots.documents) {
                         val history = document.toObject(BarterHistory::class.java)
 
                         if (history != null) {
-                            // Periksa apakah pemilik produk yang dipilih perlu diubah menjadi "Milik Saya"
-                            if (history.selectedProductOwner == "Pengguna Tidak Diketahui" &&
-                                history.userId == currentUserId
-                            ) {
-                                history.selectedProductOwner = "Milik Saya"
-                            }
+                            // Ambil nama pemilik barang kanan (barterProductOwner)
+                            val rightOwnerTask = firestore.collection("users")
+                                .document(history.barterProductOwner ?: "")
+                                .get()
+                                .addOnSuccessListener { ownerSnapshot ->
+                                    if (ownerSnapshot.exists()) {
+                                        history.barterProductOwner =
+                                            ownerSnapshot.getString("name") ?: "Pemilik tidak diketahui"
+                                    }
+                                }
+                                .addOnFailureListener { e ->
+                                    Log.e("HistoryActivity", "Gagal memuat data pemilik barang kanan: ${e.message}")
+                                }
+                            fetchTasks.add(rightOwnerTask)
 
-                            Log.d("HistoryActivity", "Data ditemukan: $history")
+                            // Ambil nama pemilik barang kiri (selectedProductOwner)
+                            val leftOwnerTask = firestore.collection("users")
+                                .document(history.selectedProductOwner ?: "")
+                                .get()
+                                .addOnSuccessListener { ownerSnapshot ->
+                                    if (ownerSnapshot.exists()) {
+                                        history.selectedProductOwner =
+                                            ownerSnapshot.getString("name") ?: "Pemilik tidak diketahui"
+                                    }
+                                }
+                                .addOnFailureListener { e ->
+                                    Log.e("HistoryActivity", "Gagal memuat data pemilik barang kiri: ${e.message}")
+                                }
+                            fetchTasks.add(leftOwnerTask)
+
+                            // Tambahkan ke daftar setelah semua task selesai
                             historyList.add(history)
                         }
                     }
 
-                    // Perbarui RecyclerView dengan data baru
-                    if (historyList.isNotEmpty()) {
-                        Log.d("HistoryActivity", "Total data: ${historyList.size}")
-                        adapter.updateData(historyList)
-                    } else {
-                        Log.w("HistoryActivity", "Tidak ada data history ditemukan.")
-                        Toast.makeText(this, "Tidak ada proses barter ditemukan", Toast.LENGTH_SHORT).show()
+                    // Tunggu semua task selesai sebelum memperbarui RecyclerView
+                    Tasks.whenAllComplete(fetchTasks).addOnSuccessListener {
+                        if (historyList.isNotEmpty()) {
+                            adapter.updateData(historyList)
+                        } else {
+                            Log.w("HistoryActivity", "Tidak ada data history ditemukan.")
+                            Toast.makeText(this, "Tidak ada proses barter ditemukan", Toast.LENGTH_SHORT).show()
+                        }
                     }
                 }
                 .addOnFailureListener { e ->

@@ -66,10 +66,24 @@ class PilihBarangActivity : AppCompatActivity(), JumlahBarangFragment.OnQuantity
             .get()
             .addOnSuccessListener { documents ->
                 val products = documents.mapNotNull { document ->
-                    document.toObject(Product::class.java).apply { id = document.id }
+                    val product = document.toObject(Product::class.java).apply {
+                        id = document.id
+                    }
+
+                    if (product.nama_produk.isNotEmpty() && product.imageUrl.isNotEmpty() && product.userId.isNotEmpty()) {
+                        product
+                    } else {
+                        Log.e("PilihBarangActivity", "Produk dengan ID ${document.id} memiliki data tidak lengkap.")
+                        null
+                    }
+                }
+
+                if (products.isEmpty()) {
+                    Toast.makeText(this, "Tidak ada produk ditemukan", Toast.LENGTH_SHORT).show()
+                } else {
+                    Log.d("PilihBarangActivity", "Produk dimuat: ${products.size}")
                 }
                 adapter.setProducts(products)
-                Log.d("PilihBarangActivity", "User products loaded: ${products.size} items")
             }
             .addOnFailureListener { e ->
                 Toast.makeText(this, "Gagal memuat produk: ${e.message}", Toast.LENGTH_SHORT).show()
@@ -91,12 +105,23 @@ class PilihBarangActivity : AppCompatActivity(), JumlahBarangFragment.OnQuantity
                 JumlahBarangFragment.newInstance(product.nama_produk)
             )
             addToBackStack(null)
-            commit() // Gunakan commit() dengan FragmentTransaction
+            commit()
         }
     }
 
     override fun onQuantityInput(quantityOwn: Int, quantityOther: Int) {
         val selectedProduct = selectedProduct ?: return
+
+        // Pastikan semua data lengkap sebelum melanjutkan
+        if (selectedProduct.id.isNullOrEmpty() || selectedProduct.nama_produk.isNullOrEmpty() || selectedProduct.imageUrl.isNullOrEmpty() || selectedProduct.userId.isNullOrEmpty()) {
+            Toast.makeText(this, "Data produk Anda tidak lengkap", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        if (barterProductId.isNullOrEmpty() || barterProductName.isNullOrEmpty() || barterProductImage.isNullOrEmpty()) {
+            Toast.makeText(this, "Data produk barter tidak lengkap", Toast.LENGTH_SHORT).show()
+            return
+        }
 
         // Kirim data ke BarterActivity
         val intent = Intent(this, BarterActivity::class.java).apply {
@@ -106,9 +131,16 @@ class PilihBarangActivity : AppCompatActivity(), JumlahBarangFragment.OnQuantity
             putExtra("SELECTED_PRODUCT_ID", selectedProduct.id)
             putExtra("SELECTED_PRODUCT_NAME", selectedProduct.nama_produk)
             putExtra("SELECTED_PRODUCT_IMAGE_URL", selectedProduct.imageUrl)
-            putExtra("QUANTITY_OWN", quantityOwn)  // Kirim quantityOwn
-            putExtra("QUANTITY_OTHER", quantityOther)  // Kirim quantityOther
+            putExtra("SELECTED_PRODUCT_USER_ID", selectedProduct.userId) // Tambahkan userId barang
+            putExtra("QUANTITY_OWN", quantityOwn)  // Kirim jumlah barang Anda
+            putExtra("QUANTITY_OTHER", quantityOther)  // Kirim jumlah barang yang ingin dibarter
         }
+
+        Log.d(
+            "PilihBarangActivity",
+            "Mengirim data ke BarterActivity: BARTER_PRODUCT_ID=$barterProductId, SELECTED_PRODUCT_USER_ID=${selectedProduct.userId}, QUANTITY_OWN=$quantityOwn, QUANTITY_OTHER=$quantityOther"
+        )
+
         startActivity(intent)
     }
 }
