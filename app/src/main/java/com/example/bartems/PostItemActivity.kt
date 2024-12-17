@@ -86,6 +86,9 @@ class PostItemActivity : AppCompatActivity() {
 
         findViewById<TextView>(R.id.gotomap).setOnClickListener {
             val intent = Intent(this, MapActivity::class.java)
+            intent.putExtra("caller", "PostItemActivity")
+            // Add other extras as needed
+
 
             // Mengirimkan data inputan ke MapActivity
             intent.putExtra("nama_produk", findViewById<TextInputLayout>(R.id.nama_produk).editText?.text.toString())
@@ -116,6 +119,8 @@ class PostItemActivity : AppCompatActivity() {
                 Toast.makeText(this, "Pilih gambar terlebih dahulu", Toast.LENGTH_SHORT).show()
             }
         }
+
+
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

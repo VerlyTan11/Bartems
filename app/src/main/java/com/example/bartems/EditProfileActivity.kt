@@ -3,11 +3,11 @@ package com.example.bartems
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.airbnb.lottie.LottieAnimationView
@@ -27,6 +27,7 @@ class EditProfileActivity : AppCompatActivity() {
     private lateinit var nameEditText: TextInputEditText
     private lateinit var phoneEditText: TextInputEditText
     private lateinit var emailEditText: TextInputEditText
+    private lateinit var addressEditText: TextInputEditText
 
     // Variable for image URI
     private var imageUri: Uri? = null
@@ -37,6 +38,8 @@ class EditProfileActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.edit_profile)
+        // Initialize address input field
+        addressEditText = findViewById(R.id.alamat_user_input)
         loadingAnimation = findViewById(R.id.loadingAnimation)
         // Initialize Firebase Auth and Firestore
         auth = FirebaseAuth.getInstance()
@@ -70,8 +73,17 @@ class EditProfileActivity : AppCompatActivity() {
             selectImage()
         }
 
+        // Set up pilih dari map button click listener
+        val pilihDariMapButton = findViewById<TextView>(R.id.gotomap)
+        pilihDariMapButton.setOnClickListener {
+            val intent = Intent(this, MapActivity::class.java)
+            intent.putExtra("caller", "EditProfileActivity")
+            startActivityForResult(intent, 1001) // For getting address from map
+        }
+
         // Load existing user data
         loadUserData()
+
     }
 
     private fun loadUserData() {
@@ -112,30 +124,30 @@ class EditProfileActivity : AppCompatActivity() {
         val userId = auth.currentUser?.uid
         val name = nameEditText.text.toString().trim()
         val phone = phoneEditText.text.toString().trim()
+        val address = addressEditText.text.toString().trim()
 
         userId?.let {
             val userUpdates = mutableMapOf<String, Any>()
 
-            // Only add fields to update if not empty
             if (name.isNotEmpty()) {
                 userUpdates["name"] = name
             }
             if (phone.isNotEmpty()) {
                 userUpdates["phone"] = phone
             }
-
-            // Add imageUrl if available
             if (!imageUrl.isNullOrEmpty()) {
                 userUpdates["imageUrl"] = imageUrl
             }
+            if (!address.isNullOrEmpty()) {
+                userUpdates["address"] = address
+            }
 
-            // Check if there are updates to perform
             if (userUpdates.isNotEmpty()) {
                 firestore.collection("users").document(it).set(userUpdates, SetOptions.merge())
                     .addOnSuccessListener {
                         Toast.makeText(this, "Profile updated successfully", Toast.LENGTH_SHORT).show()
-                        setResult(RESULT_OK) // Indicate success
-                        finish() // Close EditProfileActivity
+                        setResult(RESULT_OK)  // Indicate success
+                        finish()  // Close EditProfileActivity
                     }
                     .addOnFailureListener { e ->
                         Toast.makeText(this, "Error updating profile: ${e.message}", Toast.LENGTH_SHORT).show()
@@ -145,6 +157,7 @@ class EditProfileActivity : AppCompatActivity() {
             }
         }
     }
+
 
     private fun uploadImageToFirebaseStorage(imageUri: Uri) {
         val userId = auth.currentUser?.uid ?: return
@@ -177,11 +190,18 @@ class EditProfileActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == IMAGE_PICK_CODE && resultCode == RESULT_OK && data != null) {
-            imageUri = data.data
-            // Display selected image in ImageView
-            val imageView = findViewById<ImageView>(R.id.gambar_user)
-            imageView.setImageURI(imageUri)
+
+        if (requestCode == 1001 && resultCode == RESULT_OK) {
+            // Get the returned address data
+            val selectedAddress = data?.getStringExtra("selectedAddress")
+            val inputAddress = data?.getStringExtra("inputAddress")
+
+            // Return the address to ProfileActivity
+            val resultIntent = Intent()
+            resultIntent.putExtra("selectedAddress", selectedAddress)
+            resultIntent.putExtra("inputAddress", inputAddress)
+            setResult(RESULT_OK, resultIntent)  // Send the result back to ProfileActivity
+            finish()  // Close the EditProfileActivity
         }
     }
 

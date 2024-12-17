@@ -60,6 +60,20 @@ class ProfileActivity : AppCompatActivity() {
         getUserData()
         loadUserProducts()
 
+        // Check if the address was passed from EditProfileActivity
+        val selectedAddress = intent.getStringExtra("selectedAddress")
+        val inputAddress = intent.getStringExtra("inputAddress")
+
+        // Find the TextView to display the address
+        val alamatTextView = findViewById<TextView>(R.id.alamatTextView)
+
+        // Display the address if available
+        if (!selectedAddress.isNullOrEmpty()) {
+            alamatTextView.text = selectedAddress
+        } else if (!inputAddress.isNullOrEmpty()) {
+            alamatTextView.text = inputAddress
+        }
+
         addButton.setOnClickListener {
             val intent = Intent(this, PostItemActivity::class.java)
             intent.putExtra("isFromProfile", true)
@@ -86,6 +100,30 @@ class ProfileActivity : AppCompatActivity() {
             startActivity(intent)
         }
     }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == 1001 && resultCode == RESULT_OK) {
+            val selectedAddress = data?.getStringExtra("selectedAddress")
+            val inputAddress = data?.getStringExtra("inputAddress")
+
+            // Find the alamatTextView and update its text
+            val alamatTextView = findViewById<TextView>(R.id.alamatTextView)
+
+            // Display the address if available
+            if (!selectedAddress.isNullOrEmpty()) {
+                alamatTextView.text = selectedAddress
+            } else if (!inputAddress.isNullOrEmpty()) {
+                alamatTextView.text = inputAddress
+            } else {
+                // If no address is provided, show the default message
+                alamatTextView.text = "Lokasi belum diatur"
+            }
+        }
+    }
+
+
 
     private fun showMenuDialog() {
         val options = arrayOf("Logout", "Delete Account")
@@ -167,6 +205,7 @@ class ProfileActivity : AppCompatActivity() {
     private fun getUserData() {
         val userId = auth.currentUser?.uid
         val userEmail = auth.currentUser?.email
+        val alamatTextView = findViewById<TextView>(R.id.alamatTextView)
         if (userId != null) {
             firestore.collection("users").document(userId)
                 .addSnapshotListener { documentSnapshot, e ->
@@ -179,10 +218,12 @@ class ProfileActivity : AppCompatActivity() {
                         val name = documentSnapshot.getString("name") ?: "Nama tidak tersedia"
                         val noHp = documentSnapshot.getString("phone") ?: "Nomor HP tidak tersedia"
                         val imageUrl = documentSnapshot.getString("imageUrl")
+                        val address = documentSnapshot.getString("address") ?: "Alamat belum diatur"
 
                         namaTextView.text = name
                         emailTextView.text = userEmail
                         noHpTextView.text = noHp
+                        alamatTextView.text = address // Set address here
 
                         Glide.with(this)
                             .load(imageUrl ?: R.drawable.default_profile_image)
@@ -194,4 +235,5 @@ class ProfileActivity : AppCompatActivity() {
             Toast.makeText(this, "Pengguna tidak terautentikasi", Toast.LENGTH_SHORT).show()
         }
     }
+
 }

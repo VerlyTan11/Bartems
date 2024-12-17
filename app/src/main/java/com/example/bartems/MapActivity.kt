@@ -18,6 +18,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.material.textfield.TextInputEditText
 import java.io.IOException
 import java.util.Locale
 
@@ -47,6 +48,11 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         searchIcon = findViewById(R.id.icon_search)
         fullAddressText = findViewById(R.id.text_full_address) // Initialize the new TextView
         geocoder = Geocoder(this, Locale.getDefault())
+        // Initialize EditText variables to correspond to the fields in your layout
+        val nameEditText = findViewById<TextInputEditText>(R.id.nama_user) // Example ID from your XML
+        val phoneEditText = findViewById<TextInputEditText>(R.id.telp_user) // Example ID from your XML
+        val emailEditText = findViewById<TextInputEditText>(R.id.jumlah) // Example ID from your XML
+
 
         // Set up map fragment
         val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as? SupportMapFragment
@@ -72,32 +78,64 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             val selectedAddress = fullAddressText.text.toString() // Alamat lengkap yang dipilih
             val inputAddress = alamatInput.text.toString() // Alamat yang diinputkan
 
-            // Pastikan alamat lengkap atau alamat input tidak kosong
-            if (selectedAddress.isNotEmpty() || inputAddress.isNotEmpty()) {
-                // Membuat intent untuk kembali ke PostItemActivity
-                val resultIntent = Intent()
+            // Check if the intent came from PostItemActivity or EditProfileActivity
+            val caller = intent.getStringExtra("caller") // This identifies where the intent came from
 
-                // Mengirimkan data yang sudah diinputkan dari MapActivity
-                resultIntent.putExtra("selectedAddress", selectedAddress) // Alamat yang dipilih
-                resultIntent.putExtra("inputAddress", inputAddress) // Alamat input yang ditambahkan oleh pengguna
+            if (caller == "PostItemActivity") {
+                // For PostItemActivity, handle the product data
+                if (selectedAddress.isNotEmpty() || inputAddress.isNotEmpty()) {
+                    val resultIntent = Intent()
 
-                // Mengirimkan data lain yang diambil sebelumnya dari PostItemActivity
-                resultIntent.putExtra("nama_produk", intent.getStringExtra("nama_produk"))
-                resultIntent.putExtra("catatan", intent.getStringExtra("catatan"))
-                resultIntent.putExtra("jumlah", intent.getStringExtra("jumlah"))
-                resultIntent.putExtra("berat", intent.getStringExtra("berat"))
-                resultIntent.putExtra("alamat", intent.getStringExtra("alamat"))
-                resultIntent.putExtra("no_rumah", intent.getStringExtra("no_rumah"))
-                resultIntent.putExtra("kode_pos", intent.getStringExtra("kode_pos"))
+                    // Send back the selected and inputted address
+                    resultIntent.putExtra("selectedAddress", selectedAddress) // Alamat yang dipilih
+                    resultIntent.putExtra("inputAddress", inputAddress) // Alamat input yang ditambahkan oleh pengguna
 
-                // Mengembalikan data ke PostItemActivity dengan RESULT_OK
-                setResult(RESULT_OK, resultIntent)
-                finish() // Menutup MapActivity dan kembali ke PostItemActivity
+                    // Send back the product data from PostItemActivity
+                    resultIntent.putExtra("nama_produk", intent.getStringExtra("nama_produk"))
+                    resultIntent.putExtra("catatan", intent.getStringExtra("catatan"))
+                    resultIntent.putExtra("jumlah", intent.getStringExtra("jumlah"))
+                    resultIntent.putExtra("berat", intent.getStringExtra("berat"))
+                    resultIntent.putExtra("alamat", intent.getStringExtra("alamat"))
+                    resultIntent.putExtra("no_rumah", intent.getStringExtra("no_rumah"))
+                    resultIntent.putExtra("kode_pos", intent.getStringExtra("kode_pos"))
+
+                    // Return data to PostItemActivity
+                    setResult(RESULT_OK, resultIntent)
+                    finish() // Close MapActivity and return to PostItemActivity
+                } else {
+                    Toast.makeText(this, "Silakan pilih lokasi terlebih dahulu", Toast.LENGTH_SHORT).show()
+                }
+            } else if (caller == "EditProfileActivity") {
+                // For EditProfileActivity, handle the user profile data
+                val name = nameEditText.text.toString().trim()
+                val phone = phoneEditText.text.toString().trim()
+                val email = emailEditText.text.toString().trim()
+
+                // Ensure the name, phone, and email fields are not empty
+                if (name.isNotEmpty() && phone.isNotEmpty() && email.isNotEmpty()) {
+                    val resultIntent = Intent()
+
+                    // Send back the updated user profile data
+                    resultIntent.putExtra("name", name)
+                    resultIntent.putExtra("phone", phone)
+                    resultIntent.putExtra("email", email)
+
+                    // Send the selected or inputted address back to EditProfileActivity
+                    resultIntent.putExtra("selectedAddress", selectedAddress)
+                    resultIntent.putExtra("inputAddress", inputAddress)
+
+                    // Return the updated profile data to EditProfileActivity
+                    setResult(RESULT_OK, resultIntent)
+                    finish() // Close MapActivity and return to EditProfileActivity
+                } else {
+                    Toast.makeText(this, "Nama, No Telp, dan Email tidak boleh kosong", Toast.LENGTH_SHORT).show()
+                }
             } else {
-                // Jika alamat tidak dipilih atau diinputkan, tampilkan pesan
-                Toast.makeText(this, "Silakan pilih lokasi terlebih dahulu", Toast.LENGTH_SHORT).show()
+                // Handle cases where the intent is neither from PostItemActivity nor EditProfileActivity
+                Toast.makeText(this, "Error: Unknown caller", Toast.LENGTH_SHORT).show()
             }
         }
+
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
