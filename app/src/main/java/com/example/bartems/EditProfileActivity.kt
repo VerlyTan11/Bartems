@@ -11,6 +11,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.airbnb.lottie.LottieAnimationView
+import com.bumptech.glide.Glide
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
@@ -95,7 +96,9 @@ class EditProfileActivity : AppCompatActivity() {
                         val name = document.getString("name") ?: ""
                         val phone = document.getString("phone") ?: ""
                         val imageUrl = document.getString("imageUrl") // Ambil URL gambar
+                        val address = document.getString("address") ?: "" // Ambil alamat
 
+                        // Isi data pada field input
                         nameEditText.setText(name)
                         phoneEditText.setText(phone)
 
@@ -103,15 +106,16 @@ class EditProfileActivity : AppCompatActivity() {
                         val email = auth.currentUser?.email ?: ""
                         emailEditText.setText(email)
 
-                        // Disable editing for email
+                        // Disable editing untuk email
                         emailEditText.isEnabled = false // Disable editing
 
-                        // Load image into ImageView (optional)
+                        // Set alamat di field input
+                        addressEditText.setText(address) // Set alamat yang ada di Firebase
+
+                        // Memuat gambar jika ada URL gambar
                         val imageView = findViewById<ImageView>(R.id.gambar_user)
                         if (imageUrl != null) {
-                            // Load image using your preferred image loading library (e.g., Glide, Picasso)
-                            // Example with Glide:
-                            // Glide.with(this).load(imageUrl).into(imageView)
+                            Glide.with(this).load(imageUrl).into(imageView)
                         }
                     }
                 }.addOnFailureListener {
@@ -119,6 +123,7 @@ class EditProfileActivity : AppCompatActivity() {
                 }
         }
     }
+
 
     private fun updateUserProfile(imageUrl: String?) {
         val userId = auth.currentUser?.uid
@@ -196,12 +201,18 @@ class EditProfileActivity : AppCompatActivity() {
             val selectedAddress = data?.getStringExtra("selectedAddress")
             val inputAddress = data?.getStringExtra("inputAddress")
 
+            // Update the alamat_user_input field with the input address
+            addressEditText.setText(inputAddress)
+
             // Return the address to ProfileActivity
             val resultIntent = Intent()
             resultIntent.putExtra("selectedAddress", selectedAddress)
             resultIntent.putExtra("inputAddress", inputAddress)
             setResult(RESULT_OK, resultIntent)  // Send the result back to ProfileActivity
             finish()  // Close the EditProfileActivity
+
+            // Optionally, you can show a confirmation or message
+            Toast.makeText(this, "Address updated successfully!", Toast.LENGTH_SHORT).show()
         }
     }
 
