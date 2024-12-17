@@ -75,20 +75,20 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         // Dalam onCreate() MapActivity
         // Ketika button diklik di MapActivity
         confirmButton.setOnClickListener {
-            val selectedAddress = fullAddressText.text.toString() // Alamat lengkap yang dipilih
-            val inputAddress = alamatInput.text.toString() // Alamat yang diinputkan
+            val selectedAddress = fullAddressText.text.toString() // Full address selected
+            val inputAddress = alamatInput.text.toString() // Address input by the user
 
             // Check if the intent came from PostItemActivity or EditProfileActivity
             val caller = intent.getStringExtra("caller") // This identifies where the intent came from
 
-            if (caller == "PostItemActivity") {
+            if (caller == "PostItemActivity" || caller == "EditProfileActivity" ) {
                 // For PostItemActivity, handle the product data
                 if (selectedAddress.isNotEmpty() || inputAddress.isNotEmpty()) {
                     val resultIntent = Intent()
 
                     // Send back the selected and inputted address
-                    resultIntent.putExtra("selectedAddress", selectedAddress) // Alamat yang dipilih
-                    resultIntent.putExtra("inputAddress", inputAddress) // Alamat input yang ditambahkan oleh pengguna
+                    resultIntent.putExtra("selectedAddress", selectedAddress) // Selected address
+                    resultIntent.putExtra("inputAddress", inputAddress) // User input address
 
                     // Send back the product data from PostItemActivity
                     resultIntent.putExtra("nama_produk", intent.getStringExtra("nama_produk"))
@@ -107,9 +107,9 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                 }
             } else if (caller == "EditProfileActivity") {
                 // For EditProfileActivity, handle the user profile data
-                val name = nameEditText.text.toString().trim()
-                val phone = phoneEditText.text.toString().trim()
-                val email = emailEditText.text.toString().trim()
+                val name = intent.getStringExtra("name") ?: ""
+                val phone = intent.getStringExtra("phone") ?: ""
+                val email = intent.getStringExtra("email") ?: ""
 
                 // Ensure the name, phone, and email fields are not empty
                 if (name.isNotEmpty() && phone.isNotEmpty() && email.isNotEmpty()) {

@@ -74,7 +74,7 @@ class EditProfileActivity : AppCompatActivity() {
             selectImage()
         }
 
-        // Set up pilih dari map button click listener
+        // Inside EditProfileActivity, when navigating to PostItemActivity
         val pilihDariMapButton = findViewById<TextView>(R.id.gotomap)
         pilihDariMapButton.setOnClickListener {
             val intent = Intent(this, MapActivity::class.java)
@@ -199,17 +199,9 @@ class EditProfileActivity : AppCompatActivity() {
         if (requestCode == 1001 && resultCode == RESULT_OK) {
             // Get the returned address data
             val selectedAddress = data?.getStringExtra("selectedAddress")
-            val inputAddress = data?.getStringExtra("inputAddress")
 
-            // Update the alamat_user_input field with the input address
-            addressEditText.setText(inputAddress)
-
-            // Return the address to ProfileActivity
-            val resultIntent = Intent()
-            resultIntent.putExtra("selectedAddress", selectedAddress)
-            resultIntent.putExtra("inputAddress", inputAddress)
-            setResult(RESULT_OK, resultIntent)  // Send the result back to ProfileActivity
-            finish()  // Close the EditProfileActivity
+            // Update the address input field with the selected address
+            addressEditText.setText(selectedAddress)
 
             // Optionally, you can show a confirmation or message
             Toast.makeText(this, "Address updated successfully!", Toast.LENGTH_SHORT).show()

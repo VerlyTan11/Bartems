@@ -58,21 +58,15 @@ class PostItemActivity : AppCompatActivity() {
         firestore = FirebaseFirestore.getInstance()
         storage = FirebaseStorage.getInstance()
 
+        // Retrieve the address from the intent
         val selectedAddress = intent.getStringExtra("selectedAddress")
-        val inputAddress = intent.getStringExtra("inputAddress")
 
         val alamatEditText = findViewById<TextInputLayout>(R.id.alamat)
 
-        val combinedAddress = StringBuilder()
-        if (!inputAddress.isNullOrEmpty()) {
-            combinedAddress.append(inputAddress)
-            combinedAddress.append(", ") // Tambahkan koma sebagai pemisah
-        }
+        // Set the address in the EditText
         if (!selectedAddress.isNullOrEmpty()) {
-            combinedAddress.append(selectedAddress)
+            alamatEditText.editText?.setText(selectedAddress)
         }
-
-        alamatEditText.editText?.setText(combinedAddress.toString())
 
         findViewById<ImageView>(R.id.back_post_item).setOnClickListener {
             val intent = if (intent.hasExtra("isFromProfile") && intent.getBooleanExtra("isFromProfile", false)) {
@@ -248,6 +242,7 @@ class PostItemActivity : AppCompatActivity() {
     }
 
     // Memproses hasil yang dikirimkan kembali dari MapActivity
+    // Memproses hasil yang dikirimkan kembali dari MapActivity
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         val imageView = findViewById<ImageView>(R.id.gambar_product)
@@ -289,6 +284,7 @@ class PostItemActivity : AppCompatActivity() {
             findViewById<TextInputLayout>(R.id.alamat).editText?.setText(selectedAddress ?: inputAddress)
         }
     }
+
 
     private fun getImageUriFromBitmap(bitmap: Bitmap?): Uri {
         val bytes = ByteArrayOutputStream()
