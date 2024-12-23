@@ -81,7 +81,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             // Check if the intent came from PostItemActivity or EditProfileActivity
             val caller = intent.getStringExtra("caller") // This identifies where the intent came from
 
-            if (caller == "PostItemActivity" || caller == "EditProfileActivity" ) {
+            if (caller == "PostItemActivity" || caller == "EditProfileActivity" || caller == "EditDetailProductActivity" ) {
                 // For PostItemActivity, handle the product data
                 if (selectedAddress.isNotEmpty() || inputAddress.isNotEmpty()) {
                     val resultIntent = Intent()

@@ -196,17 +196,27 @@ class EditProfileActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (requestCode == 1001 && resultCode == RESULT_OK) {
-            // Get the returned address data
+        if (requestCode == IMAGE_PICK_CODE && resultCode == RESULT_OK) {
+            // Dapatkan URI gambar yang dipilih
+            imageUri = data?.data
+            if (imageUri != null) {
+                // Temukan ImageView
+                val imageView = findViewById<ImageView>(R.id.gambar_user)
+
+                // Tampilkan gambar yang dipilih pada ImageView menggunakan Glide
+                Glide.with(this).load(imageUri).into(imageView)
+
+                // Tampilkan pesan sukses
+                Toast.makeText(this, "Photo selected successfully!", Toast.LENGTH_SHORT).show()
+            }
+        } else if (requestCode == 1001 && resultCode == RESULT_OK) {
+            // Handle address data
             val selectedAddress = data?.getStringExtra("selectedAddress")
-
-            // Update the address input field with the selected address
             addressEditText.setText(selectedAddress)
-
-            // Optionally, you can show a confirmation or message
             Toast.makeText(this, "Address updated successfully!", Toast.LENGTH_SHORT).show()
         }
     }
+
 
     // Fungsi untuk menampilkan animasi loading
     private fun showLoadingAnimation() {

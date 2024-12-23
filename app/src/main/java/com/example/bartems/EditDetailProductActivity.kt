@@ -118,6 +118,7 @@ class EditDetailProductActivity : AppCompatActivity() {
 
         btnSelectLocation.setOnClickListener {
             val intent = Intent(this, MapActivity::class.java)
+            intent.putExtra("caller", "EditDetailProductActivity") // Pass the caller information
             startActivityForResult(intent, MAP_REQUEST_CODE)
         }
     }
