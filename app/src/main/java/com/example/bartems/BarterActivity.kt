@@ -241,9 +241,10 @@ class BarterActivity : AppCompatActivity() {
                                                                         }
 
                                                                         supportFragmentManager.beginTransaction()
-                                                                            .replace(R.id.fragment_container, fragment)
-                                                                            .addToBackStack(null)
+                                                                            .replace(android.R.id.content, fragment) // Menggunakan root container untuk layar penuh
+                                                                            .addToBackStack(null) // Menambahkan ke back stack jika diperlukan
                                                                             .commit()
+
 
                                                                         if (checkNotificationPermission()) {
                                                                             showNotification("Produk Barter", "Produk Anda berhasil ditukar!")

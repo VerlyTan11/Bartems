@@ -29,22 +29,4 @@
         app:layout_constraintVertical_bias="0.396"
         app:srcCompat="@drawable/done" />
 
-    <Button
-        android:id="@+id/button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:backgroundTint="#697565"
-        android:text="Back to Home"
-        android:textColorLink="#4CAF50"
-        android:textSize="24sp"
-        app:iconSize="20dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.903" />
-
-    <!-- Add more UI elements as needed -->
-
 </androidx.constraintlayout.widget.ConstraintLayout>
