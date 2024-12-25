@@ -2,20 +2,19 @@ package com.example.bartems.model
 
 data class BarterHistory(
     var id: String? = null,
-    val address: String? = null,
     val barterProductId: String? = null,
     val barterProductImage: String? = null,
     val barterProductName: String? = null,
-    var barterProductOwner: String? = null, // ID pemilik barang barter
+    var barterProductOwner: String? = null, // Nama pemilik barang barter
     var barterProductOwnerPhone: String? = null, // Nomor telepon pemilik barang barter
+    val barterProductOwnerAddress: String? = null, // Alamat pemilik barang barter
     val selectedProductId: String? = null,
     val selectedProductImage: String? = null,
     val selectedProductName: String? = null,
-    var selectedProductOwner: String? = null, // ID pemilik barang yang dipilih
+    var selectedProductOwner: String? = null, // Nama pemilik barang yang dipilih
     var selectedProductOwnerPhone: String? = null, // Nomor telepon pemilik barang yang dipilih
-    val userId: String? = null,
-    val partnerUserId: String? = null,
-    val timestamp: Long? = null,
-    val quantityOwn: Int? = null,
-    val quantityOther: Int? = null
+    val selectedProductOwnerAddress: String? = null, // Alamat pemilik barang yang dipilih
+    val quantityRequested: Int? = null,
+    val quantityReceived: Int? = null,
+    val timestamp: Long? = null
 )

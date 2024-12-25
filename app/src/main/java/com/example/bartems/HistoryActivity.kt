@@ -8,13 +8,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.bartems.model.BarterHistory
-import com.google.android.gms.tasks.Task
-import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
-import com.google.firebase.firestore.QuerySnapshot
 
 class HistoryActivity : AppCompatActivity() {
 
@@ -24,6 +20,7 @@ class HistoryActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var adapter: BarterHistoryAdapter
     private val historyList = mutableListOf<BarterHistory>()
+    private val transactionSet = mutableSetOf<String>() // Set untuk menyimpan ID unik
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,41 +48,74 @@ class HistoryActivity : AppCompatActivity() {
         val currentUserId = auth.currentUser?.uid
 
         if (currentUserId != null) {
-            // Query pertama: untuk riwayat di mana currentUserId adalah userId
-            val userHistoryQuery = firestore.collection("barter_history")
-                .whereEqualTo("userId", currentUserId)
+            // Query riwayat berdasarkan userIds yang mengandung currentUserId
+            val historyQuery = firestore.collection("barter_history")
+                .whereArrayContains("userIds", currentUserId)
                 .orderBy("timestamp", Query.Direction.DESCENDING)
                 .get()
 
-            // Query kedua: untuk riwayat di mana currentUserId adalah partnerUserId
-            val partnerHistoryQuery = firestore.collection("barter_history")
-                .whereEqualTo("partnerUserId", currentUserId)
-                .orderBy("timestamp", Query.Direction.DESCENDING)
-                .get()
-
-            // Jalankan kedua query secara bersamaan
-            Tasks.whenAllComplete(userHistoryQuery, partnerHistoryQuery).addOnSuccessListener { tasks ->
+            historyQuery.addOnSuccessListener { querySnapshot ->
                 historyList.clear()
+                transactionSet.clear() // Reset set transaksi untuk mencegah duplikasi
 
-                // Gabungkan hasil kedua query
-                tasks.forEach { task ->
-                    if (task.isSuccessful) {
-                        val snapshots = task.result as? QuerySnapshot
-                        snapshots?.forEach { document ->
-                            val history = document.toObject(BarterHistory::class.java)
-                            if (history != null && historyList.none { it.id == document.id }) {
-                                history.id = document.id
-                                historyList.add(history)
+                querySnapshot?.forEach { document ->
+                    val transactionId = document.getString("transactionId") ?: document.id
+                    if (!transactionSet.contains(transactionId)) {
+                        transactionSet.add(transactionId) // Tambahkan ID transaksi ke set
+
+                        val barterProductOwnerId = document.getString("barterProductOwnerId") ?: ""
+                        val selectedProductOwnerId = document.getString("selectedProductOwnerId") ?: ""
+
+                        val history = BarterHistory(
+                            id = document.id,
+                            barterProductId = document.getString("barterProductId"),
+                            barterProductImage = document.getString("barterProductImage"),
+                            barterProductName = document.getString("barterProductName"),
+                            barterProductOwner = null, // Akan diambil dari Firestore
+                            barterProductOwnerPhone = document.getString("barterProductOwnerPhone"),
+                            barterProductOwnerAddress = document.getString("barterProductOwnerAddress"),
+                            selectedProductId = document.getString("selectedProductId"),
+                            selectedProductImage = document.getString("selectedProductImage"),
+                            selectedProductName = document.getString("selectedProductName"),
+                            selectedProductOwner = null, // Akan diambil dari Firestore
+                            selectedProductOwnerPhone = document.getString("selectedProductOwnerPhone"),
+                            selectedProductOwnerAddress = document.getString("selectedProductOwnerAddress"),
+                            quantityRequested = document.getLong("quantityRequested")?.toInt(),
+                            quantityReceived = document.getLong("quantityReceived")?.toInt(),
+                            timestamp = document.getLong("timestamp")
+                        )
+
+                        // Ambil nama pemilik berdasarkan ID dari koleksi users
+                        firestore.collection("users").document(barterProductOwnerId)
+                            .get()
+                            .addOnSuccessListener { barterOwnerDoc ->
+                                if (barterOwnerDoc.exists()) {
+                                    history.barterProductOwner = barterOwnerDoc.getString("name")
+                                }
+                                firestore.collection("users")
+                                    .document(selectedProductOwnerId)
+                                    .get()
+                                    .addOnSuccessListener { selectedOwnerDoc ->
+                                        if (selectedOwnerDoc.exists()) {
+                                            history.selectedProductOwner =
+                                                selectedOwnerDoc.getString("name")
+                                        }
+
+                                        historyList.add(history)
+
+                                        // Perbarui UI setelah semua data diambil
+                                        if (historyList.size == transactionSet.size) {
+                                            historyList.sortByDescending { it.timestamp }
+                                            adapter.updateData(historyList)
+                                        }
+                                    }
                             }
-                        }
                     }
                 }
 
-                // Update UI dengan data terbaru
-                if (historyList.isNotEmpty()) {
-                    adapter.updateData(historyList)
-                } else {
-                    Toast.makeText(this, "Tidak ada riwayat barter ditemukan", Toast.LENGTH_SHORT).show()
+                // Periksa apakah historyList kosong
+                if (historyList.isEmpty()) {
+                    Toast.makeText(this, "Belum ada history barter", Toast.LENGTH_SHORT).show()
                 }
             }.addOnFailureListener { e ->
                 Log.e("HistoryActivity", "Gagal memuat riwayat: ${e.message}")

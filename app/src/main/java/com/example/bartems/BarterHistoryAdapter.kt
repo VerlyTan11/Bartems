@@ -27,11 +27,12 @@ class BarterHistoryAdapter(
         val selectedProductName: TextView = view.findViewById(R.id.text_selected_product_name)
         val barterProductOwner: TextView = view.findViewById(R.id.text_barter_product_owner)
         val barterProductOwnerPhone: TextView = view.findViewById(R.id.text_barter_product_owner_phone)
+        val barterProductOwnerAddress: TextView = view.findViewById(R.id.text_barter_product_owner_address) // Pastikan ID sesuai di XML
         val selectedProductOwner: TextView = view.findViewById(R.id.text_selected_product_owner)
         val selectedProductOwnerPhone: TextView = view.findViewById(R.id.text_selected_product_owner_phone)
-        val barterProductQuantity: TextView = view.findViewById(R.id.text_barter_product_quantity) // Tambahkan referensi untuk jumlah barang barter
-        val selectedProductQuantity: TextView = view.findViewById(R.id.text_selected_product_quantity) // Tambahkan referensi untuk jumlah barang yang dipilih
-        val address: TextView = view.findViewById(R.id.text_address)
+        val selectedProductOwnerAddress: TextView = view.findViewById(R.id.text_selected_product_owner_address) // Pastikan ID sesuai di XML
+        val barterProductQuantity: TextView = view.findViewById(R.id.text_barter_product_quantity)
+        val selectedProductQuantity: TextView = view.findViewById(R.id.text_selected_product_quantity)
         val timestamp: TextView = view.findViewById(R.id.text_timestamp)
     }
 
@@ -43,32 +44,30 @@ class BarterHistoryAdapter(
     override fun onBindViewHolder(holder: HistoryViewHolder, position: Int) {
         val history = historyList[position]
 
-        // Set data gambar produk barter
-        Glide.with(context)
-            .load(history.barterProductImage)
-            .into(holder.barterProductImage)
-
-        // Set data gambar produk yang dipilih
+        // Set data gambar produk
         Glide.with(context)
             .load(history.selectedProductImage)
             .into(holder.selectedProductImage)
 
-        // Tampilkan nama dan nomor HP pemilik barang barter
-        holder.barterProductOwner.text = history.barterProductOwner ?: "Pemilik tidak diketahui"
-        holder.barterProductOwnerPhone.text = history.barterProductOwnerPhone ?: "No HP tidak tersedia"
+        Glide.with(context)
+            .load(history.barterProductImage)
+            .into(holder.barterProductImage)
 
-        // Tampilkan nama dan nomor HP pemilik barang yang dipilih
-        holder.selectedProductOwner.text = history.selectedProductOwner ?: "Pemilik tidak diketahui"
-        holder.selectedProductOwnerPhone.text = history.selectedProductOwnerPhone ?: "No HP tidak tersedia"
+        // Set data barang selected
+        holder.selectedProductName.text = "Nama Barang: ${history.selectedProductName}"
+        holder.selectedProductQuantity.text = "Jumlah: ${history.quantityRequested}"
+        holder.selectedProductOwner.text = "Pemilik: ${history.selectedProductOwner ?: "Tidak Diketahui"}"
+        holder.selectedProductOwnerPhone.text = "No HP: ${history.selectedProductOwnerPhone ?: "Tidak Tersedia"}"
+        holder.selectedProductOwnerAddress.text = "Alamat: ${history.selectedProductOwnerAddress ?: "Tidak Tersedia"}"
 
-        // Tampilkan nama produk dan jumlah barang
-        holder.barterProductName.text = history.barterProductName
-        holder.selectedProductName.text = history.selectedProductName
-        holder.barterProductQuantity.text = "Jumlah: ${history.quantityOther ?: 0}"
-        holder.selectedProductQuantity.text = "Jumlah: ${history.quantityOwn ?: 0}"
+        // Set data barang barter
+        holder.barterProductName.text = "Nama Barang: ${history.barterProductName}"
+        holder.barterProductQuantity.text = "Jumlah: ${history.quantityReceived}"
+        holder.barterProductOwner.text = "Pemilik: ${history.barterProductOwner ?: "Tidak Diketahui"}"
+        holder.barterProductOwnerPhone.text = "No HP: ${history.barterProductOwnerPhone ?: "Tidak Tersedia"}"
+        holder.barterProductOwnerAddress.text = "Alamat: ${history.barterProductOwnerAddress ?: "Tidak Tersedia"}"
 
-        // Tampilkan alamat dan waktu transaksi
-        holder.address.text = "Alamat: ${history.address ?: "Tidak tersedia"}"
+        // Set data tanggal di tengah bawah
         holder.timestamp.text = "Tanggal: ${convertTimestampToDate(history.timestamp)}"
     }
 
