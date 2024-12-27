@@ -58,7 +58,13 @@ class HistoryActivity : AppCompatActivity() {
                 historyList.clear()
                 transactionSet.clear() // Reset set transaksi untuk mencegah duplikasi
 
-                querySnapshot?.forEach { document ->
+                if (querySnapshot.isEmpty) {
+                    // Jika tidak ada data, tampilkan notifikasi dan keluar dari fungsi
+                    Toast.makeText(this, "Belum ada riwayat barter", Toast.LENGTH_SHORT).show()
+                    return@addOnSuccessListener
+                }
+
+                querySnapshot.forEach { document ->
                     val transactionId = document.getString("transactionId") ?: document.id
                     if (!transactionSet.contains(transactionId)) {
                         transactionSet.add(transactionId) // Tambahkan ID transaksi ke set
@@ -111,11 +117,6 @@ class HistoryActivity : AppCompatActivity() {
                                     }
                             }
                     }
-                }
-
-                // Periksa apakah historyList kosong
-                if (historyList.isEmpty()) {
-                    Toast.makeText(this, "", Toast.LENGTH_SHORT).show()
                 }
             }.addOnFailureListener { e ->
                 Log.e("HistoryActivity", "Gagal memuat riwayat: ${e.message}")
