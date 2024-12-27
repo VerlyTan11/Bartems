@@ -1,34 +1,24 @@
 package com.example.bartems
 
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.View
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
-import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieAnimationView
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import java.util.Locale
-import android.Manifest
-import android.location.Location
 
 class HomeActivity : AppCompatActivity() {
 
@@ -38,9 +28,6 @@ class HomeActivity : AppCompatActivity() {
     private lateinit var loadingIndicator: View
     private lateinit var loadingAnimation: LottieAnimationView
     private val productRecyclerList = mutableListOf<ProductRecyclerList>()
-    private lateinit var fusedLocationClient: FusedLocationProviderClient
-    private var currentLatitude: Double? = null
-    private var currentLongitude: Double? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,37 +65,6 @@ class HomeActivity : AppCompatActivity() {
             startActivity(Intent(this, PostItemActivity::class.java))
         }
 
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-
-        // Request location permissions
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-            != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1)
-        } else {
-            getLastLocation()
-        }
-
-        // Initialize the spinner
-        val nearMeDropdown: Spinner = findViewById(R.id.nearMeDropdown)
-        val options = listOf("Show All", "Show Products Near Me")
-        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, options)
-        nearMeDropdown.adapter = adapter
-
-        nearMeDropdown.setOnItemSelectedListener(object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parentView: AdapterView<*>, selectedItemView: View?, position: Int, id: Long) {
-                if (position == 1) { // "Show Products Near Me" selected
-                    if (currentLatitude != null && currentLongitude != null) {
-                        fetchProductsNearMe(currentLatitude!!, currentLongitude!!)
-                    } else {
-                        Toast.makeText(this@HomeActivity, "Unable to get your location", Toast.LENGTH_SHORT).show()
-                    }
-                } else {
-                    fetchProducts() // Fetch all products
-                }
-            }
-
-            override fun onNothingSelected(parentView: AdapterView<*>) {}
-        })
 
         fetchUserName()
         setupSearchListener(searchTextInput)
@@ -116,85 +72,6 @@ class HomeActivity : AppCompatActivity() {
         setupAddItemNavigation()
         fetchProducts()
     }
-
-    private fun getLastLocation() {
-        if (ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return
-        }
-        fusedLocationClient.lastLocation
-            .addOnSuccessListener { location: Location? ->  // Use Location class here
-                if (location != null) {
-                    currentLatitude = location.latitude
-                    currentLongitude = location.longitude
-                } else {
-                    Toast.makeText(this, "Location not available", Toast.LENGTH_SHORT).show()
-                }
-            }
-    }
-
-    private fun fetchProductsNearMe(userLatitude: Double, userLongitude: Double) {
-        Log.d("HomeActivity", "Fetching nearby products from Firestore...")
-
-        showLoadingAnimation() // Show loading animation
-
-        db.collection("items")
-            .get()
-            .addOnSuccessListener { documents ->
-                productRecyclerList.clear()
-
-                for (document in documents) {
-                    val id = document.id
-                    val name = document.getString("nama_produk") ?: "Nama produk tidak tersedia"
-                    val imageUrl = document.getString("imageUrl") ?: ""
-                    val productLatitude = document.getDouble("latitude") // Assuming latitude is stored
-                    val productLongitude = document.getDouble("longitude") // Assuming longitude is stored
-
-                    if (name.isNotBlank() && id.isNotBlank() && productLatitude != null && productLongitude != null) {
-                        val distance = calculateDistance(userLatitude, userLongitude, productLatitude, productLongitude)
-
-                        if (distance <= 20) { // 20 km radius
-                            productRecyclerList.add(ProductRecyclerList(id, name, imageUrl))
-                        }
-                    }
-                }
-
-                adapter.notifyDataSetChanged()
-            }
-            .addOnFailureListener { exception ->
-                Toast.makeText(this, "Failed to load products: ${exception.message}", Toast.LENGTH_SHORT).show()
-            }
-            .addOnCompleteListener {
-                hideLoadingAnimation() // Hide loading animation
-            }
-    }
-
-    private fun calculateDistance(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Double {
-        val radius = 6371 // Earth's radius in kilometers
-
-        val latDistance = Math.toRadians(lat2 - lat1)
-        val lonDistance = Math.toRadians(lon2 - lon1)
-        val a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2) +
-                Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
-                Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2)
-        val c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
-
-        return radius * c // Returns the distance in kilometers
-    }
-
 
     private fun fetchUserName() {
         val userNameTextView: TextView = findViewById(R.id.textView16)

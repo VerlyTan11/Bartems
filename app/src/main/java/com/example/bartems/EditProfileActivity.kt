@@ -7,7 +7,6 @@ import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.airbnb.lottie.LottieAnimationView
@@ -24,11 +23,10 @@ class EditProfileActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var firestore: FirebaseFirestore
     private lateinit var loadingAnimation: LottieAnimationView
-    // Declare EditText for name, phone, and email
+    // Declare EditText for name and phone
     private lateinit var nameEditText: TextInputEditText
     private lateinit var phoneEditText: TextInputEditText
     private lateinit var emailEditText: TextInputEditText
-    private lateinit var addressEditText: TextInputEditText
 
     // Variable for image URI
     private var imageUri: Uri? = null
@@ -39,8 +37,7 @@ class EditProfileActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.edit_profile)
-        // Initialize address input field
-        addressEditText = findViewById(R.id.alamat_user_input)
+
         loadingAnimation = findViewById(R.id.loadingAnimation)
         // Initialize Firebase Auth and Firestore
         auth = FirebaseAuth.getInstance()
@@ -74,45 +71,32 @@ class EditProfileActivity : AppCompatActivity() {
             selectImage()
         }
 
-        // Inside EditProfileActivity, when navigating to PostItemActivity
-        val pilihDariMapButton = findViewById<TextView>(R.id.gotomap)
-        pilihDariMapButton.setOnClickListener {
-            val intent = Intent(this, MapActivity::class.java)
-            intent.putExtra("caller", "EditProfileActivity")
-            startActivityForResult(intent, 1001) // For getting address from map
-        }
-
         // Load existing user data
         loadUserData()
-
     }
 
     private fun loadUserData() {
-        val userId = auth.currentUser?.uid
+        val userId = auth.currentUser ?.uid
         userId?.let {
             firestore.collection("users").document(it).get()
                 .addOnSuccessListener { document ->
                     if (document.exists()) {
                         val name = document.getString("name") ?: ""
                         val phone = document.getString("phone") ?: ""
-                        val imageUrl = document.getString("imageUrl") // Ambil URL gambar
-                        val address = document.getString("address") ?: "" // Ambil alamat
+                        val imageUrl = document.getString("imageUrl") // Get image URL
 
-                        // Isi data pada field input
+                        // Fill data in input fields
                         nameEditText.setText(name)
                         phoneEditText.setText(phone)
 
-                        // Dapatkan email dari Firebase Authentication
-                        val email = auth.currentUser?.email ?: ""
+                        // Get email from Firebase Authentication
+                        val email = auth.currentUser ?.email ?: ""
                         emailEditText.setText(email)
 
-                        // Disable editing untuk email
+                        // Disable editing for email
                         emailEditText.isEnabled = false // Disable editing
 
-                        // Set alamat di field input
-                        addressEditText.setText(address) // Set alamat yang ada di Firebase
-
-                        // Memuat gambar jika ada URL gambar
+                        // Load image if there is an image URL
                         val imageView = findViewById<ImageView>(R.id.gambar_user)
                         if (imageUrl != null) {
                             Glide.with(this).load(imageUrl).into(imageView)
@@ -124,12 +108,10 @@ class EditProfileActivity : AppCompatActivity() {
         }
     }
 
-
     private fun updateUserProfile(imageUrl: String?) {
-        val userId = auth.currentUser?.uid
+        val userId = auth.currentUser ?.uid
         val name = nameEditText.text.toString().trim()
         val phone = phoneEditText.text.toString().trim()
-        val address = addressEditText.text.toString().trim()
 
         userId?.let {
             val userUpdates = mutableMapOf<String, Any>()
@@ -141,10 +123,7 @@ class EditProfileActivity : AppCompatActivity() {
                 userUpdates["phone"] = phone
             }
             if (!imageUrl.isNullOrEmpty()) {
-                userUpdates["imageUrl"] = imageUrl
-            }
-            if (!address.isNullOrEmpty()) {
-                userUpdates["address"] = address
+                userUpdates["imageUrl"] = imageUrl // Ensure the key is "imageUrl"
             }
 
             if (userUpdates.isNotEmpty()) {
@@ -163,20 +142,19 @@ class EditProfileActivity : AppCompatActivity() {
         }
     }
 
-
     private fun uploadImageToFirebaseStorage(imageUri: Uri) {
-        val userId = auth.currentUser?.uid ?: return
+        val userId = auth.currentUser ?.uid ?: return
         val storageReference = FirebaseStorage.getInstance().getReference("user_images/$userId/profile_image.jpg")
 
-        // Log untuk debugging
-        Log.d("EditProfileActivity", "User ID: $userId")
+        // Log for debugging
+        Log.d("EditProfileActivity", "User  ID: $userId")
         Log.d("EditProfileActivity", "Image URI: $imageUri")
 
         storageReference.putFile(imageUri)
             .addOnSuccessListener {
                 storageReference.downloadUrl.addOnSuccessListener { uri ->
                     val imageUrl = uri.toString()
-                    updateUserProfile(imageUrl) // Call updateUserProfile with image URL
+                    updateUserProfile(imageUrl) // Call updateUser Profile with image URL
                 }.addOnFailureListener { e ->
                     Toast.makeText(this, "Error getting download URL: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
@@ -197,36 +175,30 @@ class EditProfileActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == IMAGE_PICK_CODE && resultCode == RESULT_OK) {
-            // Dapatkan URI gambar yang dipilih
+            // Get the URI of the selected image
             imageUri = data?.data
             if (imageUri != null) {
-                // Temukan ImageView
+                // Find ImageView
                 val imageView = findViewById<ImageView>(R.id.gambar_user)
 
-                // Tampilkan gambar yang dipilih pada ImageView menggunakan Glide
+                // Display the selected image in ImageView using Glide
                 Glide.with(this).load(imageUri).into(imageView)
 
-                // Tampilkan pesan sukses
+                // Show success message
                 Toast.makeText(this, "Photo selected successfully!", Toast.LENGTH_SHORT).show()
             }
-        } else if (requestCode == 1001 && resultCode == RESULT_OK) {
-            // Handle address data
-            val selectedAddress = data?.getStringExtra("selectedAddress")
-            addressEditText.setText(selectedAddress)
-            Toast.makeText(this, "Address updated successfully!", Toast.LENGTH_SHORT).show()
         }
     }
 
-
-    // Fungsi untuk menampilkan animasi loading
+    // Function to show loading animation
     private fun showLoadingAnimation() {
         loadingAnimation.visibility = View.VISIBLE
-        loadingAnimation.playAnimation()  // Memulai animasi
+        loadingAnimation.playAnimation()  // Start animation
     }
 
-    // Fungsi untuk menyembunyikan animasi loading
+    // Function to hide loading animation
     private fun hideLoadingAnimation() {
-        loadingAnimation.cancelAnimation()  // Menghentikan animasi
-        loadingAnimation.visibility = View.GONE  // Menyembunyikan animasi
+        loadingAnimation.cancelAnimation()  // Stop animation
+        loadingAnimation.visibility = View.GONE  // Hide animation
     }
 }

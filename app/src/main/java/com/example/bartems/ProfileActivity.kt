@@ -60,19 +60,19 @@ class ProfileActivity : AppCompatActivity() {
         getUserData()
         loadUserProducts()
 
-        // Check if the address was passed from EditProfileActivity
-        val selectedAddress = intent.getStringExtra("selectedAddress")
-        val inputAddress = intent.getStringExtra("inputAddress")
+//        // Check if the address was passed from EditProfileActivity
+//        val selectedAddress = intent.getStringExtra("selectedAddress")
+//        val inputAddress = intent.getStringExtra("inputAddress")
 
         // Find the TextView to display the address
-        val alamatTextView = findViewById<TextView>(R.id.alamatTextView)
+//        val alamatTextView = findViewById<TextView>(R.id.alamatTextView)
 
-        // Display the address if available
-        if (!selectedAddress.isNullOrEmpty()) {
-            alamatTextView.text = selectedAddress
-        } else if (!inputAddress.isNullOrEmpty()) {
-            alamatTextView.text = inputAddress
-        }
+//        // Display the address if available
+//        if (!selectedAddress.isNullOrEmpty()) {
+//            alamatTextView.text = selectedAddress
+//        } else if (!inputAddress.isNullOrEmpty()) {
+//            alamatTextView.text = inputAddress
+//        }
 
         addButton.setOnClickListener {
             val intent = Intent(this, PostItemActivity::class.java)
@@ -109,17 +109,17 @@ class ProfileActivity : AppCompatActivity() {
             val inputAddress = data?.getStringExtra("inputAddress")
 
             // Find the alamatTextView and update its text
-            val alamatTextView = findViewById<TextView>(R.id.alamatTextView)
+//            val alamatTextView = findViewById<TextView>(R.id.alamatTextView)
 
             // Display the address if available
-            if (!selectedAddress.isNullOrEmpty()) {
-                alamatTextView.text = selectedAddress
-            } else if (!inputAddress.isNullOrEmpty()) {
-                alamatTextView.text = inputAddress
-            } else {
-                // If no address is provided, show the default message
-                alamatTextView.text = "Lokasi belum diatur"
-            }
+//            if (!selectedAddress.isNullOrEmpty()) {
+//                alamatTextView.text = selectedAddress
+//            } else if (!inputAddress.isNullOrEmpty()) {
+//                alamatTextView.text = inputAddress
+//            } else {
+//                // If no address is provided, show the default message
+//                alamatTextView.text = "Lokasi belum diatur"
+//            }
         }
     }
 
@@ -203,9 +203,9 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     private fun getUserData() {
-        val userId = auth.currentUser?.uid
-        val userEmail = auth.currentUser?.email
-        val alamatTextView = findViewById<TextView>(R.id.alamatTextView)
+        val userId = auth.currentUser ?.uid
+        val userEmail = auth.currentUser ?.email
+
         if (userId != null) {
             firestore.collection("users").document(userId)
                 .addSnapshotListener { documentSnapshot, e ->
@@ -217,16 +217,15 @@ class ProfileActivity : AppCompatActivity() {
                     if (documentSnapshot != null && documentSnapshot.exists()) {
                         val name = documentSnapshot.getString("name") ?: "Nama tidak tersedia"
                         val noHp = documentSnapshot.getString("phone") ?: "Nomor HP tidak tersedia"
-                        val imageUrl = documentSnapshot.getString("imageUrl")
-                        val address = documentSnapshot.getString("address") ?: "Alamat belum diatur"
+                        val imageUrl = documentSnapshot.getString("imageUrl") // Get the updated image URL
 
                         namaTextView.text = name
                         emailTextView.text = userEmail
                         noHpTextView.text = noHp
-                        alamatTextView.text = address // Set address here
 
+                        // Load the image into the ImageView
                         Glide.with(this)
-                            .load(imageUrl ?: R.drawable.default_profile_image)
+                            .load(imageUrl ?: R.drawable.default_profile_image) // Use a default image if imageUrl is null
                             .placeholder(R.drawable.default_profile_image)
                             .into(imageProfileView)
                     }
