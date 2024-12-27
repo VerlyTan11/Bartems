@@ -8,7 +8,6 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
@@ -54,7 +53,6 @@ class PostItemActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.post_item)
-
         loadingAnimation = findViewById(R.id.loadingAnimation)
         auth = FirebaseAuth.getInstance()
         firestore = FirebaseFirestore.getInstance()
@@ -64,12 +62,11 @@ class PostItemActivity : AppCompatActivity() {
         val noRumahEditText = findViewById<TextInputLayout>(R.id.no_rumah)
         val kodePosEditText = findViewById<TextInputLayout>(R.id.kode_pos)
 
-        // Panggil fungsi untuk mengambil data user
-        loadUserAddressData { address, noRumah, kodePos ->
-            // Set nilai field jika data tersedia
-            alamatEditText.editText?.setText(address ?: "")
-            noRumahEditText.editText?.setText(noRumah ?: "")
-            kodePosEditText.editText?.setText(kodePos ?: "")
+        // Retrieve user data from Firebase
+        getUserAddressData { address, noRumah, kodePos ->
+            alamatEditText.editText?.setText(address)
+            noRumahEditText.editText?.setText(noRumah)
+            kodePosEditText.editText?.setText(kodePos)
         }
 
         findViewById<ImageView>(R.id.back_post_item).setOnClickListener {
@@ -80,6 +77,22 @@ class PostItemActivity : AppCompatActivity() {
             }
             startActivity(intent)
             finish()
+        }
+
+        findViewById<TextView>(R.id.gotomap).setOnClickListener {
+            val intent = Intent(this, MapActivity::class.java)
+            intent.putExtra("caller", "PostItemActivity")
+
+            // Mengirimkan data inputan ke MapActivity
+            intent.putExtra("nama_produk", findViewById<TextInputLayout>(R.id.nama_produk).editText?.text.toString())
+            intent.putExtra("catatan", findViewById<TextInputLayout>(R.id.catatan).editText?.text.toString())
+            intent.putExtra("jumlah", findViewById<TextInputLayout>(R.id.jumlah).editText?.text.toString())
+            intent.putExtra("berat", findViewById<TextInputLayout>(R.id.berat).editText?.text.toString())
+            intent.putExtra("alamat", alamatEditText.editText?.text.toString())
+            intent.putExtra("no_rumah", noRumahEditText.editText?.text.toString())
+            intent.putExtra("kode_pos", kodePosEditText.editText?.text.toString())
+
+            startActivityForResult(intent, MAP_REQUEST_CODE)
         }
 
         findViewById<ImageView>(R.id.gambar_product).setOnClickListener {
@@ -96,29 +109,20 @@ class PostItemActivity : AppCompatActivity() {
         }
     }
 
-    // Fungsi untuk mengambil data alamat dari Firebase
-    private fun loadUserAddressData(callback: (String?, String?, String?) -> Unit) {
+    private fun getUserAddressData(callback: (String, String, String) -> Unit) {
         val userId = auth.currentUser?.uid
         if (userId != null) {
             firestore.collection("users").document(userId)
                 .get()
-                .addOnSuccessListener { documentSnapshot ->
-                    if (documentSnapshot.exists()) {
-                        val address = documentSnapshot.getString("address")
-                        val noRumah = documentSnapshot.getString("no_rumah")
-                        val kodePos = documentSnapshot.getString("kode_pos")
-                        callback(address, noRumah, kodePos)
-                    } else {
-                        callback(null, null, null)
-                    }
+                .addOnSuccessListener { document ->
+                    val address = document.getString("address") ?: ""
+                    val noRumah = document.getString("no_rumah") ?: ""
+                    val kodePos = document.getString("kode_pos") ?: ""
+                    callback(address, noRumah, kodePos)
                 }
-                .addOnFailureListener { e ->
-                    Log.e("PostItemActivity", "Failed to fetch address: ${e.message}")
-                    Toast.makeText(this, "Gagal mengambil data alamat", Toast.LENGTH_SHORT).show()
-                    callback(null, null, null)
+                .addOnFailureListener {
+                    Toast.makeText(this, "Gagal mengambil data pengguna: ${it.message}", Toast.LENGTH_SHORT).show()
                 }
-        } else {
-            callback(null, null, null)
         }
     }
 
