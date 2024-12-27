@@ -65,7 +65,6 @@ class HomeActivity : AppCompatActivity() {
             startActivity(Intent(this, PostItemActivity::class.java))
         }
 
-
         fetchUserName()
         setupSearchListener(searchTextInput)
         setupProfileNavigation()
@@ -162,9 +161,20 @@ class HomeActivity : AppCompatActivity() {
                     val id = document.id
                     val name = document.getString("nama_produk") ?: "Nama produk tidak tersedia"
                     val imageUrl = document.getString("imageUrl") ?: ""
+                    val quantity = document.getLong("jumlah") ?: 0
 
-                    if (name.isNotBlank() && id.isNotBlank()) {
+                    if (quantity > 0) {
+                        // Tambahkan barang dengan kuantitas > 0 ke daftar
                         productRecyclerList.add(ProductRecyclerList(id, name, imageUrl))
+                    } else {
+                        // Hapus barang dengan kuantitas 0 dari Firestore
+                        db.collection("items").document(id).delete()
+                            .addOnSuccessListener {
+                                Log.d("HomeActivity", "Produk dengan ID $id dihapus karena kuantitas habis.")
+                            }
+                            .addOnFailureListener { e ->
+                                Log.e("HomeActivity", "Gagal menghapus produk dengan ID $id: ${e.message}")
+                            }
                     }
                 }
 
@@ -191,10 +201,20 @@ class HomeActivity : AppCompatActivity() {
                     val id = document.id
                     val name = document.getString("nama_produk") ?: "Nama produk tidak tersedia"
                     val imageUrl = document.getString("imageUrl") ?: ""
+                    val quantity = document.getLong("jumlah") ?: 0
 
-                    // Case Insensitive Matching
-                    if (name.lowercase(Locale.ROOT).contains(query)) {
+                    if (quantity > 0 && name.lowercase(Locale.ROOT).contains(query)) {
+                        // Tambahkan barang yang sesuai query dan kuantitas > 0
                         productRecyclerList.add(ProductRecyclerList(id, name, imageUrl))
+                    } else if (quantity <= 0) {
+                        // Hapus barang dengan kuantitas 0 dari Firestore
+                        db.collection("items").document(id).delete()
+                            .addOnSuccessListener {
+                                Log.d("HomeActivity", "Produk dengan ID $id dihapus karena kuantitas habis.")
+                            }
+                            .addOnFailureListener { e ->
+                                Log.e("HomeActivity", "Gagal menghapus produk dengan ID $id: ${e.message}")
+                            }
                     }
                 }
 

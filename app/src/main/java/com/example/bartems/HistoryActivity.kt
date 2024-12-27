@@ -115,7 +115,7 @@ class HistoryActivity : AppCompatActivity() {
 
                 // Periksa apakah historyList kosong
                 if (historyList.isEmpty()) {
-                    Toast.makeText(this, "Belum ada history barter", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "", Toast.LENGTH_SHORT).show()
                 }
             }.addOnFailureListener { e ->
                 Log.e("HistoryActivity", "Gagal memuat riwayat: ${e.message}")
