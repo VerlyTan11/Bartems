@@ -62,12 +62,12 @@ class PostItemActivity : AppCompatActivity() {
         val noRumahEditText = findViewById<TextInputLayout>(R.id.no_rumah)
         val kodePosEditText = findViewById<TextInputLayout>(R.id.kode_pos)
 
-        // Retrieve user data from Firebase
-        getUserAddressData { address, noRumah, kodePos ->
-            alamatEditText.editText?.setText(address)
-            noRumahEditText.editText?.setText(noRumah)
-            kodePosEditText.editText?.setText(kodePos)
-        }
+//        // Retrieve user data from Firebase
+//        getUserAddressData { address, noRumah, kodePos ->
+//            alamatEditText.editText?.setText(address)
+//            noRumahEditText.editText?.setText(noRumah)
+//            kodePosEditText.editText?.setText(kodePos)
+//        }
 
         findViewById<ImageView>(R.id.back_post_item).setOnClickListener {
             val intent = if (intent.hasExtra("isFromProfile") && intent.getBooleanExtra("isFromProfile", false)) {
@@ -114,12 +114,12 @@ class PostItemActivity : AppCompatActivity() {
         if (userId != null) {
             firestore.collection("users").document(userId)
                 .get()
-                .addOnSuccessListener { document ->
-                    val address = document.getString("address") ?: ""
-                    val noRumah = document.getString("no_rumah") ?: ""
-                    val kodePos = document.getString("kode_pos") ?: ""
-                    callback(address, noRumah, kodePos)
-                }
+//                .addOnSuccessListener { document ->
+//                    val address = document.getString("address") ?: ""
+//                    val noRumah = document.getString("no_rumah") ?: ""
+//                    val kodePos = document.getString("kode_pos") ?: ""
+//                    callback(address, noRumah, kodePos)
+//                }
                 .addOnFailureListener {
                     Toast.makeText(this, "Gagal mengambil data pengguna: ${it.message}", Toast.LENGTH_SHORT).show()
                 }
