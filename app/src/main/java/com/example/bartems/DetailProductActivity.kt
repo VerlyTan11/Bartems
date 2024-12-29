@@ -1,5 +1,6 @@
 package com.example.bartems
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -13,10 +14,10 @@ import androidx.appcompat.app.AppCompatActivity
 import com.airbnb.lottie.LottieAnimationView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import com.example.bartems.model.Product
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
+@Suppress("DEPRECATION")
 class DetailProductActivity : AppCompatActivity() {
 
     private lateinit var firestore: FirebaseFirestore
@@ -80,6 +81,7 @@ class DetailProductActivity : AppCompatActivity() {
         loadingAnimation.visibility = View.GONE
     }
 
+    @SuppressLint("SetTextI18n")
     private fun setupEditButton(button: Button, productId: String, productName: String, productImageUrl: String) {
         button.text = "Ke halaman edit"
         button.setOnClickListener {
@@ -94,6 +96,7 @@ class DetailProductActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun setupBarterButton(button: Button, productId: String, productName: String, productImageUrl: String) {
         button.text = "Barter"
         button.setOnClickListener {
@@ -116,6 +119,7 @@ class DetailProductActivity : AppCompatActivity() {
         }, 1500)
     }
 
+    @SuppressLint("SetTextI18n")
     private fun fetchProductDetails(
         productId: String,
         descriptionTextView: TextView,
@@ -129,7 +133,7 @@ class DetailProductActivity : AppCompatActivity() {
                 if (document.exists()) {
                     val product = document.toObject(Product::class.java)
                     product?.let {
-                        descriptionTextView.text = it.catatan ?: "Deskripsi tidak tersedia"
+                        descriptionTextView.text = it.catatan
                         findViewById<TextView>(R.id.product_weight).text = "Berat: ${it.berat}"
                         findViewById<TextView>(R.id.product_quantity).text = "Kuantitas: ${it.jumlah}"
                         findViewById<TextView>(R.id.product_address).text = "Alamat: ${it.alamat}"
@@ -153,6 +157,7 @@ class DetailProductActivity : AppCompatActivity() {
             }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun fetchUserDetails(
         userId: String?,
         userNameTextView: TextView,

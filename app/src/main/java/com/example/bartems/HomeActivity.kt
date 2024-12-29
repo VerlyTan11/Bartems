@@ -1,5 +1,6 @@
 package com.example.bartems
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
@@ -72,6 +73,7 @@ class HomeActivity : AppCompatActivity() {
         fetchProducts()
     }
 
+    @SuppressLint("SetTextI18n")
     private fun fetchUserName() {
         val userNameTextView: TextView = findViewById(R.id.textView16)
         val userId = FirebaseAuth.getInstance().currentUser?.uid
@@ -109,11 +111,6 @@ class HomeActivity : AppCompatActivity() {
         })
     }
 
-    private fun resetSearch() {
-        productRecyclerList.clear()
-        adapter.notifyDataSetChanged() // Bersihkan data di RecyclerView
-    }
-
     private fun setupProfileNavigation() {
         val goToProfileButton: ImageButton = findViewById(R.id.gotoprofile)
         goToProfileButton.setOnClickListener {
@@ -148,6 +145,7 @@ class HomeActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun fetchProducts() {
         Log.d("HomeActivity", "Fetching products from Firestore...")
         showLoadingAnimation() // Tampilkan animasi loading
@@ -188,6 +186,7 @@ class HomeActivity : AppCompatActivity() {
             }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun searchProduct(query: String) {
         Log.d("HomeActivity", "Searching for products with query: $query")
         showLoadingAnimation() // Tampilkan animasi loading

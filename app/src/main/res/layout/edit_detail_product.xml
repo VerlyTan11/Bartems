@@ -36,7 +36,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.048"
-        app:srcCompat="@drawable/back" />
+        app:srcCompat="@drawable/back"
+        tools:ignore="ContentDescription" />
 
     <!-- Judul Halaman -->
     <TextView
@@ -50,7 +51,8 @@
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.05" />
+        app:layout_constraintVertical_bias="0.05"
+        tools:ignore="HardcodedText" />
 
     <!-- Gambar Produk -->
     <ImageView
@@ -62,7 +64,8 @@
         app:layout_constraintHorizontal_bias="0.07"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.132" />
+        app:layout_constraintVertical_bias="0.132"
+        tools:ignore="ContentDescription" />
 <!--        tools:srcCompat="@drawable/box" />-->
 
     <ImageView
@@ -75,7 +78,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.169"
-        app:srcCompat="@drawable/icon_camera" />
+        app:srcCompat="@drawable/icon_camera"
+        tools:ignore="ContentDescription" />
 
     <!-- Nama Produk -->
     <com.google.android.material.textfield.TextInputLayout
@@ -94,7 +98,8 @@
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Masukkan Nama Produk" />
+            android:hint="Masukkan Nama Produk"
+            tools:ignore="HardcodedText,VisualLintTextFieldSize" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <!-- Berat Produk (Ganti Jenis Menjadi Berat) -->
@@ -114,7 +119,8 @@
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Jumlah" />
+            android:hint="Jumlah"
+            tools:ignore="HardcodedText,VisualLintTextFieldSize" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -132,7 +138,8 @@
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Berat / pcs | kg" />
+            android:hint="Berat / pcs | kg"
+            tools:ignore="HardcodedText,VisualLintTextFieldSize" />
     </com.google.android.material.textfield.TextInputLayout>
 
 
@@ -152,7 +159,8 @@
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Catatan" />
+            android:hint="Catatan"
+            tools:ignore="HardcodedText,VisualLintTextFieldSize" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
@@ -167,7 +175,8 @@
         app:layout_constraintHorizontal_bias="0.056"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/catatan"
-        app:layout_constraintVertical_bias="0.103" />
+        app:layout_constraintVertical_bias="0.103"
+        tools:ignore="HardcodedText" />
 
     <TextView
         android:id="@+id/gotomap"
@@ -181,7 +190,8 @@
         app:layout_constraintHorizontal_bias="0.856"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/catatan"
-        app:layout_constraintVertical_bias="0.116" />
+        app:layout_constraintVertical_bias="0.116"
+        tools:ignore="HardcodedText" />
 
     <ImageView
         android:id="@+id/imageView11"
@@ -193,7 +203,8 @@
         app:layout_constraintStart_toEndOf="@+id/gotomap"
         app:layout_constraintTop_toBottomOf="@+id/catatan"
         app:layout_constraintVertical_bias="0.101"
-        app:srcCompat="@drawable/location" />
+        app:srcCompat="@drawable/location"
+        tools:ignore="ContentDescription" />
 
     <!-- Alamat Lengkap -->
     <com.google.android.material.textfield.TextInputLayout
@@ -212,7 +223,8 @@
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Alamat Lengkap" />
+            android:hint="Alamat Lengkap"
+            tools:ignore="HardcodedText,VisualLintTextFieldSize" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <!-- No. Rumah -->
@@ -230,7 +242,8 @@
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="No. Rumah" />
+            android:hint="No. Rumah"
+            tools:ignore="HardcodedText" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -247,7 +260,8 @@
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Kode Pos" />
+            android:hint="Kode Pos"
+            tools:ignore="HardcodedText" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <!-- Tombol Update -->
@@ -264,5 +278,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/alamat"
-        app:layout_constraintVertical_bias="0.831" />
+        app:layout_constraintVertical_bias="0.831"
+        tools:ignore="HardcodedText,VisualLintButtonSize" />
 </androidx.constraintlayout.widget.ConstraintLayout>

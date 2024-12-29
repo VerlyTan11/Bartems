@@ -1,5 +1,6 @@
 package com.example.bartems
 
+import android.annotation.SuppressLint
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
@@ -12,11 +13,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.bartems.model.Product
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.Query
-import com.google.firebase.Timestamp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -101,12 +99,13 @@ class ProfileActivity : AppCompatActivity() {
         }
     }
 
+    @Deprecated("This method has been deprecated in favor of using the Activity Result API\n      which brings increased type safety via an {@link ActivityResultContract} and the prebuilt\n      contracts for common intents available in\n      {@link androidx.activity.result.contract.ActivityResultContracts}, provides hooks for\n      testing, and allow receiving results in separate, testable classes independent from your\n      activity. Use\n      {@link #registerForActivityResult(ActivityResultContract, ActivityResultCallback)}\n      with the appropriate {@link ActivityResultContract} and handling the result in the\n      {@link ActivityResultCallback#onActivityResult(Object) callback}.")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == 1001 && resultCode == RESULT_OK) {
-            val selectedAddress = data?.getStringExtra("selectedAddress")
-            val inputAddress = data?.getStringExtra("inputAddress")
+            data?.getStringExtra("selectedAddress")
+            data?.getStringExtra("inputAddress")
 
             // Find the alamatTextView and update its text
 //            val alamatTextView = findViewById<TextView>(R.id.alamatTextView)
@@ -158,6 +157,7 @@ class ProfileActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun loadUserProducts() {
         CoroutineScope(Dispatchers.IO).launch {
             val userId = auth.currentUser?.uid
@@ -172,7 +172,7 @@ class ProfileActivity : AppCompatActivity() {
                             val product = document.toObject(Product::class.java)?.apply {
                                 id = document.id
                             }
-                            if (product != null && !product.id.isNullOrEmpty()) {
+                            if (product != null && product.id.isNotEmpty()) {
                                 productList.add(product)
                             }
                         }

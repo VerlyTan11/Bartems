@@ -36,7 +36,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.475"
         app:layout_constraintStart_toStartOf="parent"
-        tools:ignore="MissingConstraints" />
+        tools:ignore="HardcodedText,MissingConstraints,VisualLintButtonSize" />
 
     <ImageView
         android:id="@+id/imageView18"
@@ -48,7 +48,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@drawable/kardus_horizontal" />
+        app:srcCompat="@drawable/kardus_horizontal"
+        tools:ignore="ContentDescription,VisualLintBounds" />
 
     <ImageView
         android:id="@+id/imageView17"
@@ -61,7 +62,8 @@
         app:layout_constraintTop_toBottomOf="@+id/imageView18"
         app:layout_constraintVertical_bias="0.044"
         app:shapeAppearanceOverlay="@style/CircularImage"
-        tools:srcCompat="@drawable/box" />
+        tools:srcCompat="@drawable/box"
+        tools:ignore="ContentDescription" />
 
     <ImageView
         android:id="@+id/back_detail_product"
@@ -75,7 +77,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@drawable/back" />
+        app:srcCompat="@drawable/back"
+        tools:ignore="ContentDescription" />
 
     <TextView
         android:id="@+id/textView15"
@@ -89,7 +92,8 @@
         app:layout_constraintHorizontal_bias="0.053"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView17"
-        app:layout_constraintVertical_bias="0.039" />
+        app:layout_constraintVertical_bias="0.039"
+        tools:ignore="HardcodedText" />
 
     <!-- Add these TextViews in the appropriate place in your XML layout -->
 
@@ -103,7 +107,8 @@
         app:layout_constraintEnd_toEndOf="@+id/product_postal_code"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/product_postal_code"
-        app:layout_constraintTop_toBottomOf="@+id/product_postal_code" />
+        app:layout_constraintTop_toBottomOf="@+id/product_postal_code"
+        tools:ignore="HardcodedText" />
 
     <TextView
         android:id="@+id/textView18"
@@ -114,7 +119,8 @@
         app:layout_constraintEnd_toEndOf="@+id/textView16"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/textView16"
-        app:layout_constraintTop_toBottomOf="@+id/textView16" />
+        app:layout_constraintTop_toBottomOf="@+id/textView16"
+        tools:ignore="HardcodedText,TextSizeCheck" />
 
     <TextView
         android:id="@+id/product_weight"
@@ -127,7 +133,8 @@
         app:layout_constraintEnd_toEndOf="@+id/product_quantity"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/product_quantity"
-        app:layout_constraintTop_toBottomOf="@+id/product_quantity" />
+        app:layout_constraintTop_toBottomOf="@+id/product_quantity"
+        tools:ignore="HardcodedText,TextSizeCheck" />
 
     <TextView
         android:id="@+id/product_quantity"
@@ -141,7 +148,8 @@
         app:layout_constraintEnd_toEndOf="@+id/button5"
         app:layout_constraintHorizontal_bias="0.014"
         app:layout_constraintStart_toStartOf="@+id/button5"
-        app:layout_constraintTop_toBottomOf="@+id/button5" />
+        app:layout_constraintTop_toBottomOf="@+id/button5"
+        tools:ignore="HardcodedText,TextSizeCheck" />
 
     <TextView
         android:id="@+id/product_address"
@@ -154,7 +162,8 @@
         app:layout_constraintEnd_toEndOf="@+id/product_weight"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/product_weight"
-        app:layout_constraintTop_toBottomOf="@+id/product_weight" />
+        app:layout_constraintTop_toBottomOf="@+id/product_weight"
+        tools:ignore="HardcodedText" />
 
     <TextView
         android:id="@+id/product_postal_code"
@@ -167,7 +176,8 @@
         app:layout_constraintEnd_toEndOf="@+id/product_address"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/product_address"
-        app:layout_constraintTop_toBottomOf="@+id/product_address" />
+        app:layout_constraintTop_toBottomOf="@+id/product_address"
+        tools:ignore="HardcodedText,TextSizeCheck" />
 
     <Button
         android:id="@+id/button5"
@@ -186,7 +196,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/textView15"
         app:layout_constraintTop_toBottomOf="@+id/textView15"
-        tools:ignore="TouchTargetSizeCheck" />
+        tools:ignore="HardcodedText,SmallSp,TouchTargetSizeCheck" />
 
     <Button
         android:id="@+id/button6"
@@ -204,7 +214,7 @@
         app:iconSize="12dp"
         app:layout_constraintStart_toEndOf="@+id/button5"
         app:layout_constraintTop_toBottomOf="@+id/textView15"
-        tools:ignore="TouchTargetSizeCheck" />
+        tools:ignore="HardcodedText,SmallSp,TouchTargetSizeCheck" />
 
     <TextView
         android:id="@+id/textView31"
@@ -217,7 +227,8 @@
         app:layout_constraintBottom_toTopOf="@+id/button6"
         app:layout_constraintStart_toEndOf="@+id/imageView17"
         app:layout_constraintTop_toBottomOf="@+id/imageView18"
-        app:layout_constraintVertical_bias="0.304" />
+        app:layout_constraintVertical_bias="0.304"
+        tools:ignore="HardcodedText" />
 
     <TextView
         android:id="@+id/textView32"
@@ -230,6 +241,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/textView31"
         app:layout_constraintTop_toBottomOf="@+id/textView31"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.0"
+        tools:ignore="HardcodedText" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

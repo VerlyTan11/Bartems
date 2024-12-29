@@ -1,4 +1,5 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
@@ -9,9 +10,10 @@
         android:layout_width="match_parent"
         android:layout_height="150dp"
         android:background="@drawable/rounded_button"
+        android:clipToOutline="true"
         android:contentDescription="Gambar Produk"
         android:scaleType="centerCrop"
-        android:clipToOutline="true"/>
+        tools:ignore="HardcodedText,ImageContrastCheck" />
 
     <TextView
         android:id="@+id/itemTextView"
@@ -20,5 +22,6 @@
         android:text="Nama Produk"
         android:textSize="16sp"
         android:gravity="center"
-        android:paddingTop="4dp" />
+        android:paddingTop="4dp"
+        tools:ignore="HardcodedText" />
 </LinearLayout>

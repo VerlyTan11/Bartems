@@ -8,10 +8,10 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.bartems.model.Product
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
+@Suppress("DEPRECATION")
 class PilihBarangActivity : AppCompatActivity(), JumlahBarangFragment.OnQuantityInputListener {
 
     private lateinit var recyclerView: RecyclerView
@@ -113,7 +113,7 @@ class PilihBarangActivity : AppCompatActivity(), JumlahBarangFragment.OnQuantity
         val selectedProduct = selectedProduct ?: return
 
         // Pastikan semua data lengkap sebelum melanjutkan
-        if (selectedProduct.id.isNullOrEmpty() || selectedProduct.nama_produk.isNullOrEmpty() || selectedProduct.imageUrl.isNullOrEmpty() || selectedProduct.userId.isNullOrEmpty()) {
+        if (selectedProduct.id.isEmpty() || selectedProduct.nama_produk.isEmpty() || selectedProduct.imageUrl.isEmpty() || selectedProduct.userId.isEmpty()) {
             Toast.makeText(this, "Data produk Anda tidak lengkap", Toast.LENGTH_SHORT).show()
             return
         }

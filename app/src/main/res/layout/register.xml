@@ -32,7 +32,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ContentDescription" />
 
     <TextView
         android:id="@+id/textView"
@@ -43,7 +44,8 @@
         android:text="Sign Up with Email"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+        app:layout_constraintTop_toBottomOf="@+id/imageView"
+        tools:ignore="HardcodedText" />
 
     <TextView
         android:id="@+id/textView2"
@@ -56,7 +58,8 @@
         android:textColor="#AEB1B0"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        app:layout_constraintTop_toBottomOf="@+id/textView"
+        tools:ignore="HardcodedText,TextContrastCheck,TextSizeCheck" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/nama"
@@ -73,7 +76,8 @@
             android:id="@+id/nama_edittext"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Nama" />
+            android:hint="Nama"
+            tools:ignore="HardcodedText,VisualLintTextFieldSize" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <!-- Field input nomor telepon -->
@@ -92,7 +96,8 @@
             android:id="@+id/phone_regist_edittext"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Nomor Telepon" />
+            android:hint="Nomor Telepon"
+            tools:ignore="HardcodedText,VisualLintTextFieldSize" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -112,7 +117,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Email"
-            android:inputType="textEmailAddress" />
+            android:inputType="textEmailAddress"
+            tools:ignore="HardcodedText,VisualLintTextFieldSize" />
     </com.google.android.material.textfield.TextInputLayout>
 
 
@@ -134,7 +140,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Password"
-            android:inputType="textPassword"/>
+            android:inputType="textPassword"
+            tools:ignore="HardcodedText,VisualLintTextFieldSize" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -155,7 +162,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Confirm Password"
-            android:inputType="textPassword" />
+            android:inputType="textPassword"
+            tools:ignore="HardcodedText,VisualLintTextFieldSize" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
@@ -175,7 +183,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/confirm_password" />
+        app:layout_constraintTop_toBottomOf="@+id/confirm_password"
+        tools:ignore="HardcodedText,TouchTargetSizeCheck,VisualLintButtonSize" />
 
     <TextView
         android:id="@+id/gotologin"
@@ -185,6 +194,7 @@
         android:text="Have an account? Login"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_regist" />
+        app:layout_constraintTop_toBottomOf="@+id/btn_regist"
+        tools:ignore="HardcodedText,VisualLintBounds" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

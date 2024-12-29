@@ -33,7 +33,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textInputLayout"
-        tools:ignore="NotSibling" />
+        tools:ignore="HardcodedText,NotSibling" />
 
     <!-- Text Input Layout for Search -->
     <com.google.android.material.textfield.TextInputLayout
@@ -54,7 +54,8 @@
             android:layout_height="53dp"
             android:drawableLeft="@drawable/search"
             android:hint="Search"
-            android:textAlignment="center" />
+            android:textAlignment="center"
+            tools:ignore="HardcodedText,RtlHardcoded" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <!-- Other UI Elements -->
@@ -72,7 +73,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.048"
         app:srcCompat="@drawable/profile"
-        tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
+        tools:ignore="ContentDescription,SpeakableTextPresentCheck,TouchTargetSizeCheck,ImageContrastCheck" />
 
     <!-- Frame Layout for Content -->
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -110,13 +111,14 @@
             android:layout_height="43dp"
             android:fontFamily="@font/poppins"
             android:text="Tukarkan dengan apa yang Anda inginkan."
-            android:textColor="#FFFFFF"
+            android:textColor="#FFFF"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.107"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.432" />
+            app:layout_constraintVertical_bias="0.432"
+            tools:ignore="HardcodedText,TextSizeCheck,TextContrastCheck" />
 
         <ImageView
             android:id="@+id/imageView18"
@@ -126,20 +128,22 @@
             android:layout_marginEnd="16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/logo" />
+            app:srcCompat="@drawable/logo"
+            tools:ignore="ContentDescription" />
 
         <Button
             android:id="@+id/button4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:backgroundTint="#697565"
+            android:backgroundTint="#66785F"
             android:text="Mulai Barter"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.072"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.882" />
+            app:layout_constraintVertical_bias="0.882"
+            tools:ignore="HardcodedText" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!-- Beranda TextView -->
@@ -153,7 +157,7 @@
         app:layout_constraintHorizontal_bias="0.083"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/frameLayout"
-        tools:ignore="MissingConstraints" />
+        tools:ignore="HardcodedText,MissingConstraints" />
 
     <!-- RecyclerView -->
     <androidx.recyclerview.widget.RecyclerView
@@ -192,7 +196,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.975"
-        app:srcCompat="@drawable/add_item" />
+        app:srcCompat="@drawable/add_item"
+        tools:ignore="ContentDescription,ImageContrastCheck" />
 
 <!--    <Spinner-->
 <!--        android:id="@+id/nearMeDropdown"-->

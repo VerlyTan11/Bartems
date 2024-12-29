@@ -35,7 +35,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.048"
-        app:srcCompat="@drawable/back" />
+        app:srcCompat="@drawable/back"
+        tools:ignore="ContentDescription" />
 
     <TextView
         android:id="@+id/textView11"
@@ -48,7 +49,8 @@
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.05" />
+        app:layout_constraintVertical_bias="0.05"
+        tools:ignore="HardcodedText" />
 
     <Button
         android:id="@+id/btn_confirm_barter"
@@ -64,7 +66,8 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.951" />
+        app:layout_constraintVertical_bias="0.951"
+        tools:ignore="HardcodedText,VisualLintButtonSize" />
 
     <ImageView
         android:id="@+id/imageView20"
@@ -76,7 +79,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.164"
-        app:srcCompat="@drawable/box" />
+        app:srcCompat="@drawable/box"
+        tools:ignore="ContentDescription" />
 
     <ImageView
         android:id="@+id/imageView22"
@@ -88,7 +92,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.166"
-        app:srcCompat="@drawable/box" />
+        app:srcCompat="@drawable/box"
+        tools:ignore="ContentDescription" />
 
     <ImageView
         android:id="@+id/imageView23"
@@ -100,7 +105,8 @@
         app:layout_constraintStart_toEndOf="@+id/imageView20"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.23"
-        app:srcCompat="@drawable/swap" />
+        app:srcCompat="@drawable/swap"
+        tools:ignore="ContentDescription" />
 
     <TextView
         android:id="@+id/textView24"
@@ -115,7 +121,8 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/imageView20"
         app:layout_constraintTop_toBottomOf="@+id/imageView20"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.0"
+        tools:ignore="HardcodedText,VisualLintOverlap" />
 
     <TextView
         android:id="@+id/textView20"
@@ -130,7 +137,8 @@
         app:layout_constraintHorizontal_bias="0.13"
         app:layout_constraintStart_toStartOf="@+id/imageView22"
         app:layout_constraintTop_toBottomOf="@+id/imageView22"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.0"
+        tools:ignore="HardcodedText,VisualLintOverlap" />
 
     <TextView
         android:id="@+id/textView25"
@@ -141,7 +149,8 @@
         app:layout_constraintEnd_toEndOf="@+id/textView24"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/textView24"
-        app:layout_constraintTop_toBottomOf="@+id/textView24" />
+        app:layout_constraintTop_toBottomOf="@+id/textView24"
+        tools:ignore="HardcodedText,VisualLintOverlap" />
 
     <TextView
         android:id="@+id/textView21"
@@ -154,7 +163,8 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/textView20"
         app:layout_constraintTop_toBottomOf="@+id/textView20"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.0"
+        tools:ignore="HardcodedText,VisualLintOverlap" />
 
     <TextView
         android:id="@+id/textView_own_quantity"
@@ -167,7 +177,8 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/textView25"
         app:layout_constraintTop_toBottomOf="@+id/textView25"
-        app:layout_constraintVertical_bias="0.002" />
+        app:layout_constraintVertical_bias="0.002"
+        tools:ignore="HardcodedText,VisualLintOverlap" />
 
     <TextView
         android:id="@+id/textView_other_quantity"
@@ -180,7 +191,8 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/textView21"
         app:layout_constraintTop_toBottomOf="@+id/textView21"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.0"
+        tools:ignore="HardcodedText,VisualLintOverlap" />
 
     <TextView
         android:id="@+id/textView28"
@@ -193,7 +205,8 @@
         app:layout_constraintHorizontal_bias="0.078"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.466" />
+        app:layout_constraintVertical_bias="0.466"
+        tools:ignore="HardcodedText,VisualLintOverlap" />
 
     <TextView
         android:id="@+id/textView29"
@@ -204,7 +217,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.075"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="HardcodedText,VisualLintOverlap" />
 
     <TextView
         android:id="@+id/textView32"
@@ -216,7 +230,8 @@
         app:layout_constraintHorizontal_bias="0.686"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.63" />
+        app:layout_constraintVertical_bias="0.63"
+        tools:ignore="HardcodedText,VisualLintOverlap" />
 
     <ImageView
         android:id="@+id/imageView24"
@@ -228,7 +243,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.556"
-        app:srcCompat="@drawable/map" />
+        app:srcCompat="@drawable/map"
+        tools:ignore="ContentDescription" />
 
     <TextView
         android:id="@+id/textView30"
@@ -241,7 +257,8 @@
         app:layout_constraintHorizontal_bias="0.215"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.54" />
+        app:layout_constraintVertical_bias="0.54"
+        tools:ignore="HardcodedText,VisualLintOverlap" />
 
     <FrameLayout
         android:id="@+id/fragment_container"

@@ -15,12 +15,14 @@ import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.os.Build
 import android.app.NotificationManager
 import android.app.NotificationChannel
 import android.content.Context
 
+@Suppress("DEPRECATION", "SameParameterValue")
 class BarterActivity : AppCompatActivity() {
 
     companion object {
@@ -33,6 +35,7 @@ class BarterActivity : AppCompatActivity() {
     private lateinit var firestore: FirebaseFirestore
     private lateinit var auth: FirebaseAuth
 
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.barter_page)
@@ -267,12 +270,14 @@ class BarterActivity : AppCompatActivity() {
 
     }
 
+    @SuppressLint("InlinedApi")
     private fun checkNotificationPermission(): Boolean {
         return ActivityCompat.checkSelfPermission(
             this, Manifest.permission.POST_NOTIFICATIONS
         ) == PackageManager.PERMISSION_GRANTED
     }
 
+    @SuppressLint("InlinedApi")
     private fun requestNotificationPermission() {
         ActivityCompat.requestPermissions(
             this, arrayOf(Manifest.permission.POST_NOTIFICATIONS),

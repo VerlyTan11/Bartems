@@ -17,7 +17,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.468"
-        app:srcCompat="@drawable/logo_splash_screen" />
+        app:srcCompat="@drawable/logo_splash_screen"
+        tools:ignore="ContentDescription" />
 
     <ImageView
         android:id="@+id/imageView27"
@@ -29,5 +30,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.473"
-        app:srcCompat="@drawable/text_bartems" />
+        app:srcCompat="@drawable/text_bartems"
+        tools:ignore="ContentDescription" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,6 +1,7 @@
 package com.example.bartems
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -8,7 +9,6 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
-import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
@@ -18,7 +18,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.airbnb.lottie.LottieAnimationView
 import com.bumptech.glide.Glide
-import com.example.bartems.model.Product
 import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
@@ -27,6 +26,7 @@ import com.google.firebase.storage.FirebaseStorage
 import java.io.ByteArrayOutputStream
 import java.util.*
 
+@Suppress("DEPRECATION")
 class EditDetailProductActivity : AppCompatActivity() {
 
     private lateinit var firestore: FirebaseFirestore
@@ -123,6 +123,7 @@ class EditDetailProductActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun loadProductData(productId: String) {
         firestore.collection("items").document(productId)
             .get()
@@ -263,6 +264,7 @@ class EditDetailProductActivity : AppCompatActivity() {
         galleryLauncher.launch(galleryIntent)
     }
 
+    @Deprecated("This method has been deprecated in favor of using the Activity Result API\n      which brings increased type safety via an {@link ActivityResultContract} and the prebuilt\n      contracts for common intents available in\n      {@link androidx.activity.result.contract.ActivityResultContracts}, provides hooks for\n      testing, and allow receiving results in separate, testable classes independent from your\n      activity. Use\n      {@link #registerForActivityResult(ActivityResultContract, ActivityResultCallback)}\n      with the appropriate {@link ActivityResultContract} and handling the result in the\n      {@link ActivityResultCallback#onActivityResult(Object) callback}.")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         val imageView = findViewById<ImageView>(R.id.gambar_product)
@@ -291,15 +293,5 @@ class EditDetailProductActivity : AppCompatActivity() {
         private const val CAMERA_REQUEST_CODE = 100
         private const val MAP_REQUEST_CODE = 200
     }
-    // Fungsi untuk menampilkan animasi loading
-    private fun showLoadingAnimation() {
-        loadingAnimation.visibility = View.VISIBLE
-        loadingAnimation.playAnimation()  // Memulai animasi
-    }
 
-    // Fungsi untuk menyembunyikan animasi loading
-    private fun hideLoadingAnimation() {
-        loadingAnimation.cancelAnimation()  // Menghentikan animasi
-        loadingAnimation.visibility = View.GONE  // Menyembunyikan animasi
-    }
 }

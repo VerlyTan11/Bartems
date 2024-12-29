@@ -22,6 +22,7 @@ import com.google.android.material.textfield.TextInputEditText
 import java.io.IOException
 import java.util.Locale
 
+@Suppress("KotlinConstantConditions", "DEPRECATION")
 class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var map: GoogleMap
@@ -49,9 +50,9 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         fullAddressText = findViewById(R.id.text_full_address) // Initialize the new TextView
         geocoder = Geocoder(this, Locale.getDefault())
         // Initialize EditText variables to correspond to the fields in your layout
-        val nameEditText = findViewById<TextInputEditText>(R.id.nama_user) // Example ID from your XML
-        val phoneEditText = findViewById<TextInputEditText>(R.id.telp_user) // Example ID from your XML
-        val emailEditText = findViewById<TextInputEditText>(R.id.jumlah) // Example ID from your XML
+        findViewById<TextInputEditText>(R.id.nama_user) // Example ID from your XML
+        findViewById<TextInputEditText>(R.id.telp_user) // Example ID from your XML
+        findViewById<TextInputEditText>(R.id.jumlah) // Example ID from your XML
 
 
         // Set up map fragment
@@ -168,7 +169,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                 val fullAddress = address.getAddressLine(0) // Full address
 
                 // Display the full address in the TextView
-                fullAddressText.text = "$fullAddress"
+                fullAddressText.text = fullAddress
                 fullAddressText.visibility = TextView.VISIBLE
 
                 fullAddress
@@ -193,7 +194,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
                 // Update the new TextView with the full address
                 val fullAddress = addresses[0].getAddressLine(0)
-                fullAddressText.text = "$fullAddress"
+                fullAddressText.text = fullAddress
                 fullAddressText.visibility = TextView.VISIBLE
             } else {
                 Toast.makeText(this, "Lokasi tidak ditemukan", Toast.LENGTH_SHORT).show()

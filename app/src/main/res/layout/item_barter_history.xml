@@ -1,5 +1,6 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="12dp"
@@ -20,7 +21,8 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:weightSum="2"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            tools:ignore="DisableBaselineAlignment">
 
             <!-- Barang Barter (Kiri) -->
             <LinearLayout
@@ -35,8 +37,9 @@
                     android:layout_width="80dp"
                     android:layout_height="80dp"
                     android:background="@drawable/rounded_button"
+                    android:clipToOutline="true"
                     android:scaleType="centerCrop"
-                    android:clipToOutline="true" />
+                    tools:ignore="ContentDescription,ImageContrastCheck" />
 
                 <TextView
                     android:id="@+id/text_barter_product_name"
@@ -45,7 +48,8 @@
                     android:layout_marginTop="8dp"
                     android:text="Nama Produk"
                     android:textStyle="bold"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    tools:ignore="HardcodedText" />
 
                 <TextView
                     android:id="@+id/text_barter_product_quantity"
@@ -53,14 +57,16 @@
                     android:layout_height="wrap_content"
                     android:text="Jumlah: "
                     android:textSize="12sp"
-                    android:layout_marginTop="4dp" />
+                    android:layout_marginTop="4dp"
+                    tools:ignore="HardcodedText" />
 
                 <TextView
                     android:id="@+id/text_barter_product_owner"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Pemilik"
-                    android:textSize="12sp" />
+                    android:textSize="12sp"
+                    tools:ignore="HardcodedText" />
 
                 <TextView
                     android:id="@+id/text_barter_product_owner_phone"
@@ -68,7 +74,8 @@
                     android:layout_height="wrap_content"
                     android:text="No HP"
                     android:textSize="12sp"
-                    android:paddingTop="4dp" />
+                    android:paddingTop="4dp"
+                    tools:ignore="HardcodedText" />
 
                 <TextView
                     android:id="@+id/text_barter_product_owner_address"
@@ -76,7 +83,8 @@
                     android:layout_height="wrap_content"
                     android:text="Alamat"
                     android:textSize="12sp"
-                    android:paddingTop="4dp" />
+                    android:paddingTop="4dp"
+                    tools:ignore="HardcodedText" />
             </LinearLayout>
 
             <!-- Barang Selected (Kanan) -->
@@ -93,7 +101,8 @@
                     android:layout_height="80dp"
                     android:background="@drawable/rounded_button"
                     android:clipToOutline="true"
-                    android:scaleType="centerCrop" />
+                    android:scaleType="centerCrop"
+                    tools:ignore="ContentDescription,ImageContrastCheck" />
 
                 <TextView
                     android:id="@+id/text_selected_product_name"
@@ -102,7 +111,8 @@
                     android:layout_marginTop="8dp"
                     android:text="Nama Produk"
                     android:textStyle="bold"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    tools:ignore="HardcodedText" />
 
                 <TextView
                     android:id="@+id/text_selected_product_quantity"
@@ -110,14 +120,16 @@
                     android:layout_height="wrap_content"
                     android:text="Jumlah: "
                     android:textSize="12sp"
-                    android:layout_marginTop="4dp" />
+                    android:layout_marginTop="4dp"
+                    tools:ignore="HardcodedText" />
 
                 <TextView
                     android:id="@+id/text_selected_product_owner"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Pemilik"
-                    android:textSize="12sp" />
+                    android:textSize="12sp"
+                    tools:ignore="HardcodedText" />
 
                 <TextView
                     android:id="@+id/text_selected_product_owner_phone"
@@ -125,7 +137,8 @@
                     android:layout_height="wrap_content"
                     android:text="No HP"
                     android:textSize="12sp"
-                    android:paddingTop="4dp" />
+                    android:paddingTop="4dp"
+                    tools:ignore="HardcodedText" />
 
                 <TextView
                     android:id="@+id/text_selected_product_owner_address"
@@ -133,7 +146,8 @@
                     android:layout_height="wrap_content"
                     android:text="Alamat"
                     android:textSize="12sp"
-                    android:paddingTop="4dp" />
+                    android:paddingTop="4dp"
+                    tools:ignore="HardcodedText" />
             </LinearLayout>
         </LinearLayout>
 
@@ -145,6 +159,7 @@
             android:layout_marginTop="16dp"
             android:gravity="center"
             android:text="Tanggal: -"
-            android:textSize="12sp" />
+            android:textSize="12sp"
+            tools:ignore="HardcodedText" />
     </LinearLayout>
 </androidx.cardview.widget.CardView>

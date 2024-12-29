@@ -30,7 +30,8 @@
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:orientation="vertical" />
+                    android:orientation="vertical"
+                    tools:ignore="UselessLeaf" />
             </HorizontalScrollView>
 
             <ImageView
@@ -42,7 +43,8 @@
                 app:layout_constraintHorizontal_bias="0.088"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/back" />
+                app:srcCompat="@drawable/back"
+                tools:ignore="ContentDescription" />
 
             <ImageView
                 android:id="@+id/menu"
@@ -53,7 +55,8 @@
                 app:layout_constraintHorizontal_bias="0.898"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/more" />
+                app:srcCompat="@drawable/more"
+                tools:ignore="ContentDescription" />
 
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/image_profile"
@@ -78,7 +81,8 @@
                 android:text="Nama Pengguna"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/image_profile" />
+                app:layout_constraintTop_toBottomOf="@+id/image_profile"
+                tools:ignore="HardcodedText" />
 
             <ImageView
                 android:id="@+id/gotoedit"
@@ -91,7 +95,8 @@
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toEndOf="@+id/textView5"
                 app:layout_constraintTop_toBottomOf="@+id/image_profile"
-                app:srcCompat="@drawable/edit" />
+                app:srcCompat="@drawable/edit"
+                tools:ignore="ContentDescription" />
 
             <TextView
                 android:id="@+id/textView6"
@@ -104,7 +109,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.097"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView5" />
+                app:layout_constraintTop_toBottomOf="@+id/textView5"
+                tools:ignore="HardcodedText" />
 
             <TextView
                 android:id="@+id/textView7"
@@ -116,7 +122,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.093"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView5" />
+                app:layout_constraintTop_toBottomOf="@+id/textView5"
+                tools:ignore="HardcodedText" />
 
             <TextView
                 android:id="@+id/textView8"
@@ -129,7 +136,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.871"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView5" />
+                app:layout_constraintTop_toBottomOf="@+id/textView5"
+                tools:ignore="HardcodedText" />
 
             <TextView
                 android:id="@+id/textView9"
@@ -142,7 +150,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.813"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView5" />
+                app:layout_constraintTop_toBottomOf="@+id/textView5"
+                tools:ignore="HardcodedText,TextSizeCheck" />
 
             <TextView
                 android:id="@+id/textView10"
@@ -154,7 +163,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.101"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView7" />
+                app:layout_constraintTop_toBottomOf="@+id/textView7"
+                tools:ignore="HardcodedText" />
 
             <!-- RecyclerView untuk Produk -->
             <ImageView
@@ -166,7 +176,8 @@
                 app:layout_constraintHorizontal_bias="0.873"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView7"
-                app:srcCompat="@drawable/history" />
+                app:srcCompat="@drawable/history"
+                tools:ignore="ContentDescription" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView_product_images"
@@ -188,7 +199,8 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.985"
-                app:srcCompat="@drawable/add_item" />
+                app:srcCompat="@drawable/add_item"
+                tools:ignore="ContentDescription,ImageContrastCheck" />
 
 <!--            <TextView-->
 <!--                android:id="@+id/textView4"-->

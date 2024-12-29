@@ -1,5 +1,6 @@
 package com.example.bartems
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
@@ -9,10 +10,10 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
-import com.example.bartems.model.Product
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
+@Suppress("DEPRECATION")
 class EditProductActivity : AppCompatActivity() {
 
     private lateinit var firestore: FirebaseFirestore
@@ -79,6 +80,7 @@ class EditProductActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun loadProductDetails(productId: String) {
         firestore.collection("items").document(productId)
             .get()
@@ -87,13 +89,13 @@ class EditProductActivity : AppCompatActivity() {
                     val product = document.toObject(Product::class.java)
                     if (product != null) {
                         Glide.with(this).load(product.imageUrl).into(productImageView)
-                        productNameTextView.text = product.nama_produk ?: "Nama Produk Tidak Tersedia"
-                        productDescriptionTextView.text = product.catatan ?: "Deskripsi Tidak Tersedia"
-                        productWeightTextView.text = "Berat: ${product.berat ?: "N/A"} kg"
-                        productQuantityTextView.text = "Kuantitas: ${product.jumlah ?: "N/A"}"
+                        productNameTextView.text = product.nama_produk
+                        productDescriptionTextView.text = product.catatan
+                        productWeightTextView.text = "Berat: ${product.berat} kg"
+                        productQuantityTextView.text = "Kuantitas: ${product.jumlah}"
                         productAddressTextView.text =
-                            "Alamat: ${product.alamat ?: ""}, No: ${product.no_rumah ?: ""}"
-                        productPostalCodeTextView.text = "Kode Pos: ${product.kode_pos ?: "Kode Pos Tidak Tersedia"}"
+                            "Alamat: ${product.alamat}, No: ${product.no_rumah ?: ""}"
+                        productPostalCodeTextView.text = "Kode Pos: ${product.kode_pos}"
 
                         // Ambil data pengguna berdasarkan userId
                         loadUserDetails(product.userId)
@@ -107,6 +109,7 @@ class EditProductActivity : AppCompatActivity() {
             }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun loadUserDetails(userId: String?) {
         if (userId.isNullOrEmpty()) {
             userName.text = "Nama User Tidak Tersedia"

@@ -1,4 +1,4 @@
-package com.example.bartems.model
+package com.example.bartems
 
 data class BarterHistory(
     var id: String? = null,

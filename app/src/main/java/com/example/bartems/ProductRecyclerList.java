@@ -1,5 +1,7 @@
 package com.example.bartems;
 
+import androidx.annotation.NonNull;
+
 public class ProductRecyclerList {
 
     private String id;
@@ -36,6 +38,7 @@ public class ProductRecyclerList {
         this.imageUrl = imageUrl;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "ProductRecyclerList{" +

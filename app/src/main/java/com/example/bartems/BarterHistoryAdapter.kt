@@ -1,7 +1,7 @@
 package com.example.bartems
 
+import android.annotation.SuppressLint
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,9 +9,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.bartems.model.BarterHistory
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -41,6 +38,7 @@ class BarterHistoryAdapter(
         return HistoryViewHolder(view)
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: HistoryViewHolder, position: Int) {
         val history = historyList[position]
 
@@ -73,6 +71,7 @@ class BarterHistoryAdapter(
 
     override fun getItemCount(): Int = historyList.size
 
+    @SuppressLint("NotifyDataSetChanged")
     fun updateData(newHistoryList: List<BarterHistory>) {
         historyList = newHistoryList
         notifyDataSetChanged()

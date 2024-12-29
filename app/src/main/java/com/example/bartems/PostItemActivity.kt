@@ -25,6 +25,7 @@ import com.google.firebase.storage.FirebaseStorage
 import java.io.ByteArrayOutputStream
 import java.util.*
 
+@Suppress("DEPRECATION")
 class PostItemActivity : AppCompatActivity() {
 
     private lateinit var loadingAnimation: LottieAnimationView
@@ -47,8 +48,6 @@ class PostItemActivity : AppCompatActivity() {
             findViewById<ImageView>(R.id.gambar_product).setImageURI(imageUri)
         }
     }
-
-    private var savedInputValues: Bundle? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -106,23 +105,6 @@ class PostItemActivity : AppCompatActivity() {
             } else {
                 Toast.makeText(this, "Pilih gambar terlebih dahulu", Toast.LENGTH_SHORT).show()
             }
-        }
-    }
-
-    private fun getUserAddressData(callback: (String, String, String) -> Unit) {
-        val userId = auth.currentUser?.uid
-        if (userId != null) {
-            firestore.collection("users").document(userId)
-                .get()
-//                .addOnSuccessListener { document ->
-//                    val address = document.getString("address") ?: ""
-//                    val noRumah = document.getString("no_rumah") ?: ""
-//                    val kodePos = document.getString("kode_pos") ?: ""
-//                    callback(address, noRumah, kodePos)
-//                }
-                .addOnFailureListener {
-                    Toast.makeText(this, "Gagal mengambil data pengguna: ${it.message}", Toast.LENGTH_SHORT).show()
-                }
         }
     }
 
@@ -251,6 +233,7 @@ class PostItemActivity : AppCompatActivity() {
     }
 
     // Memproses hasil yang dikirimkan kembali dari MapActivity
+    @Deprecated("This method has been deprecated in favor of using the Activity Result API\n      which brings increased type safety via an {@link ActivityResultContract} and the prebuilt\n      contracts for common intents available in\n      {@link androidx.activity.result.contract.ActivityResultContracts}, provides hooks for\n      testing, and allow receiving results in separate, testable classes independent from your\n      activity. Use\n      {@link #registerForActivityResult(ActivityResultContract, ActivityResultCallback)}\n      with the appropriate {@link ActivityResultContract} and handling the result in the\n      {@link ActivityResultCallback#onActivityResult(Object) callback}.")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         val imageView = findViewById<ImageView>(R.id.gambar_product)
@@ -311,9 +294,4 @@ class PostItemActivity : AppCompatActivity() {
         loadingAnimation.playAnimation()  // Memulai animasi
     }
 
-    // Fungsi untuk menyembunyikan animasi loading
-    private fun hideLoadingAnimation() {
-        loadingAnimation.cancelAnimation()  // Menghentikan animasi
-        loadingAnimation.visibility = View.GONE  // Menyembunyikan animasi
-    }
 }

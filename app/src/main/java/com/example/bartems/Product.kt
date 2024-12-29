@@ -1,4 +1,4 @@
-package com.example.bartems.model
+package com.example.bartems
 
 import com.google.firebase.Timestamp
 
@@ -17,8 +17,3 @@ data class Product(
     val timestamp: Timestamp? = null  // Pastikan timestamp ada
 )
 
-data class User(
-    val name: String? = null,
-    val phone: String? = null,
-    val profileImageUrl: String? = null
-)

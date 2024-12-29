@@ -31,7 +31,8 @@
         android:layout_height="wrap_content"
         android:text="Nama Produk"
         android:textSize="18sp"
-        android:layout_marginBottom="8dp"/>
+        android:layout_marginBottom="8dp"
+        tools:ignore="HardcodedText" />
 
     <EditText
         android:id="@+id/input_quantity_own"
@@ -39,7 +40,8 @@
         android:layout_height="wrap_content"
         android:hint="Jumlah Barang Anda"
         android:inputType="number"
-        android:minHeight="48dp" />
+        android:minHeight="48dp"
+        tools:ignore="Autofill,HardcodedText,TextContrastCheck,VisualLintTextFieldSize" />
 
     <EditText
         android:id="@+id/input_quantity_other"
@@ -47,12 +49,14 @@
         android:layout_height="wrap_content"
         android:hint="Jumlah Barang Diterima"
         android:inputType="number"
-        android:minHeight="48dp" />
+        android:minHeight="48dp"
+        tools:ignore="Autofill,HardcodedText,TextContrastCheck,VisualLintTextFieldSize" />
 
     <Button
         android:id="@+id/btn_submit_quantity"
         android:backgroundTint="#697565"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Submit"/>
+        android:text="Submit"
+        tools:ignore="HardcodedText,VisualLintButtonSize" />
 </LinearLayout>

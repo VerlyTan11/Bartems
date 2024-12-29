@@ -2,6 +2,7 @@
 <androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
@@ -13,7 +14,8 @@
         android:layout_width="match_parent"
         android:layout_height="150dp"
         android:background="@drawable/rounded_button"
-        android:scaleType="centerCrop"
+        android:clipToOutline="true"
         android:contentDescription="Gambar Produk"
-        android:clipToOutline="true"/>
+        android:scaleType="centerCrop"
+        tools:ignore="HardcodedText,ImageContrastCheck" />
 </androidx.cardview.widget.CardView>
